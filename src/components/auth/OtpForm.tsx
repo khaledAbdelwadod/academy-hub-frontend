@@ -43,7 +43,7 @@ export function OtpForm({ email, onSubmit, onBack }: OtpFormProps): ReactElement
             autoComplete="one-time-code"
             placeholder="000000"
             required
-            className="w-full rounded-xl border border-white/20 bg-white/10 px-3.5 py-3 text-center text-2xl font-bold tracking-[0.5em] text-white placeholder:text-white/25 transition-colors focus:border-coral focus:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-coral/40"
+            className="w-full rounded-xl border border-white/30 bg-white/20 px-3.5 py-3 text-center text-2xl font-bold tracking-[0.5em] text-white placeholder:text-white/40 transition-colors focus:border-coral focus:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-coral/40"
           />
         </div>
 

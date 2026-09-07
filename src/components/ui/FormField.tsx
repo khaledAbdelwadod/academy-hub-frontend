@@ -17,7 +17,7 @@ export function FormField({ label, optional, id, ...inputProps }: FormFieldProps
       <input
         id={id}
         {...inputProps}
-        className="w-full rounded-xl border border-white/20 bg-white/10 px-3.5 py-3 text-sm text-white placeholder:text-white/35 transition-colors focus:border-coral focus:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-coral/40"
+        className="w-full rounded-xl border border-white/30 bg-white/20 px-3.5 py-3 text-sm text-white placeholder:text-white/50 transition-colors focus:border-coral focus:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-coral/40"
       />
     </div>
   );

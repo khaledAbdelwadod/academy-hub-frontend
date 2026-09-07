@@ -22,12 +22,8 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <h2 className="mb-0.5 text-xl font-extrabold text-white">Create your account</h2>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         <FormField id="rg-first" label="First name" placeholder="Amira" autoComplete="given-name" required />
-        <FormField id="rg-last" label="Last name" placeholder="Hassan" autoComplete="family-name" required />
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
         <FormField
           id="rg-middle"
           label="Middle name"
@@ -35,18 +31,10 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           placeholder="Youssef"
           autoComplete="additional-name"
         />
-        <FormField id="rg-dob" label="Date of birth" type="date" autoComplete="bday" required />
+        <FormField id="rg-last" label="Last name" placeholder="Hassan" autoComplete="family-name" required />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <FormField
-          id="rg-phone"
-          label="Phone number"
-          type="tel"
-          placeholder="+20 100 123 4567"
-          autoComplete="tel"
-          required
-        />
+      <div className="grid grid-cols-3 gap-3">
         <FormField
           id="rg-email"
           name="email"
@@ -56,9 +44,18 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           autoComplete="email"
           required
         />
+        <FormField
+          id="rg-phone"
+          label="Phone number"
+          type="tel"
+          placeholder="+20 100 123 4567"
+          autoComplete="tel"
+          required
+        />
+        <FormField id="rg-dob" label="Date of birth" type="date" autoComplete="bday" required />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         <PasswordField label="Password" placeholder="••••••••••" autoComplete="new-password" required />
         <PasswordField
           label="Confirm password"
@@ -66,13 +63,12 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           autoComplete="new-password"
           required
         />
+        <p className="self-end text-xs leading-relaxed text-white/45">
+          By continuing you agree to Academy Hub&apos;s Terms and Privacy Policy.
+        </p>
       </div>
 
       <AuthButton type="submit">Create account</AuthButton>
-
-      <p className="text-center text-xs leading-relaxed text-white/45">
-        By continuing you agree to Academy Hub&apos;s Terms and Privacy Policy.
-      </p>
 
       <p className="text-center text-sm text-white/60">
         Already have an account?{" "}
