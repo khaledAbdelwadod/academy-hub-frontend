@@ -1,4 +1,4 @@
-/** A modal showing the signed-in user's own profile: editable fields plus read-only account info. */
+/** A modal for the signed-in user to edit their own name, phone, DOB, and avatar. */
 
 import { useEffect, useState } from "react";
 import type { FormEvent, ReactElement } from "react";
@@ -9,7 +9,6 @@ import { useAuth } from "../../state/AuthContext";
 import { logger } from "../../utils/logger";
 import { AuthButton } from "../ui/AuthButton";
 import { FormField } from "../ui/FormField";
-import { ReadOnlyField } from "../ui/ReadOnlyField";
 import { AvatarUploader } from "./AvatarUploader";
 
 type LoadState =
@@ -21,14 +20,6 @@ type SaveState = { status: "idle" } | { status: "saving" } | { status: "error"; 
 
 interface ProfileModalProps {
   onClose: () => void;
-}
-
-function formatDateTime(value: string | null): string {
-  return value ? new Date(value).toLocaleString() : "Never";
-}
-
-function yesNo(value: boolean): string {
-  return value ? "Yes" : "No";
 }
 
 export function ProfileModal({ onClose }: ProfileModalProps): ReactElement {
@@ -84,17 +75,12 @@ export function ProfileModal({ onClose }: ProfileModalProps): ReactElement {
 
   return (
     <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto bg-black/60 px-4 py-10">
-      <button
-        type="button"
-        aria-label="Close"
-        onClick={onClose}
-        className="fixed inset-0 cursor-default"
-      />
+      <button type="button" aria-label="Close" onClick={onClose} className="fixed inset-0 cursor-default" />
 
-      <div className="relative w-full max-w-3xl rounded-[22px] border border-white/15 bg-black/70 p-8 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.7)] backdrop-blur-2xl backdrop-saturate-150">
+      <div className="relative w-full max-w-lg rounded-[22px] border border-white/15 bg-black/70 p-6 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.7)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
         <button
           type="button"
-          aria-label="Close profile"
+          aria-label="Close"
           onClick={onClose}
           className="absolute right-5 top-5 flex size-8 items-center justify-center rounded-full text-xl text-white/60 transition-colors hover:bg-white/10 hover:text-white"
         >
@@ -116,7 +102,7 @@ export function ProfileModal({ onClose }: ProfileModalProps): ReactElement {
             </div>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <FormField
                   id="pf-first"
                   name="first_name"
@@ -140,7 +126,7 @@ export function ProfileModal({ onClose }: ProfileModalProps): ReactElement {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <FormField
                   id="pf-phone"
                   name="phone"
@@ -164,20 +150,6 @@ export function ProfileModal({ onClose }: ProfileModalProps): ReactElement {
                 {saveState.status === "saving" ? "Saving…" : "Save changes"}
               </AuthButton>
             </form>
-
-            <div className="mt-8 border-t border-white/15 pt-6">
-              <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-white/50">Account info</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <ReadOnlyField label="Email" value={loadState.profile.email} />
-                <ReadOnlyField label="Email verified" value={yesNo(loadState.profile.email_verified)} />
-                <ReadOnlyField label="Phone verified" value={yesNo(loadState.profile.phone_verified)} />
-                <ReadOnlyField label="Account active" value={yesNo(loadState.profile.is_active)} />
-                <ReadOnlyField label="Staff access" value={yesNo(loadState.profile.is_staff)} />
-                <ReadOnlyField label="Super admin" value={yesNo(loadState.profile.is_superuser)} />
-                <ReadOnlyField label="Member since" value={formatDateTime(loadState.profile.created_at)} />
-                <ReadOnlyField label="Last login" value={formatDateTime(loadState.profile.last_login)} />
-              </div>
-            </div>
           </>
         )}
       </div>

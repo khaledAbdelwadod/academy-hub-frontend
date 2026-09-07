@@ -1,45 +1,11 @@
-/** The signed-in app shell: nav bar over the video backdrop, switching between views. */
+/** The signed-in "Home" landing content, rendered inside AppShell at /home. */
 
-import { useState } from "react";
 import type { ReactElement } from "react";
 
-import type { AuthUser } from "../api/authApi";
-import { logout } from "../api/authApi";
-import { VideoBackdrop } from "../components/auth/VideoBackdrop";
-import type { AppView } from "../components/nav/NavBar";
-import { NavBar } from "../components/nav/NavBar";
-import { ChangePasswordModal } from "../components/profile/ChangePasswordModal";
-import { ProfileModal } from "../components/profile/ProfileModal";
-import { useAuth } from "../state/AuthContext";
-import { logger } from "../utils/logger";
-
-interface HomePageProps {
-  user: AuthUser;
-}
-
-export function HomePage({ user }: HomePageProps): ReactElement {
-  const { signOut } = useAuth();
-  const [view, setView] = useState<AppView>("home");
-
-  function handleLogout(): void {
-    logout()
-      .catch((error: unknown) => {
-        logger.error("Logout request failed", { error: error instanceof Error ? error.message : error });
-      })
-      .finally(() => signOut());
-  }
-
+export function HomePage(): ReactElement {
   return (
-    <div className="relative min-h-screen">
-      <VideoBackdrop />
-      <NavBar user={user} activeView={view} onNavigate={setView} onLogout={handleLogout} />
-
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="text-white/60">Home — coming soon.</p>
-      </div>
-
-      {view === "profile" && <ProfileModal onClose={() => setView("home")} />}
-      {view === "password" && <ChangePasswordModal onClose={() => setView("home")} />}
+    <div className="flex min-h-[60vh] items-center justify-center px-4">
+      <p className="text-white/60">Home — coming soon.</p>
     </div>
   );
 }
