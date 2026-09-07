@@ -141,3 +141,63 @@ export async function logout(): Promise<void> {
     throw new AuthError("Could not sign out. Try again.");
   }
 }
+
+/**
+ * Change the signed-in user's password. The session stays valid afterward.
+ *
+ * @param currentPassword - The account's existing password, for re-verification.
+ * @param newPassword - The new password to set.
+ * @throws {AuthError} If the current password is wrong, the new one is too weak, or the
+ *   request is rate-limited.
+ */
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  const csrfToken = await fetchCsrfToken();
+
+  const response = await fetch(`${API_BASE_URL}/api/auth/change-password/`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken,
+    },
+    body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+  });
+
+  if (response.status === 429) {
+    throw new AuthError("Too many attempts. Try again in a minute.");
+  }
+  if (!response.ok) {
+    const body: unknown = await response.json().catch(() => null);
+    const detail =
+      body && typeof body === "object" && "detail" in body ? (body as { detail: unknown }).detail : null;
+    const message = Array.isArray(detail) ? detail.join(" ") : typeof detail === "string" ? detail : null;
+    throw new AuthError(message ?? "Could not change your password.");
+  }
+}
+
+/**
+ * Upload a new avatar image for the signed-in user.
+ *
+ * @param file - The image file to upload (max 5MB).
+ * @returns The updated profile.
+ * @throws {AuthError} If the file is invalid, too large, or the request fails.
+ */
+export async function uploadAvatar(file: File): Promise<AuthUser> {
+  const csrfToken = await fetchCsrfToken();
+
+  const formData = new FormData();
+  formData.append("avatar", file);
+
+  const response = await fetch(`${API_BASE_URL}/api/auth/me/avatar/`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "X-CSRFToken": csrfToken },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new AuthError("Could not upload that image. Make sure it's under 5MB.");
+  }
+
+  return (await response.json()) as AuthUser;
+}

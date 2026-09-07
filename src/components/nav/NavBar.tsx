@@ -36,8 +36,8 @@ export function NavBar({ user, activeView, onNavigate, onLogout }: NavBarProps):
           onClick={() => setMenuOpen((open) => !open)}
           className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-2 transition-colors hover:bg-white/10"
         >
-          <span className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-sand to-coral text-sm font-bold text-white">
-            {initials}
+          <span className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-sand to-coral text-sm font-bold text-white">
+            {user.avatar ? <img src={user.avatar} alt="" className="size-full object-cover" /> : initials}
           </span>
           <span className="text-sm font-semibold text-white">
             {user.first_name} {user.last_name}
