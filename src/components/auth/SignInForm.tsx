@@ -19,7 +19,7 @@ export function SignInForm({
 }: SignInFormProps): ReactElement {
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
-      <h2 className="mb-0.5 text-xl font-extrabold text-ink">Sign in</h2>
+      <h2 className="mb-0.5 text-xl font-extrabold text-white">Sign in</h2>
 
       <FormField
         id="si-email"
@@ -37,27 +37,29 @@ export function SignInForm({
       />
 
       <div className="flex items-center justify-between text-sm">
-        <label className="flex items-center gap-2 text-ink/65">
+        <label className="flex items-center gap-2 text-white/60">
           <input type="checkbox" className="size-3.5 accent-coral" />
           Keep me signed in
         </label>
         <button
           type="button"
           onClick={onForgotPassword}
-          className="text-ink/65 underline decoration-transparent underline-offset-2 transition-colors hover:text-ink hover:decoration-current"
+          className="text-white/60 underline decoration-transparent underline-offset-2 transition-colors hover:text-white hover:decoration-current"
         >
           Forgot password?
         </button>
       </div>
 
-      <AuthButton type="submit">Sign in</AuthButton>
+      <AuthButton type="submit" fullWidth={false}>
+        Sign in
+      </AuthButton>
 
-      <p className="mt-1 text-center text-sm text-ink/65">
+      <p className="mt-1 text-center text-sm text-white/60">
         New to Academy Hub?{" "}
         <button
           type="button"
           onClick={onSwitchToRegister}
-          className="font-bold text-ink underline decoration-transparent underline-offset-2 transition-colors hover:decoration-current"
+          className="font-bold text-white underline decoration-transparent underline-offset-2 transition-colors hover:decoration-current"
         >
           Create an account
         </button>

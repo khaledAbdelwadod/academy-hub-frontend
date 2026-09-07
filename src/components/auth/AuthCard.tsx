@@ -1,14 +1,15 @@
-/** The frosted-glass card holding the sign-in, register, and forgot-password panels. */
+/** The frosted-glass card holding the sign-in, register, forgot-password, and OTP panels. */
 
 import { useState } from "react";
 import type { FormEvent, ReactElement } from "react";
 
 import { logger } from "../../utils/logger";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
+import { OtpForm } from "./OtpForm";
 import { RegisterForm } from "./RegisterForm";
 import { SignInForm } from "./SignInForm";
 
-type AuthMode = "signin" | "register" | "forgot";
+type AuthMode = "signin" | "register" | "forgot" | "otp";
 
 function preventSubmit(mode: AuthMode) {
   return (event: FormEvent<HTMLFormElement>): void => {
@@ -19,9 +20,20 @@ function preventSubmit(mode: AuthMode) {
 
 export function AuthCard(): ReactElement {
   const [mode, setMode] = useState<AuthMode>("signin");
+  const [pendingEmail, setPendingEmail] = useState("");
+
+  function handleRegistered(email: string): void {
+    logger.debug("Registration submitted (not yet wired to an endpoint)", { email });
+    setPendingEmail(email);
+    setMode("otp");
+  }
+
+  const cardWidthClass = mode === "register" ? "max-w-[560px]" : "max-w-[448px]";
 
   return (
-    <div className="relative w-full rounded-[22px] border border-white/85 bg-gradient-to-br from-white/75 to-white/50 px-8 py-8 shadow-[0_24px_50px_-22px_rgba(38,70,83,0.28)] backdrop-blur-2xl backdrop-saturate-150">
+    <div
+      className={`relative w-full rounded-[22px] border border-white/15 bg-black/80 px-8 py-8 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 transition-[max-width] duration-300 ${cardWidthClass}`}
+    >
       <div key={mode} className="animate-panel-in">
         {mode === "signin" && (
           <SignInForm
@@ -31,12 +43,19 @@ export function AuthCard(): ReactElement {
           />
         )}
         {mode === "register" && (
-          <RegisterForm onSubmit={preventSubmit("register")} onSwitchToSignIn={() => setMode("signin")} />
+          <RegisterForm onRegistered={handleRegistered} onSwitchToSignIn={() => setMode("signin")} />
         )}
         {mode === "forgot" && (
           <ForgotPasswordForm
             onSubmit={preventSubmit("forgot")}
             onBackToSignIn={() => setMode("signin")}
+          />
+        )}
+        {mode === "otp" && (
+          <OtpForm
+            email={pendingEmail}
+            onSubmit={preventSubmit("otp")}
+            onBack={() => setMode("register")}
           />
         )}
       </div>

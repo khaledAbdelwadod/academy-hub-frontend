@@ -19,14 +19,14 @@ export function ForgotPasswordForm({
       <button
         type="button"
         onClick={onBackToSignIn}
-        className="flex items-center gap-1.5 self-start text-sm text-ink/65 hover:text-ink"
+        className="flex items-center gap-1.5 self-start text-sm text-white/60 hover:text-white"
       >
         &larr; Back to sign in
       </button>
 
       <div>
-        <h2 className="mb-1.5 text-xl font-extrabold text-ink">Reset your password</h2>
-        <p className="text-sm leading-relaxed text-ink/65">
+        <h2 className="mb-1.5 text-xl font-extrabold text-white">Reset your password</h2>
+        <p className="text-sm leading-relaxed text-white/60">
           Enter the email on your account and we&apos;ll send a 6-digit code to reset your
           password.
         </p>

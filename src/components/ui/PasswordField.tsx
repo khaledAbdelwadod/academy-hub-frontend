@@ -1,4 +1,4 @@
-/** A password input with a show/hide toggle, styled for the frosted-glass auth forms. */
+/** A password input with a show/hide toggle, styled for the black frosted-glass auth forms. */
 
 import { useId, useState } from "react";
 import type { InputHTMLAttributes, ReactElement } from "react";
@@ -13,7 +13,7 @@ export function PasswordField({ label, ...inputProps }: PasswordFieldProps): Rea
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-xs font-bold uppercase tracking-wider text-ink/45">
+      <label htmlFor={id} className="text-xs font-bold uppercase tracking-wider text-white/50">
         {label}
       </label>
       <div className="relative">
@@ -21,12 +21,12 @@ export function PasswordField({ label, ...inputProps }: PasswordFieldProps): Rea
           id={id}
           type={visible ? "text" : "password"}
           {...inputProps}
-          className="w-full rounded-xl border border-ink/15 bg-white/55 py-3 pl-3.5 pr-16 text-sm text-ink placeholder:text-ink/40 transition-colors focus:border-coral focus:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-coral/40"
+          className="w-full rounded-xl border border-white/20 bg-white/10 py-3 pl-3.5 pr-16 text-sm text-white placeholder:text-white/35 transition-colors focus:border-coral focus:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-coral/40"
         />
         <button
           type="button"
           onClick={() => setVisible((current) => !current)}
-          className="absolute inset-y-1.5 right-1.5 rounded-lg px-2.5 text-xs font-bold uppercase tracking-wide text-ink/45 hover:text-ink"
+          className="absolute inset-y-1.5 right-1.5 rounded-lg px-2.5 text-xs font-bold uppercase tracking-wide text-white/50 hover:text-white"
         >
           {visible ? "Hide" : "Show"}
         </button>
