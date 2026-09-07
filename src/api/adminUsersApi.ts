@@ -23,7 +23,6 @@ export interface AdminUser {
   is_superuser: boolean;
   created_at: string;
   last_login: string | null;
-  membership_count: number;
 }
 
 export interface AdminUserList {

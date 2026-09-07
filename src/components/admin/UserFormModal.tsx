@@ -8,6 +8,7 @@ import { createUser, updateUser } from "../../api/adminUsersApi";
 import { logger } from "../../utils/logger";
 import { AuthButton } from "../ui/AuthButton";
 import { FormField } from "../ui/FormField";
+import { ModalShell } from "../ui/ModalShell";
 import { PasswordField } from "../ui/PasswordField";
 
 interface UserFormModalProps {
@@ -56,95 +57,80 @@ export function UserFormModal({ user, onClose, onSaved }: UserFormModalProps): R
   }
 
   return (
-    <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto bg-black/60 px-4 py-10">
-      <button type="button" aria-label="Close" onClick={onClose} className="fixed inset-0 cursor-default" />
+    <ModalShell title={isCreate ? "Create User" : "Edit User"} onClose={onClose} maxWidthClassName="max-w-2xl">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <FormField id="uf-first" name="first_name" label="First name" defaultValue={user?.first_name} required />
+          <FormField
+            id="uf-middle"
+            name="middle_name"
+            label="Middle name"
+            optional
+            defaultValue={user?.middle_name}
+          />
+          <FormField id="uf-last" name="last_name" label="Last name" defaultValue={user?.last_name} required />
+        </div>
 
-      <div className="relative w-full max-w-2xl rounded-[22px] border border-white/15 bg-black/70 p-8 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.7)] backdrop-blur-2xl backdrop-saturate-150">
-        <button
-          type="button"
-          aria-label="Close"
-          onClick={onClose}
-          className="absolute right-5 top-5 flex size-8 items-center justify-center rounded-full text-xl text-white/60 transition-colors hover:bg-white/10 hover:text-white"
-        >
-          &times;
-        </button>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <FormField
+            id="uf-email"
+            name="email"
+            label="Email address"
+            type="email"
+            defaultValue={user?.email}
+            required
+          />
+          <FormField id="uf-phone" name="phone" label="Phone number" defaultValue={user?.phone} required />
+          <FormField
+            id="uf-dob"
+            name="date_of_birth"
+            label="Date of birth"
+            type="date"
+            defaultValue={user?.date_of_birth}
+            required
+          />
+        </div>
 
-        <h1 className="mb-6 text-2xl font-extrabold text-white">{isCreate ? "Create User" : "Edit User"}</h1>
+        {isCreate && (
+          <PasswordField name="password" label="Initial password" autoComplete="new-password" required />
+        )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="grid grid-cols-3 gap-3">
-            <FormField id="uf-first" name="first_name" label="First name" defaultValue={user?.first_name} required />
-            <FormField
-              id="uf-middle"
-              name="middle_name"
-              label="Middle name"
-              optional
-              defaultValue={user?.middle_name}
+        <div className="flex flex-wrap gap-5 pt-1 text-sm text-white/80">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="is_active"
+              defaultChecked={user?.is_active ?? true}
+              className="size-3.5 accent-coral"
             />
-            <FormField id="uf-last" name="last_name" label="Last name" defaultValue={user?.last_name} required />
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            <FormField
-              id="uf-email"
-              name="email"
-              label="Email address"
-              type="email"
-              defaultValue={user?.email}
-              required
+            Active
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="is_staff"
+              defaultChecked={user?.is_staff ?? false}
+              className="size-3.5 accent-coral"
             />
-            <FormField id="uf-phone" name="phone" label="Phone number" defaultValue={user?.phone} required />
-            <FormField
-              id="uf-dob"
-              name="date_of_birth"
-              label="Date of birth"
-              type="date"
-              defaultValue={user?.date_of_birth}
-              required
+            Staff access
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="is_superuser"
+              defaultChecked={user?.is_superuser ?? false}
+              className="size-3.5 accent-coral"
             />
-          </div>
+            Super admin
+          </label>
+        </div>
 
-          {isCreate && (
-            <PasswordField name="password" label="Initial password" autoComplete="new-password" required />
-          )}
+        {state.status === "error" && <p className="text-sm text-red-400">{state.message}</p>}
 
-          <div className="flex flex-wrap gap-5 pt-1 text-sm text-white/80">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="is_active"
-                defaultChecked={user?.is_active ?? true}
-                className="size-3.5 accent-coral"
-              />
-              Active
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="is_staff"
-                defaultChecked={user?.is_staff ?? false}
-                className="size-3.5 accent-coral"
-              />
-              Staff access
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="is_superuser"
-                defaultChecked={user?.is_superuser ?? false}
-                className="size-3.5 accent-coral"
-              />
-              Super admin
-            </label>
-          </div>
-
-          {state.status === "error" && <p className="text-sm text-red-400">{state.message}</p>}
-
-          <AuthButton type="submit" fullWidth={false} disabled={state.status === "saving"}>
-            {state.status === "saving" ? "Saving…" : isCreate ? "Create user" : "Save changes"}
-          </AuthButton>
-        </form>
-      </div>
-    </div>
+        <AuthButton type="submit" fullWidth={false} disabled={state.status === "saving"}>
+          {state.status === "saving" ? "Saving…" : isCreate ? "Create user" : "Save changes"}
+        </AuthButton>
+      </form>
+    </ModalShell>
   );
 }

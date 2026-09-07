@@ -39,7 +39,7 @@ export function AppShell(): ReactElement {
   const activeView = location.pathname.startsWith("/users") ? "users" : "home";
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative flex h-screen flex-col overflow-hidden">
       <VideoBackdrop />
       <NavBar
         user={user}
@@ -52,7 +52,12 @@ export function AppShell(): ReactElement {
         onLogout={handleLogout}
       />
 
-      <Outlet />
+      {/* Pages (Home, Users) get the exact remaining viewport height here, so a
+          page like Users can size its table to fill it and scroll internally
+          instead of growing the whole document taller. */}
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <Outlet />
+      </div>
 
       {modal === "profile" && <ProfileModal onClose={() => setModal(null)} />}
       {modal === "account" && <AccountInfoModal onClose={() => setModal(null)} />}

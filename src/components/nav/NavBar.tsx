@@ -76,7 +76,7 @@ export function NavBar({
               onClick={() => setMenuOpen(false)}
               className="fixed inset-0 z-10 cursor-default"
             />
-            <div className="absolute right-0 top-[calc(100%+10px)] z-20 w-52 overflow-hidden rounded-xl border border-white/15 bg-black/80 shadow-[0_20px_40px_-16px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
+            <div className="absolute right-0 top-[calc(100%+10px)] z-20 w-52 overflow-hidden rounded-xl border border-white/15 bg-black/45 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150">
               <button
                 type="button"
                 onClick={() => {

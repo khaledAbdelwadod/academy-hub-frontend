@@ -51,18 +51,16 @@ export function ChangePasswordForm(): ReactElement {
         autoComplete="current-password"
         required
       />
-      <div className="grid grid-cols-2 gap-3">
-        <PasswordField name="new_password" label="New password" autoComplete="new-password" required />
-        <PasswordField
-          name="confirm_password"
-          label="Confirm new password"
-          autoComplete="new-password"
-          required
-        />
-      </div>
+      <PasswordField name="new_password" label="New password" autoComplete="new-password" required />
+      <PasswordField
+        name="confirm_password"
+        label="Confirm new password"
+        autoComplete="new-password"
+        required
+      />
 
       {state.status === "error" && <p className="text-sm text-red-400">{state.message}</p>}
-      {state.status === "success" && <p className="text-sm text-emerald-400">Password updated.</p>}
+      {state.status === "success" && <p className="text-sm text-teal">Password updated.</p>}
 
       <AuthButton type="submit" fullWidth={false} disabled={state.status === "saving"}>
         {state.status === "saving" ? "Updating…" : "Update password"}
