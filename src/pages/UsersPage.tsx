@@ -157,8 +157,7 @@ export function UsersPage(): ReactElement {
 
   return (
     <div className="mx-auto flex h-full w-full max-w-[1800px] flex-col px-4 py-6 sm:px-8">
-      <div className="mb-4 flex shrink-0 items-center justify-between">
-        <h1 className="text-2xl font-extrabold text-white">Users</h1>
+      <div className="mb-4 flex shrink-0 items-center">
         <SmallButton variant="primary" onClick={() => setFormTarget("create")}>
           Create user
         </SmallButton>
