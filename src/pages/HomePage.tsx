@@ -8,9 +8,9 @@ import { logout } from "../api/authApi";
 import { VideoBackdrop } from "../components/auth/VideoBackdrop";
 import type { AppView } from "../components/nav/NavBar";
 import { NavBar } from "../components/nav/NavBar";
+import { ProfileModal } from "../components/profile/ProfileModal";
 import { useAuth } from "../state/AuthContext";
 import { logger } from "../utils/logger";
-import { ProfilePage } from "./ProfilePage";
 
 interface HomePageProps {
   user: AuthUser;
@@ -33,13 +33,11 @@ export function HomePage({ user }: HomePageProps): ReactElement {
       <VideoBackdrop />
       <NavBar user={user} activeView={view} onNavigate={setView} onLogout={handleLogout} />
 
-      {view === "home" ? (
-        <div className="flex min-h-[60vh] items-center justify-center">
-          <p className="text-white/60">Home — coming soon.</p>
-        </div>
-      ) : (
-        <ProfilePage />
-      )}
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <p className="text-white/60">Home — coming soon.</p>
+      </div>
+
+      {view === "profile" && <ProfileModal onClose={() => setView("home")} />}
     </div>
   );
 }

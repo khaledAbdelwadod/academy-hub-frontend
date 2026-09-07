@@ -88,6 +88,41 @@ export async function fetchProfile(): Promise<AuthUser> {
   return (await response.json()) as AuthUser;
 }
 
+export interface ProfileUpdate {
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  phone: string;
+  date_of_birth: string;
+}
+
+/**
+ * Update the signed-in user's editable profile fields.
+ *
+ * @param updates - Any subset of the editable profile fields.
+ * @returns The updated profile.
+ * @throws {AuthError} If the request is invalid or fails.
+ */
+export async function updateProfile(updates: Partial<ProfileUpdate>): Promise<AuthUser> {
+  const csrfToken = await fetchCsrfToken();
+
+  const response = await fetch(`${API_BASE_URL}/api/auth/me/`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken,
+    },
+    body: JSON.stringify(updates),
+  });
+
+  if (!response.ok) {
+    throw new AuthError("Could not save your changes.");
+  }
+
+  return (await response.json()) as AuthUser;
+}
+
 /**
  * End the current session.
  *
