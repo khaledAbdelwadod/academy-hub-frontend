@@ -4,11 +4,17 @@ import type { ReactElement } from "react";
 
 import { useVideoPool } from "../../hooks/useVideoPool";
 
-const VIDEO_SOURCES = [
-  "/videos/15089925_2304_1080_30fps.mp4",
-  "/videos/8224292-hd_1920_1080_30fps.mp4",
-  "/videos/15204121-uhd_3840_2160_30fps.mp4",
-];
+// Auto-discovered at build time: drop/remove files in src/assets/loginbackgroundvideos
+// and the pool picks them up on the next build, no code change needed.
+const videoModules = import.meta.glob("../../assets/loginbackgroundvideos/*.mp4", {
+  eager: true,
+  query: "?url",
+  import: "default",
+}) as Record<string, string>;
+
+const VIDEO_SOURCES = Object.keys(videoModules)
+  .sort()
+  .map((path) => videoModules[path]!);
 
 export function VideoBackdrop(): ReactElement {
   const { videoARef, videoBRef, activeSlot } = useVideoPool(VIDEO_SOURCES);
