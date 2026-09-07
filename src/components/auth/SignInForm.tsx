@@ -2,27 +2,43 @@
 
 import type { FormEvent, ReactElement } from "react";
 
+import { useLogin } from "../../hooks/useLogin";
 import { AuthButton } from "../ui/AuthButton";
 import { FormField } from "../ui/FormField";
 import { PasswordField } from "../ui/PasswordField";
 
 interface SignInFormProps {
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onForgotPassword: () => void;
   onSwitchToRegister: () => void;
 }
 
-export function SignInForm({
-  onSubmit,
-  onForgotPassword,
-  onSwitchToRegister,
-}: SignInFormProps): ReactElement {
+export function SignInForm({ onForgotPassword, onSwitchToRegister }: SignInFormProps): ReactElement {
+  const [state, submit] = useLogin();
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    submit(String(data.get("email") ?? ""), String(data.get("password") ?? ""));
+  }
+
+  if (state.status === "success") {
+    return (
+      <div className="flex flex-col items-center gap-1.5 py-6 text-center">
+        <h2 className="text-xl font-extrabold text-white">Welcome back, {state.user.first_name}</h2>
+        <p className="text-sm text-white/70">You&apos;re signed in.</p>
+      </div>
+    );
+  }
+
+  const isLoading = state.status === "loading";
+
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <h2 className="mb-0.5 text-xl font-extrabold text-white">Sign in</h2>
 
       <FormField
         id="si-email"
+        name="email"
         label="Email address"
         type="email"
         placeholder="you@example.com"
@@ -30,11 +46,14 @@ export function SignInForm({
         required
       />
       <PasswordField
+        name="password"
         label="Password"
         placeholder="••••••••••"
         autoComplete="current-password"
         required
       />
+
+      {state.status === "error" && <p className="text-sm text-red-400">{state.message}</p>}
 
       <div className="flex items-center justify-between text-sm">
         <label className="flex items-center gap-2 text-white/75">
@@ -50,8 +69,8 @@ export function SignInForm({
         </button>
       </div>
 
-      <AuthButton type="submit" fullWidth={false}>
-        Sign in
+      <AuthButton type="submit" fullWidth={false} disabled={isLoading}>
+        {isLoading ? "Signing in…" : "Sign in"}
       </AuthButton>
 
       <p className="mt-1 text-center text-sm text-white/75">

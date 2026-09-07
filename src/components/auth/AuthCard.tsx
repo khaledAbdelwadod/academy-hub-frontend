@@ -37,7 +37,6 @@ export function AuthCard(): ReactElement {
       <div key={mode} className="animate-panel-in">
         {mode === "signin" && (
           <SignInForm
-            onSubmit={preventSubmit("signin")}
             onForgotPassword={() => setMode("forgot")}
             onSwitchToRegister={() => setMode("register")}
           />
