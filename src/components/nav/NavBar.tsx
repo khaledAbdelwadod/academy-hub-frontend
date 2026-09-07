@@ -5,7 +5,7 @@ import type { ReactElement } from "react";
 
 import type { AuthUser } from "../../api/authApi";
 
-export type AppView = "home" | "profile";
+export type AppView = "home" | "profile" | "password";
 
 interface NavBarProps {
   user: AuthUser;
@@ -62,6 +62,16 @@ export function NavBar({ user, activeView, onNavigate, onLogout }: NavBarProps):
                 className="block w-full px-4 py-3 text-left text-sm text-white/85 transition-colors hover:bg-white/10 hover:text-white"
               >
                 My Profile
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  onNavigate("password");
+                  setMenuOpen(false);
+                }}
+                className="block w-full px-4 py-3 text-left text-sm text-white/85 transition-colors hover:bg-white/10 hover:text-white"
+              >
+                Change Password
               </button>
               <button
                 type="button"

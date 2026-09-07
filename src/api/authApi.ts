@@ -196,7 +196,10 @@ export async function uploadAvatar(file: File): Promise<AuthUser> {
   });
 
   if (!response.ok) {
-    throw new AuthError("Could not upload that image. Make sure it's under 5MB.");
+    if (response.status === 400) {
+      throw new AuthError("Could not upload that image. Make sure it's a valid image under 5MB.");
+    }
+    throw new AuthError("Upload failed due to a server issue. Try again shortly.");
   }
 
   return (await response.json()) as AuthUser;

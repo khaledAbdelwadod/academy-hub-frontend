@@ -8,6 +8,7 @@ import { logout } from "../api/authApi";
 import { VideoBackdrop } from "../components/auth/VideoBackdrop";
 import type { AppView } from "../components/nav/NavBar";
 import { NavBar } from "../components/nav/NavBar";
+import { ChangePasswordModal } from "../components/profile/ChangePasswordModal";
 import { ProfileModal } from "../components/profile/ProfileModal";
 import { useAuth } from "../state/AuthContext";
 import { logger } from "../utils/logger";
@@ -38,6 +39,7 @@ export function HomePage({ user }: HomePageProps): ReactElement {
       </div>
 
       {view === "profile" && <ProfileModal onClose={() => setView("home")} />}
+      {view === "password" && <ChangePasswordModal onClose={() => setView("home")} />}
     </div>
   );
 }

@@ -11,7 +11,6 @@ import { AuthButton } from "../ui/AuthButton";
 import { FormField } from "../ui/FormField";
 import { ReadOnlyField } from "../ui/ReadOnlyField";
 import { AvatarUploader } from "./AvatarUploader";
-import { ChangePasswordForm } from "./ChangePasswordForm";
 
 type LoadState =
   | { status: "loading" }
@@ -178,13 +177,6 @@ export function ProfileModal({ onClose }: ProfileModalProps): ReactElement {
                 <ReadOnlyField label="Member since" value={formatDateTime(loadState.profile.created_at)} />
                 <ReadOnlyField label="Last login" value={formatDateTime(loadState.profile.last_login)} />
               </div>
-            </div>
-
-            <div className="mt-8 border-t border-white/15 pt-6">
-              <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-white/50">
-                Change password
-              </h2>
-              <ChangePasswordForm />
             </div>
           </>
         )}
