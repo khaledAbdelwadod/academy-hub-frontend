@@ -3,12 +3,12 @@
 import type { ReactElement } from "react";
 
 import { AuthCard } from "../components/auth/AuthCard";
-import { GradientBackdrop } from "../components/auth/GradientBackdrop";
+import { VideoBackdrop } from "../components/auth/VideoBackdrop";
 
 export function LoginPage(): ReactElement {
   return (
     <div className="flex min-h-screen items-center justify-center px-5 py-10">
-      <GradientBackdrop />
+      <VideoBackdrop />
 
       <div className="animate-rise flex w-full max-w-[448px] flex-col items-center">
         <p className="mb-6 font-display text-4xl tracking-wider text-ink sm:text-5xl">
