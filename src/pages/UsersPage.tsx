@@ -1,10 +1,10 @@
-/** Superadmin user management: a table of every account with create/edit/deactivate/delete. */
+/** Superadmin user management: a table of every account with search, sort, create/edit/deactivate/delete. */
 
 import { useEffect, useState } from "react";
-import type { ReactElement } from "react";
+import type { ChangeEvent, ReactElement } from "react";
 
-import type { AdminUser, AdminUserList } from "../api/adminUsersApi";
-import { deleteUser, listUsers, updateUser } from "../api/adminUsersApi";
+import type { AdminUser, AdminUserList, AdminUserListQuery } from "../api/adminUsersApi";
+import { buildUsersUrl, deleteUser, listUsers, updateUser } from "../api/adminUsersApi";
 import { RowActionsMenu } from "../components/admin/RowActionsMenu";
 import { UserFormModal } from "../components/admin/UserFormModal";
 import { SmallButton } from "../components/ui/SmallButton";
@@ -14,6 +14,42 @@ type LoadState =
   | { status: "loading" }
   | { status: "error"; message: string }
   | { status: "ready"; page: AdminUserList };
+
+type FilterValues = Omit<AdminUserListQuery, "ordering">;
+
+const EMPTY_FILTERS: FilterValues = {
+  name: "",
+  email: "",
+  phone: "",
+  date_of_birth: "",
+  email_verified: "",
+  phone_verified: "",
+  is_active: "",
+  is_staff: "",
+  is_superuser: "",
+};
+
+interface ColumnConfig {
+  /** The field name to sort/filter by on the backend; omit if not sortable. */
+  sortKey?: string;
+  label: string;
+  filterKey?: keyof FilterValues;
+  filterType?: "text" | "date" | "boolean";
+}
+
+const COLUMNS: ColumnConfig[] = [
+  { sortKey: "first_name", label: "Name", filterKey: "name", filterType: "text" },
+  { sortKey: "email", label: "Email", filterKey: "email", filterType: "text" },
+  { sortKey: "phone", label: "Phone", filterKey: "phone", filterType: "text" },
+  { sortKey: "date_of_birth", label: "Date of birth", filterKey: "date_of_birth", filterType: "date" },
+  { sortKey: "email_verified", label: "Email verified", filterKey: "email_verified", filterType: "boolean" },
+  { sortKey: "phone_verified", label: "Phone verified", filterKey: "phone_verified", filterType: "boolean" },
+  { sortKey: "is_active", label: "Active", filterKey: "is_active", filterType: "boolean" },
+  { sortKey: "is_staff", label: "Staff", filterKey: "is_staff", filterType: "boolean" },
+  { sortKey: "is_superuser", label: "Super admin", filterKey: "is_superuser", filterType: "boolean" },
+  { sortKey: "created_at", label: "Member since" },
+  { sortKey: "last_login", label: "Last login" },
+];
 
 function formatDate(value: string | null): string {
   return value ? new Date(value).toLocaleDateString() : "—";
@@ -39,6 +75,8 @@ export function UsersPage(): ReactElement {
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [formTarget, setFormTarget] = useState<AdminUser | "create" | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [filters, setFilters] = useState<FilterValues>(EMPTY_FILTERS);
+  const [ordering, setOrdering] = useState<string | null>(null);
 
   function fetchAndSetUsers(url?: string): void {
     listUsers(url)
@@ -50,26 +88,50 @@ export function UsersPage(): ReactElement {
       });
   }
 
-  // Initial fetch relies on the useState default already being "loading" -
-  // setState is never called synchronously from inside this effect.
-  useEffect(() => {
-    fetchAndSetUsers();
-  }, []);
-
   function load(url?: string): void {
     setState({ status: "loading" });
     fetchAndSetUsers(url);
   }
 
+  // Refetch whenever a filter or the sort order changes, debounced so typing in
+  // a search box doesn't fire a request per keystroke. This also covers the
+  // very first load - setState only happens inside the timeout callback, never
+  // synchronously in the effect body.
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      load(buildUsersUrl({ ...filters, ordering: ordering ?? undefined }));
+    }, 300);
+    return () => window.clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally only reacts to filters/ordering, not the load function identity
+  }, [filters, ordering]);
+
+  function handleFilterChange(key: keyof FilterValues, value: string): void {
+    setFilters((current) => ({ ...current, [key]: value }));
+  }
+
+  function handleSort(sortKey: string): void {
+    setOrdering((current) => {
+      if (current === sortKey) return `-${sortKey}`;
+      if (current === `-${sortKey}`) return null;
+      return sortKey;
+    });
+  }
+
+  function sortIndicator(sortKey: string): string {
+    if (ordering === sortKey) return " ▲";
+    if (ordering === `-${sortKey}`) return " ▼";
+    return "";
+  }
+
   function handleSaved(): void {
     setFormTarget(null);
-    load();
+    load(buildUsersUrl({ ...filters, ordering: ordering ?? undefined }));
   }
 
   function handleToggleActive(target: AdminUser): void {
     setActionError(null);
     updateUser(target.id, { is_active: !target.is_active })
-      .then(() => load())
+      .then(() => load(buildUsersUrl({ ...filters, ordering: ordering ?? undefined })))
       .catch((error: unknown) => {
         const message = error instanceof Error ? error.message : "Could not update that user.";
         logger.error("Failed to toggle active status", { error: message });
@@ -85,7 +147,7 @@ export function UsersPage(): ReactElement {
 
     setActionError(null);
     deleteUser(target.id)
-      .then(() => load())
+      .then(() => load(buildUsersUrl({ ...filters, ordering: ordering ?? undefined })))
       .catch((error: unknown) => {
         const message = error instanceof Error ? error.message : "Could not delete that user.";
         logger.error("Failed to delete user", { error: message });
@@ -94,7 +156,7 @@ export function UsersPage(): ReactElement {
   }
 
   return (
-    <div className="mx-auto flex h-full w-full max-w-7xl flex-col px-4 py-6 sm:px-6">
+    <div className="mx-auto flex h-full w-full max-w-[1800px] flex-col px-4 py-6 sm:px-8">
       <div className="mb-4 flex shrink-0 items-center justify-between">
         <h1 className="text-2xl font-extrabold text-white">Users</h1>
         <SmallButton variant="primary" onClick={() => setFormTarget("create")}>
@@ -103,32 +165,82 @@ export function UsersPage(): ReactElement {
       </div>
 
       {actionError && <p className="mb-4 shrink-0 text-sm text-red-400">{actionError}</p>}
+      {state.status === "error" && <p className="mb-4 shrink-0 text-sm text-red-400">{state.message}</p>}
 
-      {state.status === "loading" && <p className="py-10 text-center text-white/70">Loading users…</p>}
-      {state.status === "error" && <p className="py-10 text-center text-red-400">{state.message}</p>}
-
-      {state.status === "ready" && (
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-white/15 bg-black/45 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150">
-          <div className="min-h-0 flex-1 overflow-auto">
-            <table className="w-full min-w-[1150px] border-collapse text-sm">
-              <thead>
-                <tr className="sticky top-0 z-10 border-b border-white/15 bg-black/45 text-left text-xs font-bold uppercase tracking-wider text-white/50 backdrop-blur-2xl">
-                  <th className="px-3 py-3">Name</th>
-                  <th className="px-3 py-3">Email</th>
-                  <th className="px-3 py-3">Phone</th>
-                  <th className="px-3 py-3">Date of birth</th>
-                  <th className="px-3 py-3">Email verified</th>
-                  <th className="px-3 py-3">Phone verified</th>
-                  <th className="px-3 py-3">Active</th>
-                  <th className="px-3 py-3">Staff</th>
-                  <th className="px-3 py-3">Super admin</th>
-                  <th className="px-3 py-3">Member since</th>
-                  <th className="px-3 py-3">Last login</th>
-                  <th className="px-3 py-3" />
-                </tr>
-              </thead>
-              <tbody>
-                {state.page.results.map((row) => (
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-white/15 bg-black/45 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150">
+        <div className="min-h-0 flex-1 overflow-auto">
+          <table className="w-full min-w-[1150px] border-collapse text-sm">
+            <thead>
+              <tr className="sticky top-0 z-10 border-b border-white/10 bg-black/45 text-left text-xs font-bold uppercase tracking-wider text-white/50 backdrop-blur-2xl">
+                {COLUMNS.map((column) => (
+                  <th key={column.label} className="px-3 py-3">
+                    {column.sortKey ? (
+                      <button
+                        type="button"
+                        onClick={() => handleSort(column.sortKey!)}
+                        className="transition-colors hover:text-white"
+                      >
+                        {column.label}
+                        {sortIndicator(column.sortKey)}
+                      </button>
+                    ) : (
+                      column.label
+                    )}
+                  </th>
+                ))}
+                <th className="px-3 py-3" />
+              </tr>
+              <tr className="sticky top-[37px] z-10 border-b border-white/15 bg-black/45 backdrop-blur-2xl">
+                {COLUMNS.map((column) => (
+                  <th key={column.label} className="px-3 pb-3">
+                    {column.filterKey && column.filterType === "text" && (
+                      <input
+                        type="text"
+                        value={filters[column.filterKey]}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                          handleFilterChange(column.filterKey!, event.target.value)
+                        }
+                        placeholder="Search…"
+                        className="w-full rounded-md border border-white/15 bg-white/10 px-2 py-1 text-xs font-normal normal-case tracking-normal text-white placeholder:text-white/35 focus:border-coral focus:outline-none"
+                      />
+                    )}
+                    {column.filterKey && column.filterType === "date" && (
+                      <input
+                        type="date"
+                        value={filters[column.filterKey]}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                          handleFilterChange(column.filterKey!, event.target.value)
+                        }
+                        className="w-full rounded-md border border-white/15 bg-white/10 px-2 py-1 text-xs font-normal normal-case tracking-normal text-white focus:border-coral focus:outline-none"
+                      />
+                    )}
+                    {column.filterKey && column.filterType === "boolean" && (
+                      <select
+                        value={filters[column.filterKey]}
+                        onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+                          handleFilterChange(column.filterKey!, event.target.value)
+                        }
+                        className="w-full rounded-md border border-white/15 bg-white/10 px-2 py-1 text-xs font-normal normal-case tracking-normal text-white focus:border-coral focus:outline-none"
+                      >
+                        <option className="bg-ink" value="">
+                          All
+                        </option>
+                        <option className="bg-ink" value="true">
+                          Yes
+                        </option>
+                        <option className="bg-ink" value="false">
+                          No
+                        </option>
+                      </select>
+                    )}
+                  </th>
+                ))}
+                <th className="px-3 pb-3" />
+              </tr>
+            </thead>
+            <tbody>
+              {state.status === "ready" &&
+                state.page.results.map((row) => (
                   <tr key={row.id} className="border-b border-white/8 text-white/85 hover:bg-white/5">
                     <td className="whitespace-nowrap px-3 py-3 font-semibold text-white">
                       {row.first_name} {row.middle_name} {row.last_name}
@@ -159,23 +271,32 @@ export function UsersPage(): ReactElement {
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
+          {state.status === "loading" && <p className="py-10 text-center text-white/70">Loading users…</p>}
+          {state.status === "ready" && state.page.results.length === 0 && (
+            <p className="py-10 text-center text-white/50">No users match these filters.</p>
+          )}
+        </div>
 
-          <div className="flex shrink-0 items-center justify-between border-t border-white/15 px-4 py-3 text-sm text-white/60">
-            <span>{state.page.count} total</span>
-            <div className="flex gap-2">
-              <SmallButton disabled={!state.page.previous} onClick={() => state.page.previous && load(state.page.previous)}>
-                Previous
-              </SmallButton>
-              <SmallButton disabled={!state.page.next} onClick={() => state.page.next && load(state.page.next)}>
-                Next
-              </SmallButton>
-            </div>
+        <div className="flex shrink-0 items-center justify-between border-t border-white/15 px-4 py-3 text-sm text-white/60">
+          <span>{state.status === "ready" ? state.page.count : "…"} total</span>
+          <div className="flex gap-2">
+            <SmallButton
+              disabled={state.status !== "ready" || !state.page.previous}
+              onClick={() => state.status === "ready" && state.page.previous && load(state.page.previous)}
+            >
+              Previous
+            </SmallButton>
+            <SmallButton
+              disabled={state.status !== "ready" || !state.page.next}
+              onClick={() => state.status === "ready" && state.page.next && load(state.page.next)}
+            >
+              Next
+            </SmallButton>
           </div>
         </div>
-      )}
+      </div>
 
       {formTarget !== null && (
         <UserFormModal

@@ -60,6 +60,38 @@ export type AdminUserUpdate = Partial<
   >
 >;
 
+/** Per-column search values and sort order for the user list; empty/undefined values are omitted. */
+export interface AdminUserListQuery {
+  name?: string;
+  email?: string;
+  phone?: string;
+  date_of_birth?: string;
+  email_verified?: string;
+  phone_verified?: string;
+  is_active?: string;
+  is_staff?: string;
+  is_superuser?: string;
+  /** A field name from AdminUser, optionally "-"-prefixed for descending. */
+  ordering?: string;
+}
+
+/**
+ * Build the /api/admin/users/ URL for a given set of column filters/sort.
+ *
+ * @param query - Per-column filter values and/or an ordering field.
+ * @returns The full request URL, with only the non-empty query params included.
+ */
+export function buildUsersUrl(query: AdminUserListQuery): string {
+  const params = new URLSearchParams();
+  Object.entries(query).forEach(([key, value]) => {
+    if (value) {
+      params.set(key, value);
+    }
+  });
+  const queryString = params.toString();
+  return `${API_BASE_URL}/api/admin/users/${queryString ? `?${queryString}` : ""}`;
+}
+
 export class AdminUsersError extends Error {}
 
 function readCookie(name: string): string | null {
