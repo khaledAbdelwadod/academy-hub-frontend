@@ -21,15 +21,6 @@ export function SignInForm({ onForgotPassword, onSwitchToRegister }: SignInFormP
     submit(String(data.get("email") ?? ""), String(data.get("password") ?? ""));
   }
 
-  if (state.status === "success") {
-    return (
-      <div className="flex flex-col items-center gap-1.5 py-6 text-center">
-        <h2 className="text-xl font-extrabold text-white">Welcome back, {state.user.first_name}</h2>
-        <p className="text-sm text-white/70">You&apos;re signed in.</p>
-      </div>
-    );
-  }
-
   const isLoading = state.status === "loading";
 
   return (
