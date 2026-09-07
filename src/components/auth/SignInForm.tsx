@@ -37,14 +37,14 @@ export function SignInForm({
       />
 
       <div className="flex items-center justify-between text-sm">
-        <label className="flex items-center gap-2 text-white/60">
+        <label className="flex items-center gap-2 text-white/75">
           <input type="checkbox" className="size-3.5 accent-coral" />
           Keep me signed in
         </label>
         <button
           type="button"
           onClick={onForgotPassword}
-          className="text-white/60 underline decoration-transparent underline-offset-2 transition-colors hover:text-white hover:decoration-current"
+          className="text-white/75 underline decoration-transparent underline-offset-2 transition-colors hover:text-white hover:decoration-current"
         >
           Forgot password?
         </button>
@@ -54,7 +54,7 @@ export function SignInForm({
         Sign in
       </AuthButton>
 
-      <p className="mt-1 text-center text-sm text-white/60">
+      <p className="mt-1 text-center text-sm text-white/75">
         New to Academy Hub?{" "}
         <button
           type="button"

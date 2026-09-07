@@ -28,7 +28,7 @@ export function AuthCard(): ReactElement {
     setMode("otp");
   }
 
-  const cardWidthClass = mode === "register" ? "max-w-[560px]" : "max-w-[448px]";
+  const cardWidthClass = mode === "register" ? "max-w-[720px]" : "max-w-[448px]";
 
   return (
     <div

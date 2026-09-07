@@ -10,14 +10,14 @@ interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 export function FormField({ label, optional, id, ...inputProps }: FormFieldProps): ReactElement {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-xs font-bold uppercase tracking-wider text-white/50">
+      <label htmlFor={id} className="text-xs font-bold uppercase tracking-wider text-white/90">
         {label}
-        {optional && <span className="ml-1 font-medium normal-case tracking-normal text-white/40">(optional)</span>}
+        {optional && <span className="ml-1 font-medium normal-case tracking-normal text-white/65">(optional)</span>}
       </label>
       <input
         id={id}
         {...inputProps}
-        className="w-full rounded-xl border border-white/30 bg-white/20 px-3.5 py-3 text-sm text-white placeholder:text-white/50 transition-colors focus:border-coral focus:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-coral/40"
+        className="w-full rounded-xl border border-white/30 bg-white/20 px-3.5 py-3 text-sm text-white placeholder:text-white/60 transition-colors focus:border-coral focus:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-coral/40"
       />
     </div>
   );

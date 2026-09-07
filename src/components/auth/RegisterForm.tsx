@@ -63,14 +63,14 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           autoComplete="new-password"
           required
         />
-        <p className="self-end text-xs leading-relaxed text-white/45">
+        <p className="self-end text-xs leading-relaxed text-white/65">
           By continuing you agree to Academy Hub&apos;s Terms and Privacy Policy.
         </p>
       </div>
 
       <AuthButton type="submit">Create account</AuthButton>
 
-      <p className="text-center text-sm text-white/60">
+      <p className="text-center text-sm text-white/75">
         Already have an account?{" "}
         <button
           type="button"

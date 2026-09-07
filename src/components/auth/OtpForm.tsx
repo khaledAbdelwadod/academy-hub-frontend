@@ -16,21 +16,21 @@ export function OtpForm({ email, onSubmit, onBack }: OtpFormProps): ReactElement
       <button
         type="button"
         onClick={onBack}
-        className="flex items-center gap-1.5 self-start text-sm text-white/60 hover:text-white"
+        className="flex items-center gap-1.5 self-start text-sm text-white/75 hover:text-white"
       >
         &larr; Back
       </button>
 
       <div>
         <h2 className="mb-1.5 text-xl font-extrabold text-white">Verify your email</h2>
-        <p className="text-sm leading-relaxed text-white/60">
+        <p className="text-sm leading-relaxed text-white/75">
           Enter the 6-digit code we sent to <span className="font-semibold text-white">{email}</span>.
         </p>
       </div>
 
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="otp-code" className="text-xs font-bold uppercase tracking-wider text-white/50">
+          <label htmlFor="otp-code" className="text-xs font-bold uppercase tracking-wider text-white/90">
             Verification code
           </label>
           <input
@@ -49,7 +49,7 @@ export function OtpForm({ email, onSubmit, onBack }: OtpFormProps): ReactElement
 
         <AuthButton type="submit">Verify account</AuthButton>
 
-        <p className="text-center text-sm text-white/60">
+        <p className="text-center text-sm text-white/75">
           Didn&apos;t get a code?{" "}
           <button
             type="button"

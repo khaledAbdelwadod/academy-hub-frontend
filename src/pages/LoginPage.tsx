@@ -10,7 +10,7 @@ export function LoginPage(): ReactElement {
     <div className="flex min-h-screen items-center justify-center px-5 py-10">
       <VideoBackdrop />
 
-      <div className="animate-rise flex w-full max-w-[600px] flex-col items-center">
+      <div className="animate-rise flex w-full max-w-[760px] flex-col items-center">
         <p className="mb-7 font-display text-6xl tracking-wider sm:text-7xl">
           <span
             className="text-white"
