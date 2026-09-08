@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
+import { AcademiesRoute } from "./pages/AcademiesRoute";
 import { AppShell } from "./pages/AppShell";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
@@ -29,6 +30,7 @@ function AppRoutes(): ReactElement {
       <Route element={<AppShell />}>
         <Route path="/home" element={<HomePage />} />
         <Route path="/users" element={<UsersRoute />} />
+        <Route path="/academies" element={<AcademiesRoute />} />
       </Route>
       <Route path="*" element={<Navigate to={user ? "/home" : "/login"} replace />} />
     </Routes>

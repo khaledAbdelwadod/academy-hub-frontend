@@ -36,7 +36,11 @@ export function AppShell(): ReactElement {
       });
   }
 
-  const activeView = location.pathname.startsWith("/users") ? "users" : "home";
+  const activeView = location.pathname.startsWith("/users")
+    ? "users"
+    : location.pathname.startsWith("/academies")
+      ? "academies"
+      : "home";
 
   return (
     <div className="relative flex h-screen flex-col overflow-hidden">
@@ -46,6 +50,7 @@ export function AppShell(): ReactElement {
         activeView={activeView}
         onNavigateHome={() => navigate("/home")}
         onNavigateUsers={() => navigate("/users")}
+        onNavigateAcademies={() => navigate("/academies")}
         onOpenProfile={() => setModal("profile")}
         onOpenAccountInfo={() => setModal("account")}
         onOpenChangePassword={() => setModal("password")}
