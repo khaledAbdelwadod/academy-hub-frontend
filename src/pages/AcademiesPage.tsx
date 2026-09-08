@@ -38,6 +38,9 @@ const COLUMNS: ColumnConfig[] = [
   { sortKey: "subdomain", label: "Subdomain", filterKey: "subdomain", filterType: "text" },
   { sortKey: "contact_email", label: "Contact email", filterKey: "contact_email", filterType: "text" },
   { sortKey: "contact_phone", label: "Contact phone", filterKey: "contact_phone", filterType: "text" },
+  { label: "Logo" },
+  { label: "Login video" },
+  { label: "Legal doc" },
   { sortKey: "is_active", label: "Active", filterKey: "is_active", filterType: "boolean" },
   { sortKey: "created_at", label: "Created" },
 ];
@@ -55,6 +58,18 @@ function Badge({ ok, label }: { ok: boolean; label: string }): ReactElement {
     >
       {label}
     </span>
+  );
+}
+
+/** A read-only "View" link for a media file set by the academy manager, or a dash when unset. */
+function FileLink({ url }: { url: string | null }): ReactElement {
+  if (!url) {
+    return <span className="text-white/35">—</span>;
+  }
+  return (
+    <a href={url} target="_blank" rel="noreferrer" className="text-teal underline">
+      View
+    </a>
   );
 }
 
@@ -155,7 +170,7 @@ export function AcademiesPage(): ReactElement {
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-white/15 bg-black/45 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150">
         <div className="min-h-0 flex-1 overflow-auto">
-          <table className="w-full min-w-[900px] border-collapse text-sm">
+          <table className="w-full min-w-[1250px] border-collapse text-sm">
             <thead>
               <tr className="sticky top-0 z-10 border-b border-white/10 bg-black/45 text-left text-xs font-bold uppercase tracking-wider text-white/50 backdrop-blur-2xl">
                 {COLUMNS.map((column) => (
@@ -222,6 +237,15 @@ export function AcademiesPage(): ReactElement {
                     <td className="whitespace-nowrap px-3 py-3">{row.subdomain}.academy-hub.net</td>
                     <td className="whitespace-nowrap px-3 py-3">{row.contact_email}</td>
                     <td className="whitespace-nowrap px-3 py-3">{row.contact_phone}</td>
+                    <td className="px-3 py-3">
+                      <FileLink url={row.logo} />
+                    </td>
+                    <td className="px-3 py-3">
+                      <FileLink url={row.login_background_video} />
+                    </td>
+                    <td className="px-3 py-3">
+                      <FileLink url={row.legal_document} />
+                    </td>
                     <td className="px-3 py-3">
                       <Badge ok={row.is_active} label={row.is_active ? "Active" : "Inactive"} />
                     </td>

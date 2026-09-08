@@ -4,19 +4,12 @@ import { useState } from "react";
 import type { FormEvent, ReactElement } from "react";
 
 import type { AdminAcademy } from "../../api/adminAcademiesApi";
-import {
-  createAcademy,
-  updateAcademy,
-  uploadAcademyLegalDocument,
-  uploadAcademyLoginVideo,
-  uploadAcademyLogo,
-} from "../../api/adminAcademiesApi";
+import { createAcademy, updateAcademy } from "../../api/adminAcademiesApi";
 import { logger } from "../../utils/logger";
 import { AuthButton } from "../ui/AuthButton";
 import { FormField } from "../ui/FormField";
 import { ModalShell } from "../ui/ModalShell";
 import { ReadOnlyField } from "../ui/ReadOnlyField";
-import { AcademyFileField } from "./AcademyFileField";
 
 interface AcademyFormModalProps {
   /** The academy being edited, or null to create a new one. */
@@ -29,7 +22,6 @@ type SaveState = { status: "idle" } | { status: "saving" } | { status: "error"; 
 
 export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModalProps): ReactElement {
   const [state, setState] = useState<SaveState>({ status: "idle" });
-  const [current, setCurrent] = useState<AdminAcademy | null>(academy);
   const isCreate = academy === null;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>): void {
@@ -53,7 +45,6 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
     request
       .then((saved) => {
         setState({ status: "idle" });
-        setCurrent(saved);
         onSaved(saved);
       })
       .catch((error: unknown) => {
@@ -71,7 +62,7 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <FormField id="ac-name" name="name" label="Academy name" defaultValue={current?.name} required />
+          <FormField id="ac-name" name="name" label="Academy name" defaultValue={academy?.name} required />
           {isCreate ? (
             <FormField
               id="ac-subdomain"
@@ -81,37 +72,37 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
               required
             />
           ) : (
-            <ReadOnlyField label="Subdomain" value={`${current?.subdomain}.academy-hub.net`} />
+            <ReadOnlyField label="Subdomain" value={`${academy?.subdomain}.academy-hub.net`} />
           )}
         </div>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <FormField id="ac-email" name="contact_email" label="Contact email" type="email" defaultValue={current?.contact_email} />
-          <FormField id="ac-phone" name="contact_phone" label="Contact phone" defaultValue={current?.contact_phone} />
+          <FormField id="ac-email" name="contact_email" label="Contact email" type="email" defaultValue={academy?.contact_email} />
+          <FormField id="ac-phone" name="contact_phone" label="Contact phone" defaultValue={academy?.contact_phone} />
         </div>
 
-        <FormField id="ac-address" name="address" label="Address" optional defaultValue={current?.address} />
+        <FormField id="ac-address" name="address" label="Address" optional defaultValue={academy?.address} />
         <FormField
           id="ac-maps"
           name="google_maps_url"
           label="Google Maps link"
           optional
           type="url"
-          defaultValue={current?.google_maps_url}
+          defaultValue={academy?.google_maps_url}
         />
         <FormField
           id="ac-description"
           name="description"
           label="Description"
           optional
-          defaultValue={current?.description}
+          defaultValue={academy?.description}
         />
 
         <label className="flex items-center gap-2 text-sm text-white/80">
           <input
             type="checkbox"
             name="is_active"
-            defaultChecked={current?.is_active ?? true}
+            defaultChecked={academy?.is_active ?? true}
             className="size-3.5 accent-coral"
           />
           Active
@@ -123,32 +114,6 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
           {state.status === "saving" ? "Saving…" : isCreate ? "Create academy" : "Save changes"}
         </AuthButton>
       </form>
-
-      {!isCreate && current && (
-        <div className="mt-8 flex flex-col gap-4 border-t border-white/15 pt-6">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-white/50">Media</h2>
-          <AcademyFileField
-            label="Logo"
-            currentUrl={current.logo}
-            accept="image/*"
-            onUpload={(file) => uploadAcademyLogo(current.id, file).then((updated) => setCurrent(updated))}
-          />
-          <AcademyFileField
-            label="Legal document"
-            currentUrl={current.legal_document}
-            accept="application/pdf,image/*"
-            onUpload={(file) =>
-              uploadAcademyLegalDocument(current.id, file).then((updated) => setCurrent(updated))
-            }
-          />
-          <AcademyFileField
-            label="Login page background video"
-            currentUrl={current.login_background_video}
-            accept="video/mp4,video/webm,video/quicktime"
-            onUpload={(file) => uploadAcademyLoginVideo(current.id, file).then((updated) => setCurrent(updated))}
-          />
-        </div>
-      )}
     </ModalShell>
   );
 }
