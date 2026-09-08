@@ -51,7 +51,11 @@ export function AppShell(): ReactElement {
       ? "academies"
       : location.pathname.startsWith("/memberships")
         ? "memberships"
-        : "home";
+        : location.pathname.startsWith("/academy-profile")
+          ? "academy-profile"
+          : "home";
+
+  const academyRoles = membership.status === "ready" ? membership.membership.roles : [];
 
   return (
     <div className="relative flex h-screen flex-col overflow-hidden">
@@ -60,10 +64,12 @@ export function AppShell(): ReactElement {
         <NavBar
           user={user}
           activeView={activeView}
+          academyRoles={academyRoles}
           onNavigateHome={() => navigate("/myaccount/home")}
           onNavigateUsers={() => navigate("/users")}
           onNavigateAcademies={() => navigate("/academies")}
           onNavigateMemberships={() => navigate("/memberships")}
+          onNavigateAcademyProfile={() => navigate("/academy-profile")}
           onOpenProfile={() => setModal("profile")}
           onOpenAccountInfo={() => setModal("account")}
           onOpenChangePassword={() => setModal("password")}

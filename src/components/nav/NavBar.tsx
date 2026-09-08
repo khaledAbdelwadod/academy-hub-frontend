@@ -7,24 +7,33 @@ import type { AuthUser } from "../../api/authApi";
 
 interface NavBarProps {
   user: AuthUser;
-  activeView: "home" | "users" | "academies" | "memberships";
+  activeView: "home" | "users" | "academies" | "memberships" | "academy-profile";
+  /** Every active role the user holds at the current academy subdomain; empty/omitted on www. */
+  academyRoles?: string[];
   onNavigateHome: () => void;
   onNavigateUsers: () => void;
   onNavigateAcademies: () => void;
   onNavigateMemberships: () => void;
+  onNavigateAcademyProfile: () => void;
   onOpenProfile: () => void;
   onOpenAccountInfo: () => void;
   onOpenChangePassword: () => void;
   onLogout: () => void;
 }
 
+function capitalize(value: string): string {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
 export function NavBar({
   user,
   activeView,
+  academyRoles = [],
   onNavigateHome,
   onNavigateUsers,
   onNavigateAcademies,
   onNavigateMemberships,
+  onNavigateAcademyProfile,
   onOpenProfile,
   onOpenAccountInfo,
   onOpenChangePassword,
@@ -32,6 +41,7 @@ export function NavBar({
 }: NavBarProps): ReactElement {
   const [menuOpen, setMenuOpen] = useState(false);
   const initials = `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
+  const isAcademyManager = academyRoles.includes("manager");
 
   return (
     <nav className="sticky top-0 z-20 flex items-center justify-between border-b border-white/15 bg-black/45 px-4 py-3.5 backdrop-blur-2xl backdrop-saturate-150 sm:px-6">
@@ -45,6 +55,17 @@ export function NavBar({
         >
           Home
         </button>
+        {isAcademyManager && (
+          <button
+            type="button"
+            onClick={onNavigateAcademyProfile}
+            className={`text-sm font-bold transition-colors ${
+              activeView === "academy-profile" ? "text-white" : "text-white/70 hover:text-white"
+            }`}
+          >
+            Academy Profile
+          </button>
+        )}
         {user.is_superuser && (
           <button
             type="button"
@@ -80,19 +101,26 @@ export function NavBar({
         )}
       </div>
 
-      <div className="relative">
-        <button
-          type="button"
-          onClick={() => setMenuOpen((open) => !open)}
-          className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-2 transition-colors hover:bg-white/10"
-        >
-          <span className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-sand to-coral text-sm font-bold text-white">
-            {user.avatar ? <img src={user.avatar} alt="" className="size-full object-cover" /> : initials}
+      <div className="flex items-center gap-3">
+        {academyRoles.length > 0 && (
+          <span className="hidden rounded-full bg-teal/20 px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-teal sm:inline-block">
+            {academyRoles.map(capitalize).join(" · ")}
           </span>
-          <span className="hidden text-sm font-semibold text-white sm:inline">
-            {user.first_name} {user.last_name}
-          </span>
-        </button>
+        )}
+
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-2 transition-colors hover:bg-white/10"
+          >
+            <span className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-sand to-coral text-sm font-bold text-white">
+              {user.avatar ? <img src={user.avatar} alt="" className="size-full object-cover" /> : initials}
+            </span>
+            <span className="hidden text-sm font-semibold text-white sm:inline">
+              {user.first_name} {user.last_name}
+            </span>
+          </button>
 
         {menuOpen && (
           <>
@@ -143,6 +171,7 @@ export function NavBar({
             </div>
           </>
         )}
+        </div>
       </div>
     </nav>
   );

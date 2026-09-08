@@ -8,6 +8,8 @@ if (!API_BASE_URL) {
 
 export interface MyMembership {
   is_member: boolean;
+  /** Every active role the user holds at this academy, e.g. ["manager", "coach"]. */
+  roles: string[];
   academy_name: string;
   academy_logo: string | null;
   academy_contact_phone: string;
