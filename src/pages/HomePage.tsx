@@ -49,18 +49,12 @@ function NotAMemberCard({ academyName, contactPhone }: { academyName: string; co
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-5 py-10">
       <div className="animate-rise relative w-full max-w-[500px] rounded-[22px] border border-white/15 bg-black/45 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
-        <span className="relative mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-gradient-to-br from-sand to-coral text-white shadow-[0_14px_30px_-8px_rgba(231,111,81,0.65)]">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="size-7">
-            <circle cx="9.5" cy="8" r="3.2" />
-            <path d="M3.2 19c0-3.4 2.8-5.8 6.3-5.8s6.3 2.4 6.3 5.8" />
-            <path d="M18.5 7.5v5M16 10h5" />
-          </svg>
-        </span>
-
-        <h2 className="text-[26px] font-extrabold leading-tight text-white">We&apos;re glad you&apos;re here!</h2>
-        <p className="mx-auto mt-3 max-w-[380px] text-[15px] leading-relaxed text-white/70">
-          You&apos;re not a member of <span className="font-semibold text-white">{academyName}</span> just yet.
-          Reach out below to find out how to join.
+        <h2 className="text-[26px] font-extrabold leading-tight text-coral">We&apos;re glad you&apos;re here</h2>
+        <p className="mx-auto mt-3 max-w-[380px] text-[15px] leading-relaxed text-white">
+          You&apos;re not a member of <span className="font-bold text-coral">{academyName}</span> just yet.
+        </p>
+        <p className="mx-auto mt-1.5 max-w-[380px] text-[15px] leading-relaxed text-white/70">
+          For more details, please contact us.
         </p>
 
         {contactPhone && (
