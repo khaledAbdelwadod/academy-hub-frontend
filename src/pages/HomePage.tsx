@@ -93,12 +93,12 @@ function NotAMemberCard({ academyName, contactPhone }: { academyName: string; co
         {contactPhone && (
           <a
             href={`tel:${contactPhone}`}
-            className="mt-7 inline-flex items-center gap-2.5 rounded-xl bg-gradient-to-b from-sand to-coral px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_26px_-10px_rgba(231,111,81,0.55)] transition-transform hover:-translate-y-0.5 hover:shadow-[0_18px_30px_-10px_rgba(231,111,81,0.65)]"
+            className="mt-7 inline-flex items-center gap-2.5 rounded-xl bg-ink px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_26px_-10px_rgba(0,0,0,0.6)] transition-transform hover:-translate-y-0.5 hover:shadow-[0_18px_30px_-10px_rgba(0,0,0,0.7)]"
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="size-4">
               <path d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1.1-.2c1.1.5 2.4.7 3.7.7a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.7 21 3 13.3 3 4a1 1 0 0 1 1-1h3.3a1 1 0 0 1 1 1c0 1.3.2 2.6.7 3.7a1 1 0 0 1-.2 1.1L6.6 10.8Z" />
             </svg>
-            Call {contactPhone}
+            {contactPhone}
           </a>
         )}
       </div>
