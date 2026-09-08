@@ -74,7 +74,7 @@ function NotAMemberCard({ academyName, contactPhone }: { academyName: string; co
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-5 py-10">
       <div className="animate-rise relative w-full max-w-[500px] rounded-[22px] border border-white/15 bg-black/45 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
-        <h2 className="text-[26px] font-extrabold leading-tight text-white">
+        <h2 className="text-xl font-extrabold leading-tight text-white">
           Welcome to <span className="text-coral">{academyName}</span> Academy
         </h2>
         <p className="mx-auto mt-3 max-w-[380px] text-[15px] leading-relaxed text-white">
