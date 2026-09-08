@@ -1,16 +1,59 @@
 /** The email-verification step shown right after registering: enter the 6-digit code. */
 
+import { useState } from "react";
 import type { FormEvent, ReactElement } from "react";
+import { useNavigate } from "react-router-dom";
 
+import { resendRegistrationCode, verifyRegistration } from "../../api/authApi";
+import { useAuth } from "../../state/AuthContext";
+import { logger } from "../../utils/logger";
 import { AuthButton } from "../ui/AuthButton";
 
 interface OtpFormProps {
   email: string;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onBack: () => void;
 }
 
-export function OtpForm({ email, onSubmit, onBack }: OtpFormProps): ReactElement {
+type VerifyState = { status: "idle" } | { status: "loading" } | { status: "error"; message: string };
+type ResendState = { status: "idle" } | { status: "sending" } | { status: "sent" } | { status: "error"; message: string };
+
+export function OtpForm({ email, onBack }: OtpFormProps): ReactElement {
+  const [verifyState, setVerifyState] = useState<VerifyState>({ status: "idle" });
+  const [resendState, setResendState] = useState<ResendState>({ status: "idle" });
+  const { signIn } = useAuth();
+  const navigate = useNavigate();
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
+    const code = String(new FormData(event.currentTarget).get("code") ?? "");
+
+    setVerifyState({ status: "loading" });
+    verifyRegistration(email, code)
+      .then((user) => {
+        logger.info("Registration verified", { userId: user.id });
+        signIn(user);
+        navigate("/myaccount/home", { replace: true });
+      })
+      .catch((error: unknown) => {
+        const message = error instanceof Error ? error.message : "Invalid or expired code.";
+        logger.error("Registration verification failed", { error: message });
+        setVerifyState({ status: "error", message });
+      });
+  }
+
+  function handleResend(): void {
+    setResendState({ status: "sending" });
+    resendRegistrationCode(email)
+      .then(() => setResendState({ status: "sent" }))
+      .catch((error: unknown) => {
+        const message = error instanceof Error ? error.message : "Could not resend the code.";
+        setResendState({ status: "error", message });
+      });
+  }
+
+  const isVerifying = verifyState.status === "loading";
+  const isResending = resendState.status === "sending";
+
   return (
     <div className="flex flex-col gap-4">
       <button
@@ -28,7 +71,7 @@ export function OtpForm({ email, onSubmit, onBack }: OtpFormProps): ReactElement
         </p>
       </div>
 
-      <form onSubmit={onSubmit} className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="otp-code" className="text-xs font-bold uppercase tracking-wider text-white/90">
             Verification code
@@ -47,17 +90,30 @@ export function OtpForm({ email, onSubmit, onBack }: OtpFormProps): ReactElement
           />
         </div>
 
-        <AuthButton type="submit">Verify account</AuthButton>
+        {verifyState.status === "error" && <p className="text-sm text-red-400">{verifyState.message}</p>}
+
+        <AuthButton type="submit" disabled={isVerifying}>
+          {isVerifying ? "Verifying…" : "Verify account"}
+        </AuthButton>
 
         <p className="text-center text-sm text-white/75">
-          Didn&apos;t get a code?{" "}
-          <button
-            type="button"
-            className="font-bold text-white underline decoration-transparent underline-offset-2 transition-colors hover:decoration-current"
-          >
-            Resend
-          </button>
+          {resendState.status === "sent" ? (
+            "A new code is on its way."
+          ) : (
+            <>
+              Didn&apos;t get a code?{" "}
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={isResending}
+                className="font-bold text-white underline decoration-transparent underline-offset-2 transition-colors hover:decoration-current disabled:opacity-60"
+              >
+                {isResending ? "Sending…" : "Resend"}
+              </button>
+            </>
+          )}
         </p>
+        {resendState.status === "error" && <p className="text-sm text-red-400">{resendState.message}</p>}
       </form>
     </div>
   );

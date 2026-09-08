@@ -1,7 +1,10 @@
 /** The registration form, matching the User schema: name, DOB, phone, email, password. */
 
+import { useState } from "react";
 import type { FormEvent, ReactElement } from "react";
 
+import { register } from "../../api/authApi";
+import { logger } from "../../utils/logger";
 import { AuthButton } from "../ui/AuthButton";
 import { FormField } from "../ui/FormField";
 import { PasswordField } from "../ui/PasswordField";
@@ -11,27 +14,76 @@ interface RegisterFormProps {
   onSwitchToSignIn: () => void;
 }
 
+type RegisterState = { status: "idle" } | { status: "loading" } | { status: "error"; message: string };
+
 export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormProps): ReactElement {
+  const [state, setState] = useState<RegisterState>({ status: "idle" });
+
   function handleSubmit(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
-    const email = new FormData(event.currentTarget).get("email");
-    onRegistered(typeof email === "string" ? email : "");
+    const data = new FormData(event.currentTarget);
+    const email = String(data.get("email") ?? "");
+    const password = String(data.get("password") ?? "");
+    const passwordConfirm = String(data.get("password_confirm") ?? "");
+
+    if (password !== passwordConfirm) {
+      setState({ status: "error", message: "Passwords do not match." });
+      return;
+    }
+
+    setState({ status: "loading" });
+    register({
+      email,
+      password,
+      password_confirm: passwordConfirm,
+      first_name: String(data.get("first_name") ?? ""),
+      middle_name: String(data.get("middle_name") ?? ""),
+      last_name: String(data.get("last_name") ?? ""),
+      phone: String(data.get("phone") ?? ""),
+      date_of_birth: String(data.get("date_of_birth") ?? ""),
+    })
+      .then((result) => {
+        setState({ status: "idle" });
+        onRegistered(result.email);
+      })
+      .catch((error: unknown) => {
+        const message = error instanceof Error ? error.message : "Could not create your account.";
+        logger.error("Registration failed", { error: message });
+        setState({ status: "error", message });
+      });
   }
+
+  const isLoading = state.status === "loading";
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <h2 className="mb-0.5 text-xl font-extrabold text-white">Create your account</h2>
 
       <div className="grid grid-cols-3 gap-3">
-        <FormField id="rg-first" label="First name" placeholder="Amira" autoComplete="given-name" required />
+        <FormField
+          id="rg-first"
+          name="first_name"
+          label="First name"
+          placeholder="Amira"
+          autoComplete="given-name"
+          required
+        />
         <FormField
           id="rg-middle"
+          name="middle_name"
           label="Middle name"
           optional
           placeholder="Youssef"
           autoComplete="additional-name"
         />
-        <FormField id="rg-last" label="Last name" placeholder="Hassan" autoComplete="family-name" required />
+        <FormField
+          id="rg-last"
+          name="last_name"
+          label="Last name"
+          placeholder="Hassan"
+          autoComplete="family-name"
+          required
+        />
       </div>
 
       <div className="grid grid-cols-3 gap-3">
@@ -46,18 +98,33 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
         />
         <FormField
           id="rg-phone"
+          name="phone"
           label="Phone number"
           type="tel"
           placeholder="+20 100 123 4567"
           autoComplete="tel"
           required
         />
-        <FormField id="rg-dob" label="Date of birth" type="date" autoComplete="bday" required />
+        <FormField
+          id="rg-dob"
+          name="date_of_birth"
+          label="Date of birth"
+          type="date"
+          autoComplete="bday"
+          required
+        />
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <PasswordField label="Password" placeholder="••••••••••" autoComplete="new-password" required />
         <PasswordField
+          name="password"
+          label="Password"
+          placeholder="••••••••••"
+          autoComplete="new-password"
+          required
+        />
+        <PasswordField
+          name="password_confirm"
           label="Confirm password"
           placeholder="••••••••••"
           autoComplete="new-password"
@@ -68,7 +135,11 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
         </p>
       </div>
 
-      <AuthButton type="submit">Create account</AuthButton>
+      {state.status === "error" && <p className="text-sm text-red-400">{state.message}</p>}
+
+      <AuthButton type="submit" disabled={isLoading}>
+        {isLoading ? "Creating account…" : "Create account"}
+      </AuthButton>
 
       <p className="text-center text-sm text-white/75">
         Already have an account?{" "}

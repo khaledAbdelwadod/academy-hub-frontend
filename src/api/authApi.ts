@@ -42,6 +42,20 @@ async function fetchCsrfToken(): Promise<string> {
   return token;
 }
 
+/** Flattens a DRF error response (per-field message lists, or a "detail" string) into one string. */
+async function extractErrorMessage(response: Response, fallback: string): Promise<string> {
+  const body: unknown = await response.json().catch(() => null);
+  if (body && typeof body === "object") {
+    const messages = Object.values(body as Record<string, unknown>)
+      .flatMap((value) => (Array.isArray(value) ? value : [value]))
+      .filter((value): value is string => typeof value === "string");
+    if (messages.length > 0) {
+      return messages.join(" ");
+    }
+  }
+  return fallback;
+}
+
 /**
  * Sign in with email and password.
  *
@@ -72,6 +86,95 @@ export async function login(email: string, password: string): Promise<AuthUser> 
   }
 
   return (await response.json()) as AuthUser;
+}
+
+export interface RegisterPayload {
+  email: string;
+  password: string;
+  password_confirm: string;
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  phone: string;
+  date_of_birth: string;
+}
+
+/**
+ * Create a new, inactive account and email it a 6-digit verification code.
+ *
+ * @param payload - The new account's fields.
+ * @returns The email address the code was sent to.
+ * @throws {AuthError} If the input is invalid (e.g. email already registered) or the
+ *   request is rate-limited/unreachable.
+ */
+export async function register(payload: RegisterPayload): Promise<{ email: string }> {
+  const csrfToken = await fetchCsrfToken();
+
+  const response = await fetch(`${API_BASE_URL}/api/auth/register/`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+    body: JSON.stringify(payload),
+  });
+
+  if (response.status === 429) {
+    throw new AuthError("Too many attempts. Try again in a minute.");
+  }
+  if (!response.ok) {
+    throw new AuthError(await extractErrorMessage(response, "Could not create your account."));
+  }
+  return (await response.json()) as { email: string };
+}
+
+/**
+ * Verify a registration code; on success the account is activated and signed in.
+ *
+ * @param email - The email address the code was sent to.
+ * @param code - The 6-digit code from that email.
+ * @returns The now-active, signed-in user's profile.
+ * @throws {AuthError} If the code is wrong/expired, or the request is rate-limited.
+ */
+export async function verifyRegistration(email: string, code: string): Promise<AuthUser> {
+  const csrfToken = await fetchCsrfToken();
+
+  const response = await fetch(`${API_BASE_URL}/api/auth/register/verify/`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+    body: JSON.stringify({ email, code }),
+  });
+
+  if (response.status === 429) {
+    throw new AuthError("Too many attempts. Try again in a minute.");
+  }
+  if (!response.ok) {
+    throw new AuthError(await extractErrorMessage(response, "Invalid or expired code."));
+  }
+  return (await response.json()) as AuthUser;
+}
+
+/**
+ * Request a fresh registration verification code.
+ *
+ * @param email - The email address to resend a code to.
+ * @throws {AuthError} If the request is rate-limited/unreachable.
+ */
+export async function resendRegistrationCode(email: string): Promise<void> {
+  const csrfToken = await fetchCsrfToken();
+
+  const response = await fetch(`${API_BASE_URL}/api/auth/register/resend/`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+    body: JSON.stringify({ email }),
+  });
+
+  if (response.status === 429) {
+    throw new AuthError("Too many attempts. Try again in a minute.");
+  }
+  if (!response.ok) {
+    throw new AuthError("Could not resend the code. Try again shortly.");
+  }
 }
 
 /**

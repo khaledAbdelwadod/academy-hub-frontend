@@ -11,7 +11,7 @@ type LoginState = { status: "idle" } | { status: "loading" } | { status: "error"
 
 /**
  * Track and drive a sign-in attempt; on success the global auth session updates
- * and the app navigates to /home.
+ * and the app navigates to /myaccount/home.
  *
  * @returns The current login state and a function to submit an attempt.
  */
@@ -26,7 +26,7 @@ export function useLogin(): [LoginState, (email: string, password: string) => vo
       .then((user) => {
         logger.info("Sign-in succeeded", { userId: user.id });
         signIn(user);
-        navigate("/home", { replace: true });
+        navigate("/myaccount/home", { replace: true });
       })
       .catch((error: unknown) => {
         const message = error instanceof Error ? error.message : "Something went wrong.";

@@ -48,7 +48,7 @@ export function AppShell(): ReactElement {
       <NavBar
         user={user}
         activeView={activeView}
-        onNavigateHome={() => navigate("/home")}
+        onNavigateHome={() => navigate("/myaccount/home")}
         onNavigateUsers={() => navigate("/users")}
         onNavigateAcademies={() => navigate("/academies")}
         onOpenProfile={() => setModal("profile")}

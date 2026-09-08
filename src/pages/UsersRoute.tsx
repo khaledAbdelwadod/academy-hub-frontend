@@ -9,7 +9,7 @@ import { UsersPage } from "./UsersPage";
 export function UsersRoute(): ReactElement {
   const { user } = useAuth();
   if (!user?.is_superuser) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/myaccount/home" replace />;
   }
   return <UsersPage />;
 }

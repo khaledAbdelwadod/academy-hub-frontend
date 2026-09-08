@@ -10,7 +10,7 @@ import { AuthProvider, useAuth } from "./state/AuthContext";
 
 function LoginRoute(): ReactElement {
   const { user } = useAuth();
-  return user ? <Navigate to="/home" replace /> : <LoginPage />;
+  return user ? <Navigate to="/myaccount/home" replace /> : <LoginPage />;
 }
 
 function AppRoutes(): ReactElement {
@@ -28,11 +28,11 @@ function AppRoutes(): ReactElement {
     <Routes>
       <Route path="/login" element={<LoginRoute />} />
       <Route element={<AppShell />}>
-        <Route path="/home" element={<HomePage />} />
+        <Route path="/myaccount/home" element={<HomePage />} />
         <Route path="/users" element={<UsersRoute />} />
         <Route path="/academies" element={<AcademiesRoute />} />
       </Route>
-      <Route path="*" element={<Navigate to={user ? "/home" : "/login"} replace />} />
+      <Route path="*" element={<Navigate to={user ? "/myaccount/home" : "/login"} replace />} />
     </Routes>
   );
 }

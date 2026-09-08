@@ -23,7 +23,6 @@ export function AuthCard(): ReactElement {
   const [pendingEmail, setPendingEmail] = useState("");
 
   function handleRegistered(email: string): void {
-    logger.debug("Registration submitted (not yet wired to an endpoint)", { email });
     setPendingEmail(email);
     setMode("otp");
   }
@@ -50,13 +49,7 @@ export function AuthCard(): ReactElement {
             onBackToSignIn={() => setMode("signin")}
           />
         )}
-        {mode === "otp" && (
-          <OtpForm
-            email={pendingEmail}
-            onSubmit={preventSubmit("otp")}
-            onBack={() => setMode("register")}
-          />
-        )}
+        {mode === "otp" && <OtpForm email={pendingEmail} onBack={() => setMode("register")} />}
       </div>
     </div>
   );

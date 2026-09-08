@@ -9,7 +9,7 @@ import { AcademiesPage } from "./AcademiesPage";
 export function AcademiesRoute(): ReactElement {
   const { user } = useAuth();
   if (!user?.is_superuser) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/myaccount/home" replace />;
   }
   return <AcademiesPage />;
 }
