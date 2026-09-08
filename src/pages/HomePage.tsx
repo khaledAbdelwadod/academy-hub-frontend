@@ -47,32 +47,35 @@ function WelcomeCard({ academyName }: { academyName: string }): ReactElement {
 
 function NotAMemberCard({ academyName, contactPhone }: { academyName: string; contactPhone: string }): ReactElement {
   return (
-    <CenteredCard>
-      <span className="mx-auto mb-5 flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-sand to-coral text-white">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="size-6">
-          <rect x="5" y="11" width="14" height="9" rx="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M8 11V7a4 4 0 0 1 8 0v4" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </span>
-
-      <h2 className="text-2xl font-extrabold text-white">Not a member yet</h2>
-      <p className="mt-2.5 text-sm leading-relaxed text-white/70">
-        You don&apos;t have access to <span className="font-semibold text-white">{academyName}</span> yet. Reach
-        out to the academy admin to get set up.
-      </p>
-
-      {contactPhone && (
-        <a
-          href={`tel:${contactPhone}`}
-          className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:border-white/30 hover:bg-white/20"
-        >
-          <svg viewBox="0 0 24 24" fill="currentColor" className="size-4">
-            <path d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1.1-.2c1.1.5 2.4.7 3.7.7a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.7 21 3 13.3 3 4a1 1 0 0 1 1-1h3.3a1 1 0 0 1 1 1c0 1.3.2 2.6.7 3.7a1 1 0 0 1-.2 1.1L6.6 10.8Z" />
+    <div className="flex min-h-[60vh] items-center justify-center px-5 py-10">
+      <div className="animate-rise relative w-full max-w-[500px] rounded-[22px] border border-white/15 bg-black/45 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
+        <span className="relative mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-gradient-to-br from-sand to-coral text-white shadow-[0_14px_30px_-8px_rgba(231,111,81,0.65)]">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="size-7">
+            <circle cx="9.5" cy="8" r="3.2" />
+            <path d="M3.2 19c0-3.4 2.8-5.8 6.3-5.8s6.3 2.4 6.3 5.8" />
+            <path d="M18.5 7.5v5M16 10h5" />
           </svg>
-          {contactPhone}
-        </a>
-      )}
-    </CenteredCard>
+        </span>
+
+        <h2 className="text-[26px] font-extrabold leading-tight text-white">We&apos;re glad you&apos;re here!</h2>
+        <p className="mx-auto mt-3 max-w-[380px] text-[15px] leading-relaxed text-white/70">
+          You&apos;re not a member of <span className="font-semibold text-white">{academyName}</span> just yet.
+          Reach out below to find out how to join.
+        </p>
+
+        {contactPhone && (
+          <a
+            href={`tel:${contactPhone}`}
+            className="mt-7 inline-flex items-center gap-2.5 rounded-xl bg-gradient-to-b from-sand to-coral px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_26px_-10px_rgba(231,111,81,0.55)] transition-transform hover:-translate-y-0.5 hover:shadow-[0_18px_30px_-10px_rgba(231,111,81,0.65)]"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="size-4">
+              <path d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1.1-.2c1.1.5 2.4.7 3.7.7a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.7 21 3 13.3 3 4a1 1 0 0 1 1-1h3.3a1 1 0 0 1 1 1c0 1.3.2 2.6.7 3.7a1 1 0 0 1-.2 1.1L6.6 10.8Z" />
+            </svg>
+            Call {contactPhone}
+          </a>
+        )}
+      </div>
+    </div>
   );
 }
 
