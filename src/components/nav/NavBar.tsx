@@ -7,10 +7,11 @@ import type { AuthUser } from "../../api/authApi";
 
 interface NavBarProps {
   user: AuthUser;
-  activeView: "home" | "users" | "academies";
+  activeView: "home" | "users" | "academies" | "memberships";
   onNavigateHome: () => void;
   onNavigateUsers: () => void;
   onNavigateAcademies: () => void;
+  onNavigateMemberships: () => void;
   onOpenProfile: () => void;
   onOpenAccountInfo: () => void;
   onOpenChangePassword: () => void;
@@ -23,6 +24,7 @@ export function NavBar({
   onNavigateHome,
   onNavigateUsers,
   onNavigateAcademies,
+  onNavigateMemberships,
   onOpenProfile,
   onOpenAccountInfo,
   onOpenChangePassword,
@@ -63,6 +65,17 @@ export function NavBar({
             }`}
           >
             Academies
+          </button>
+        )}
+        {user.is_superuser && (
+          <button
+            type="button"
+            onClick={onNavigateMemberships}
+            className={`text-sm font-bold transition-colors ${
+              activeView === "memberships" ? "text-white" : "text-white/70 hover:text-white"
+            }`}
+          >
+            Memberships
           </button>
         )}
       </div>

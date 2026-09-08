@@ -65,6 +65,8 @@ export interface AdminUserListQuery {
   name?: string;
   email?: string;
   phone?: string;
+  /** Matches against email OR phone in one search - for "find a user" pickers. */
+  q?: string;
   date_of_birth?: string;
   email_verified?: string;
   phone_verified?: string;

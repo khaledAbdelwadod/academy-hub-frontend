@@ -40,7 +40,9 @@ export function AppShell(): ReactElement {
     ? "users"
     : location.pathname.startsWith("/academies")
       ? "academies"
-      : "home";
+      : location.pathname.startsWith("/memberships")
+        ? "memberships"
+        : "home";
 
   return (
     <div className="relative flex h-screen flex-col overflow-hidden">
@@ -51,6 +53,7 @@ export function AppShell(): ReactElement {
         onNavigateHome={() => navigate("/myaccount/home")}
         onNavigateUsers={() => navigate("/users")}
         onNavigateAcademies={() => navigate("/academies")}
+        onNavigateMemberships={() => navigate("/memberships")}
         onOpenProfile={() => setModal("profile")}
         onOpenAccountInfo={() => setModal("account")}
         onOpenChangePassword={() => setModal("password")}
