@@ -10,6 +10,7 @@ import { NavBar } from "../components/nav/NavBar";
 import { AccountInfoModal } from "../components/profile/AccountInfoModal";
 import { ChangePasswordModal } from "../components/profile/ChangePasswordModal";
 import { ProfileModal } from "../components/profile/ProfileModal";
+import { useAcademyMembership } from "../hooks/useAcademyMembership";
 import { useAuth } from "../state/AuthContext";
 import { logger } from "../utils/logger";
 
@@ -20,10 +21,18 @@ export function AppShell(): ReactElement {
   const navigate = useNavigate();
   const location = useLocation();
   const [modal, setModal] = useState<ModalName>(null);
+  const membership = useAcademyMembership();
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
+
+  // On an academy subdomain, the nav (and its Users/Academies/Memberships/profile
+  // tabs) only makes sense for someone who actually belongs there - hide it for
+  // everyone else, including a superadmin (who isn't a member of any academy).
+  const showNavBar =
+    membership.status === "not-applicable" ||
+    (membership.status === "ready" && membership.membership.is_member);
 
   function handleLogout(): void {
     logout()
@@ -47,18 +56,20 @@ export function AppShell(): ReactElement {
   return (
     <div className="relative flex h-screen flex-col overflow-hidden">
       <VideoBackdrop />
-      <NavBar
-        user={user}
-        activeView={activeView}
-        onNavigateHome={() => navigate("/myaccount/home")}
-        onNavigateUsers={() => navigate("/users")}
-        onNavigateAcademies={() => navigate("/academies")}
-        onNavigateMemberships={() => navigate("/memberships")}
-        onOpenProfile={() => setModal("profile")}
-        onOpenAccountInfo={() => setModal("account")}
-        onOpenChangePassword={() => setModal("password")}
-        onLogout={handleLogout}
-      />
+      {showNavBar && (
+        <NavBar
+          user={user}
+          activeView={activeView}
+          onNavigateHome={() => navigate("/myaccount/home")}
+          onNavigateUsers={() => navigate("/users")}
+          onNavigateAcademies={() => navigate("/academies")}
+          onNavigateMemberships={() => navigate("/memberships")}
+          onOpenProfile={() => setModal("profile")}
+          onOpenAccountInfo={() => setModal("account")}
+          onOpenChangePassword={() => setModal("password")}
+          onLogout={handleLogout}
+        />
+      )}
 
       {/* Pages (Home, Users) get the exact remaining viewport height here, so a
           page like Users can size its table to fill it and scroll internally

@@ -11,24 +11,49 @@
  * "contact the academy" version.
  */
 
-import { useEffect, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 
-import type { MyMembership } from "../api/membershipApi";
-import { fetchMyMembership } from "../api/membershipApi";
+import { logout } from "../api/authApi";
+import { useAcademyMembership } from "../hooks/useAcademyMembership";
+import { useAuth } from "../state/AuthContext";
+import { logger } from "../utils/logger";
 import { getAcademySubdomain } from "../utils/subdomain";
 
-type AcademyHomeState =
-  | { status: "loading" }
-  | { status: "error" }
-  | { status: "ready"; membership: MyMembership };
+/** A quiet way to sign out from a card that has no nav bar around it (see AppShell). */
+function LogOutLink(): ReactElement {
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout(): void {
+    logout()
+      .catch((error: unknown) => {
+        logger.error("Logout request failed", { error: error instanceof Error ? error.message : error });
+      })
+      .finally(() => {
+        signOut();
+        navigate("/login", { replace: true });
+      });
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleLogout}
+      className="mt-6 text-xs font-bold uppercase tracking-wider text-white/40 underline decoration-transparent underline-offset-4 transition-colors hover:text-white/70 hover:decoration-current"
+    >
+      Log out
+    </button>
+  );
+}
 
 function CenteredCard({ children }: { children: ReactNode }): ReactElement {
   return (
-    <div className="flex min-h-[60vh] items-center justify-center px-5 py-10">
+    <div className="flex min-h-[60vh] flex-col items-center justify-center px-5 py-10">
       <div className="animate-rise w-full max-w-[440px] rounded-[22px] border border-white/15 bg-black/45 px-8 py-9 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150">
         {children}
       </div>
+      <LogOutLink />
     </div>
   );
 }
@@ -47,13 +72,15 @@ function WelcomeCard({ academyName }: { academyName: string }): ReactElement {
 
 function NotAMemberCard({ academyName, contactPhone }: { academyName: string; contactPhone: string }): ReactElement {
   return (
-    <div className="flex min-h-[60vh] items-center justify-center px-5 py-10">
+    <div className="flex min-h-[60vh] flex-col items-center justify-center px-5 py-10">
       <div className="animate-rise relative w-full max-w-[500px] rounded-[22px] border border-white/15 bg-black/45 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
-        <h2 className="text-[26px] font-extrabold leading-tight text-coral">We&apos;re glad you&apos;re here</h2>
+        <h2 className="text-[26px] font-extrabold leading-tight text-white">
+          Welcome to <span className="text-coral">{academyName}</span> Academy
+        </h2>
         <p className="mx-auto mt-3 max-w-[380px] text-[15px] leading-relaxed text-white">
-          You&apos;re not a member of <span className="font-bold text-coral">{academyName}</span> just yet.
+          You&apos;re not a member yet.
         </p>
-        <p className="mx-auto mt-1.5 max-w-[380px] text-[15px] leading-relaxed text-white/70">
+        <p className="mx-auto mt-1.5 max-w-[380px] text-[15px] leading-relaxed text-white">
           For more details, please contact us.
         </p>
 
@@ -69,24 +96,15 @@ function NotAMemberCard({ academyName, contactPhone }: { academyName: string; co
           </a>
         )}
       </div>
+      <LogOutLink />
     </div>
   );
 }
 
 function AcademyHome(): ReactElement {
-  const [state, setState] = useState<AcademyHomeState>({ status: "loading" });
+  const state = useAcademyMembership();
 
-  useEffect(() => {
-    const subdomain = getAcademySubdomain();
-    if (!subdomain) {
-      return;
-    }
-    fetchMyMembership(subdomain)
-      .then((membership) => setState({ status: "ready", membership }))
-      .catch(() => setState({ status: "error" }));
-  }, []);
-
-  if (state.status === "loading") {
+  if (state.status === "not-applicable" || state.status === "loading") {
     return <div className="min-h-[60vh]" />;
   }
 
