@@ -16,8 +16,13 @@ const VIDEO_SOURCES = Object.keys(videoModules)
   .sort()
   .map((path) => videoModules[path]!);
 
-export function VideoBackdrop(): ReactElement {
-  const { videoARef, videoBRef, activeSlot } = useVideoPool(VIDEO_SOURCES);
+interface VideoBackdropProps {
+  /** Override the default video pool, e.g. with a single branded academy video. */
+  sources?: string[];
+}
+
+export function VideoBackdrop({ sources }: VideoBackdropProps): ReactElement {
+  const { videoARef, videoBRef, activeSlot } = useVideoPool(sources ?? VIDEO_SOURCES);
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden bg-ground" aria-hidden="true">
