@@ -40,7 +40,7 @@ function LogOutLink(): ReactElement {
     <button
       type="button"
       onClick={handleLogout}
-      className="mt-6 text-xs font-bold uppercase tracking-wider text-white/70 underline decoration-transparent underline-offset-4 transition-colors hover:text-white hover:decoration-current"
+      className="mt-6 text-xs font-bold uppercase tracking-wider text-white underline decoration-transparent underline-offset-4 transition-colors hover:decoration-current [text-shadow:0_1px_6px_rgba(0,0,0,0.6)]"
     >
       Log out
     </button>
@@ -50,7 +50,7 @@ function LogOutLink(): ReactElement {
 function CenteredCard({ children }: { children: ReactNode }): ReactElement {
   return (
     <div className="flex min-h-full flex-col items-center justify-center px-5 py-10">
-      <div className="animate-rise w-full max-w-[440px] rounded-[22px] border border-white/15 bg-black/30 px-8 py-9 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150">
+      <div className="animate-rise w-full max-w-[440px] rounded-[22px] border border-white/15 bg-black/20 px-8 py-9 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150">
         {children}
       </div>
       <LogOutLink />
@@ -61,9 +61,13 @@ function CenteredCard({ children }: { children: ReactNode }): ReactElement {
 function WelcomeCard({ academyName }: { academyName: string }): ReactElement {
   return (
     <CenteredCard>
-      <p className="text-xs font-bold uppercase tracking-wider text-teal">Welcome back</p>
-      <h2 className="mt-1.5 text-2xl font-extrabold text-white">{academyName}</h2>
-      <p className="mt-2.5 text-sm leading-relaxed text-white/60">
+      <p className="text-xs font-bold uppercase tracking-wider text-teal [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
+        Welcome back
+      </p>
+      <h2 className="mt-1.5 text-2xl font-extrabold text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
+        {academyName}
+      </h2>
+      <p className="mt-2.5 text-sm leading-relaxed text-white/80 [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
         Your dashboard is on its way — check back soon.
       </p>
     </CenteredCard>
@@ -73,16 +77,16 @@ function WelcomeCard({ academyName }: { academyName: string }): ReactElement {
 function NotAMemberCard({ academyName, contactPhone }: { academyName: string; contactPhone: string }): ReactElement {
   return (
     <div className="flex min-h-full flex-col items-center justify-center px-5 py-10">
-      <div className="animate-rise relative w-full max-w-[500px] rounded-[22px] border border-white/15 bg-black/30 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
-        <h2 className="text-xl font-extrabold leading-tight text-white">
+      <div className="animate-rise relative w-full max-w-[500px] rounded-[22px] border border-white/15 bg-black/20 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
+        <h2 className="text-xl font-extrabold leading-tight text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
           Welcome to{" "}
-          <span className="bg-gradient-to-b from-sand to-coral bg-clip-text text-transparent">{academyName}</span>{" "}
+          <span className="bg-gradient-to-r from-sand to-coral bg-clip-text text-transparent">{academyName}</span>{" "}
           Academy
         </h2>
-        <p className="mx-auto mt-3 max-w-[380px] text-[15px] leading-relaxed text-white">
+        <p className="mx-auto mt-3 max-w-[380px] text-[15px] leading-relaxed text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
           You&apos;re not a member yet.
         </p>
-        <p className="mx-auto mt-1.5 max-w-[380px] text-[15px] leading-relaxed text-white">
+        <p className="mx-auto mt-1.5 max-w-[380px] text-[15px] leading-relaxed text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
           For more details, please contact us.
         </p>
 
