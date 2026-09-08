@@ -11,10 +11,13 @@
  * "contact the academy" version.
  */
 
+import { useEffect, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { logout } from "../api/authApi";
+import type { MyAcademy } from "../api/membershipApi";
+import { fetchMyAcademies } from "../api/membershipApi";
 import { useAcademyMembership } from "../hooks/useAcademyMembership";
 import { useAuth } from "../state/AuthContext";
 import { logger } from "../utils/logger";
@@ -58,9 +61,16 @@ function CenteredCard({ children }: { children: ReactNode }): ReactElement {
   );
 }
 
-function WelcomeCard({ academyName }: { academyName: string }): ReactElement {
+function WelcomeCard({ academyName, academyLogo }: { academyName: string; academyLogo: string | null }): ReactElement {
   return (
     <CenteredCard>
+      {academyLogo && (
+        <img
+          src={academyLogo}
+          alt={academyName}
+          className="mx-auto mb-5 max-h-16 max-w-[60%] object-contain drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+        />
+      )}
       <p className="text-xs font-bold uppercase tracking-wider text-teal [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
         Welcome back
       </p>
@@ -74,10 +84,23 @@ function WelcomeCard({ academyName }: { academyName: string }): ReactElement {
   );
 }
 
-function NotAMemberCard({ academyName, contactPhone }: { academyName: string; contactPhone: string }): ReactElement {
+interface NotAMemberCardProps {
+  academyName: string;
+  academyLogo: string | null;
+  contactPhone: string;
+}
+
+function NotAMemberCard({ academyName, academyLogo, contactPhone }: NotAMemberCardProps): ReactElement {
   return (
     <div className="flex min-h-full flex-col items-center justify-center px-5 py-10">
       <div className="animate-rise relative w-full max-w-[500px] rounded-[22px] border border-white/15 bg-black/20 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
+        {academyLogo && (
+          <img
+            src={academyLogo}
+            alt={academyName}
+            className="mx-auto mb-5 max-h-16 max-w-[60%] object-contain drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+          />
+        )}
         <h2 className="text-xl font-extrabold leading-tight text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
           Welcome to{" "}
           <span className="bg-gradient-to-r from-sand to-coral bg-clip-text text-transparent">{academyName}</span>{" "}
@@ -125,10 +148,95 @@ function AcademyHome(): ReactElement {
   const { membership } = state;
 
   if (membership.is_member) {
-    return <WelcomeCard academyName={membership.academy_name} />;
+    return <WelcomeCard academyName={membership.academy_name} academyLogo={membership.academy_logo} />;
   }
 
-  return <NotAMemberCard academyName={membership.academy_name} contactPhone={membership.academy_contact_phone} />;
+  return (
+    <NotAMemberCard
+      academyName={membership.academy_name}
+      academyLogo={membership.academy_logo}
+      contactPhone={membership.academy_contact_phone}
+    />
+  );
+}
+
+function AcademyPickerCard({ academy }: { academy: MyAcademy }): ReactElement {
+  function handlePick(): void {
+    window.location.href = `https://${academy.subdomain}.academy-hub.net/myaccount/home`;
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handlePick}
+      className="group relative aspect-video w-full overflow-hidden rounded-[22px] border border-white/15 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] transition-transform hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50"
+    >
+      {academy.login_background_video ? (
+        <video
+          src={academy.login_background_video}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-ink to-teal" />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
+
+      <div className="relative flex h-full flex-col items-center justify-center gap-3 p-5 text-center">
+        {academy.logo && (
+          <img
+            src={academy.logo}
+            alt=""
+            className="max-h-14 max-w-[65%] object-contain drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]"
+          />
+        )}
+        <p className="text-lg font-extrabold text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.7)]">{academy.name}</p>
+      </div>
+    </button>
+  );
+}
+
+type WwwHomeState = { status: "loading" } | { status: "error" } | { status: "ready"; academies: MyAcademy[] };
+
+function WwwAccountHome(): ReactElement {
+  const [state, setState] = useState<WwwHomeState>({ status: "loading" });
+
+  useEffect(() => {
+    fetchMyAcademies()
+      .then((academies) => setState({ status: "ready", academies }))
+      .catch(() => setState({ status: "error" }));
+  }, []);
+
+  if (state.status === "loading") {
+    return <div className="min-h-full" />;
+  }
+
+  if (state.status === "error") {
+    return (
+      <div className="flex min-h-full items-center justify-center px-4">
+        <p className="text-white/60">Could not load your academies.</p>
+      </div>
+    );
+  }
+
+  if (state.academies.length === 0) {
+    return (
+      <div className="flex min-h-full items-center justify-center px-4">
+        <p className="text-white/60">You haven&apos;t joined an academy yet.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 px-5 py-10 sm:grid-cols-2 lg:grid-cols-3">
+      {state.academies.map((academy) => (
+        <AcademyPickerCard key={academy.subdomain} academy={academy} />
+      ))}
+    </div>
+  );
 }
 
 export function HomePage(): ReactElement {
@@ -136,9 +244,5 @@ export function HomePage(): ReactElement {
     return <AcademyHome />;
   }
 
-  return (
-    <div className="flex min-h-full items-center justify-center px-4">
-      <p className="text-white/60">Home — coming soon.</p>
-    </div>
-  );
+  return <WwwAccountHome />;
 }
