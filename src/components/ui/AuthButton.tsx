@@ -1,5 +1,5 @@
-/** The primary call-to-action button. Light theme (mint fill) by default; the
- * still-dark login/register/forgot pages opt into the original gradient styling. */
+/** The primary call-to-action button. Mint-filled, white text, everywhere in the app now;
+ * the "dark" gradient theme is kept in case a dark surface is needed again later. */
 
 import type { ButtonHTMLAttributes, ReactElement } from "react";
 
@@ -11,7 +11,7 @@ interface AuthButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const THEME_CLASSES: Record<"light" | "dark", string> = {
   light:
-    "bg-mint text-black shadow-[0_10px_20px_-10px_rgba(107,194,150,0.6)] hover:-translate-y-0.5 hover:bg-mint/85 hover:shadow-[0_14px_24px_-10px_rgba(107,194,150,0.7)] focus-visible:ring-pine/40 disabled:hover:shadow-[0_10px_20px_-10px_rgba(107,194,150,0.6)]",
+    "bg-mint text-white shadow-[0_10px_20px_-10px_rgba(107,194,150,0.6)] hover:-translate-y-0.5 hover:bg-mint/85 hover:shadow-[0_14px_24px_-10px_rgba(107,194,150,0.7)] focus-visible:ring-pine/40 disabled:hover:shadow-[0_10px_20px_-10px_rgba(107,194,150,0.6)]",
   dark: "bg-gradient-to-b from-sand to-coral text-white shadow-[0_14px_26px_-10px_rgba(231,111,81,0.55)] hover:-translate-y-0.5 hover:shadow-[0_18px_30px_-10px_rgba(231,111,81,0.65)] focus-visible:ring-coral/50 disabled:hover:shadow-[0_14px_26px_-10px_rgba(231,111,81,0.55)]",
 };
 

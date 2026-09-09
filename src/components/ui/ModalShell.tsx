@@ -21,7 +21,7 @@ export function ModalShell({
       <button type="button" aria-label="Close" onClick={onClose} className="fixed inset-0 cursor-default" />
 
       <div
-        className={`relative w-full rounded-[22px] border border-mint bg-white p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] sm:p-8 ${maxWidthClassName}`}
+        className={`relative w-full rounded-[22px] border border-mint bg-white/40 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8 ${maxWidthClassName}`}
       >
         <button
           type="button"

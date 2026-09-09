@@ -97,18 +97,18 @@ export function MembershipsPage(): ReactElement {
         </p>
       )}
 
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-mint bg-white shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)]">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150">
         <div className="min-h-0 flex-1 overflow-auto">
           <table className="w-full min-w-[800px] border-collapse text-sm">
             <thead>
-              <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+              <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-xs font-bold uppercase tracking-wider text-mint backdrop-blur-2xl backdrop-saturate-150">
                 {COLUMNS.map((column) => (
                   <th key={column.label} className="whitespace-nowrap px-3 py-3">
                     {column.sortKey ? (
                       <button
                         type="button"
                         onClick={() => handleSort(column.sortKey!)}
-                        className="transition-colors hover:text-mint"
+                        className="transition-colors hover:text-pine"
                       >
                         {column.label}
                         {sortIndicator(column.sortKey)}
@@ -120,7 +120,7 @@ export function MembershipsPage(): ReactElement {
                 ))}
                 <th className="px-3 py-3" />
               </tr>
-              <tr className="sticky top-[37px] z-10 divide-x divide-gray-300 border-b border-mint bg-white">
+              <tr className="sticky top-[37px] z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 backdrop-blur-2xl backdrop-saturate-150">
                 {COLUMNS.map((column) => (
                   <th key={column.label} className="px-3 pb-3 align-middle">
                     {column.filterKey && (

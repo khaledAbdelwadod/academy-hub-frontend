@@ -80,7 +80,7 @@ interface WelcomeCardProps {
 function WelcomeCard({ academyName, academyLogo }: WelcomeCardProps): ReactElement {
   return (
     <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-[440px]">
-      <div className="w-full rounded-[22px] border border-mint bg-white px-8 py-9 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)]">
+      <div className="w-full rounded-[22px] border border-mint bg-white/40 px-8 py-9 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl backdrop-saturate-150">
         <p className="text-xs font-bold uppercase tracking-wider text-teal">Welcome back</p>
         <h2 className="mt-1.5 text-2xl font-extrabold text-black">{academyName}</h2>
         <p className="mt-2.5 text-sm leading-relaxed text-black/60">
@@ -100,7 +100,7 @@ interface NotAMemberCardProps {
 function NotAMemberCard({ academyName, academyLogo, contactPhone }: NotAMemberCardProps): ReactElement {
   return (
     <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-[500px]">
-      <div className="w-full rounded-[22px] border border-mint bg-white px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] sm:px-10">
+      <div className="w-full rounded-[22px] border border-mint bg-white/40 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
         <h2 className="text-xl font-extrabold leading-tight text-black">
           Welcome to{" "}
           <span className="bg-gradient-to-r from-sand to-coral bg-clip-text text-transparent">{academyName}</span>{" "}

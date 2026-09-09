@@ -26,7 +26,9 @@ function capitalize(value: string): string {
 }
 
 function tabClassName(active: boolean): string {
-  return `rounded-lg px-3 py-1.5 text-sm font-bold text-black transition-colors ${active ? "bg-mint" : "hover:bg-mint/60"}`;
+  return `rounded-lg px-3 py-1.5 text-sm font-bold transition-colors ${
+    active ? "bg-mint text-white" : "text-black hover:bg-mint hover:text-white"
+  }`;
 }
 
 export function NavBar({
@@ -48,7 +50,7 @@ export function NavBar({
   const isAcademyManager = academyRoles.includes("manager");
 
   return (
-    <nav className="sticky top-4 z-20 mx-4 mt-4 flex items-center justify-between rounded-2xl border border-mint bg-white px-4 py-3 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.3)] sm:mx-6 sm:px-6">
+    <nav className="sticky top-4 z-20 mx-4 mt-4 flex items-center justify-between rounded-2xl border border-mint bg-white/40 px-4 py-3 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.3)] backdrop-blur-2xl backdrop-saturate-150 sm:mx-6 sm:px-6">
       <div className="flex items-center gap-1.5 sm:gap-2">
         <button type="button" onClick={onNavigateHome} className={tabClassName(activeView === "home")}>
           Home
@@ -112,7 +114,7 @@ export function NavBar({
                 onClick={() => setMenuOpen(false)}
                 className="fixed inset-0 z-10 cursor-default"
               />
-              <div className="absolute right-0 top-[calc(100%+10px)] z-20 w-52 overflow-hidden rounded-xl border border-mint bg-white shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)]">
+              <div className="absolute right-0 top-[calc(100%+10px)] z-20 w-52 overflow-hidden rounded-xl border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl backdrop-saturate-150">
                 <button
                   type="button"
                   onClick={() => {

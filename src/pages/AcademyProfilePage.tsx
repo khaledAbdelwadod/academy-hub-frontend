@@ -139,7 +139,7 @@ export function AcademyProfilePage(): ReactElement {
 
   return (
     <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 px-4 py-8 sm:px-8 lg:grid-cols-2">
-      <div className="rounded-[22px] border border-mint bg-white p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] sm:p-8">
+      <div className="rounded-[22px] border border-mint bg-white/40 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <ReadOnlyField label="Academy name" value={profile.name} />
@@ -184,7 +184,7 @@ export function AcademyProfilePage(): ReactElement {
       </div>
 
       {subdomain && (
-        <div className="rounded-[22px] border border-mint bg-white p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] sm:p-8">
+        <div className="rounded-[22px] border border-mint bg-white/40 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
           <h2 className="mb-6 text-2xl font-extrabold text-black">Media</h2>
           <div className="flex flex-col gap-4">
             <AcademyFileField

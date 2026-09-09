@@ -33,7 +33,7 @@ export function MembershipRowActionsMenu({ onAssignManager }: MembershipRowActio
             onClick={() => setOpen(false)}
             className="fixed inset-0 z-10 cursor-default"
           />
-          <div className="absolute right-0 top-[calc(100%+6px)] z-20 w-44 overflow-hidden rounded-xl border border-mint bg-white shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)]">
+          <div className="absolute right-0 top-[calc(100%+6px)] z-20 w-44 overflow-hidden rounded-xl border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl backdrop-saturate-150">
             <button
               type="button"
               onClick={() => {
