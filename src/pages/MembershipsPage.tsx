@@ -101,7 +101,7 @@ export function MembershipsPage(): ReactElement {
         <div className="min-h-0 flex-1 overflow-auto">
           <table className="w-full min-w-[800px] border-collapse text-sm">
             <thead>
-              <tr className="sticky top-0 z-10 divide-x divide-gray-100 border-b border-mint bg-white text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+              <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white text-left text-xs font-bold uppercase tracking-wider text-gray-500">
                 {COLUMNS.map((column) => (
                   <th key={column.label} className="whitespace-nowrap px-3 py-3">
                     {column.sortKey ? (
@@ -120,9 +120,9 @@ export function MembershipsPage(): ReactElement {
                 ))}
                 <th className="px-3 py-3" />
               </tr>
-              <tr className="sticky top-[37px] z-10 divide-x divide-gray-100 border-b border-mint bg-white">
+              <tr className="sticky top-[37px] z-10 divide-x divide-gray-300 border-b border-mint bg-white">
                 {COLUMNS.map((column) => (
-                  <th key={column.label} className="px-3 pb-3">
+                  <th key={column.label} className="px-3 pb-3 align-middle">
                     {column.filterKey && (
                       <input
                         type="text"
@@ -136,13 +136,13 @@ export function MembershipsPage(): ReactElement {
                     )}
                   </th>
                 ))}
-                <th className="px-3 pb-3" />
+                <th className="px-3 pb-3 align-middle" />
               </tr>
             </thead>
             <tbody>
               {state.status === "ready" &&
                 state.page.results.map((row) => (
-                  <tr key={row.id} className="divide-x divide-gray-100 border-b border-gray-100 text-black/80 hover:bg-mint/10">
+                  <tr key={row.id} className="divide-x divide-gray-300 border-b border-gray-300 text-black/80 hover:bg-mint/10">
                     <td className="whitespace-nowrap px-3 py-3 font-semibold text-black">{row.name}</td>
                     <td className="whitespace-nowrap px-3 py-3">
                       {row.manager_email ?? <span className="text-gray-400">Not assigned</span>}
