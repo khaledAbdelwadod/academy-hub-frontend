@@ -69,7 +69,7 @@ export function AppShell(): ReactElement {
       {isAcademyHomeRoute ? (
         <VideoBackdrop sources={academyVideo ? [academyVideo] : undefined} />
       ) : (
-        <div className="fixed inset-0 -z-10 bg-[#00000059]" />
+        <div className="fixed inset-0 -z-10 bg-white" />
       )}
       {showNavBar && (
         <NavBar
