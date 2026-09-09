@@ -138,10 +138,8 @@ export function AcademyProfilePage(): ReactElement {
   const { profile } = state;
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-8">
+    <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 px-4 py-8 sm:px-8 lg:grid-cols-2">
       <div className="rounded-[22px] border border-white/15 bg-black/45 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
-        <h1 className="mb-6 text-2xl font-extrabold text-white">Academy Profile</h1>
-
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <ReadOnlyField label="Academy name" value={profile.name} />
@@ -183,10 +181,12 @@ export function AcademyProfilePage(): ReactElement {
             {saveState.status === "saving" ? "Saving…" : "Save changes"}
           </AuthButton>
         </form>
+      </div>
 
-        {subdomain && (
-          <div className="mt-8 flex flex-col gap-4 border-t border-white/15 pt-6">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-white/50">Media</h2>
+      {subdomain && (
+        <div className="rounded-[22px] border border-white/15 bg-black/45 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
+          <h2 className="mb-6 text-2xl font-extrabold text-white">Media</h2>
+          <div className="flex flex-col gap-4">
             <AcademyFileField
               label="Logo"
               currentUrl={profile.logo}
@@ -216,8 +216,8 @@ export function AcademyProfilePage(): ReactElement {
               }
             />
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
