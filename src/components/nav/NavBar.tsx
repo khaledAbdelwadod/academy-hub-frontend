@@ -7,7 +7,7 @@ import type { AuthUser } from "../../api/authApi";
 
 interface NavBarProps {
   user: AuthUser;
-  activeView: "home" | "users" | "academies" | "memberships" | "academy-profile";
+  activeView: "home" | "users" | "academies" | "memberships" | "academy-profile" | "academy-members";
   /** Every active role the user holds at the current academy subdomain; empty/omitted on www. */
   academyRoles?: string[];
   onNavigateHome: () => void;
@@ -15,6 +15,7 @@ interface NavBarProps {
   onNavigateAcademies: () => void;
   onNavigateMemberships: () => void;
   onNavigateAcademyProfile: () => void;
+  onNavigateAcademyMembers: () => void;
   onOpenProfile: () => void;
   onOpenAccountInfo: () => void;
   onOpenChangePassword: () => void;
@@ -40,6 +41,7 @@ export function NavBar({
   onNavigateAcademies,
   onNavigateMemberships,
   onNavigateAcademyProfile,
+  onNavigateAcademyMembers,
   onOpenProfile,
   onOpenAccountInfo,
   onOpenChangePassword,
@@ -62,6 +64,15 @@ export function NavBar({
             className={tabClassName(activeView === "academy-profile")}
           >
             Academy Profile
+          </button>
+        )}
+        {isAcademyManager && (
+          <button
+            type="button"
+            onClick={onNavigateAcademyMembers}
+            className={tabClassName(activeView === "academy-members")}
+          >
+            Academy Members
           </button>
         )}
         {user.is_superuser && (
