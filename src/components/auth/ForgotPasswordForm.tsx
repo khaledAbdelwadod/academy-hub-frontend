@@ -39,6 +39,7 @@ export function ForgotPasswordForm({
           type="email"
           placeholder="you@example.com"
           autoComplete="email"
+          theme="dark"
           required
         />
         <AuthButton type="submit">Send reset code</AuthButton>

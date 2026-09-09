@@ -76,7 +76,7 @@ export function ProfileModal({ onClose }: ProfileModalProps): ReactElement {
 
   return (
     <ModalShell title="My Profile" onClose={onClose} maxWidthClassName="max-w-2xl">
-      {loadState.status === "loading" && <p className="py-10 text-center text-white/70">Loading your profile…</p>}
+      {loadState.status === "loading" && <p className="py-10 text-center text-gray-500">Loading your profile…</p>}
       {loadState.status === "error" && <p className="py-10 text-center text-red-400">{loadState.message}</p>}
 
       {loadState.status === "ready" && (

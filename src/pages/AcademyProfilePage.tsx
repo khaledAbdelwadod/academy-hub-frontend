@@ -55,20 +55,20 @@ function AcademyFileField({ label, currentUrl, accept, onUpload }: AcademyFileFi
 
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-xs font-bold uppercase tracking-wider text-white/50">{label}</span>
+      <span className="text-xs font-bold uppercase tracking-wider text-black/50">{label}</span>
       <div className="flex flex-wrap items-center gap-3">
         {currentUrl ? (
           <a href={currentUrl} target="_blank" rel="noreferrer" className="text-xs text-teal underline">
             View current file
           </a>
         ) : (
-          <span className="text-xs text-white/40">Not uploaded</span>
+          <span className="text-xs text-gray-400">Not uploaded</span>
         )}
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          className="rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white/85 transition-colors hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-lg border border-mint bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-black/80 transition-colors hover:bg-mint/15 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {uploading ? "Uploading…" : currentUrl ? "Replace" : "Upload"}
         </button>
@@ -130,7 +130,7 @@ export function AcademyProfilePage(): ReactElement {
   if (state.status === "error") {
     return (
       <div className="flex min-h-full items-center justify-center px-4">
-        <p className="text-white/60">{state.message}</p>
+        <p className="text-gray-500">{state.message}</p>
       </div>
     );
   }
@@ -139,7 +139,7 @@ export function AcademyProfilePage(): ReactElement {
 
   return (
     <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 px-4 py-8 sm:px-8 lg:grid-cols-2">
-      <div className="rounded-[22px] border border-white/15 bg-black/45 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
+      <div className="rounded-[22px] border border-mint bg-white p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] sm:p-8">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <ReadOnlyField label="Academy name" value={profile.name} />
@@ -184,8 +184,8 @@ export function AcademyProfilePage(): ReactElement {
       </div>
 
       {subdomain && (
-        <div className="rounded-[22px] border border-white/15 bg-black/45 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
-          <h2 className="mb-6 text-2xl font-extrabold text-white">Media</h2>
+        <div className="rounded-[22px] border border-mint bg-white p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] sm:p-8">
+          <h2 className="mb-6 text-2xl font-extrabold text-black">Media</h2>
           <div className="flex flex-col gap-4">
             <AcademyFileField
               label="Logo"

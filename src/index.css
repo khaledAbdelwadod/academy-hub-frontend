@@ -10,6 +10,12 @@
   --color-sun: #e9c46a;
   --color-sand: #f4a261;
   --color-coral: #e76f51;
+
+  /* Light-theme accent (nav/tabs/tables/modals/cards borders, hover, select,
+     and form field borders), added for the light-mode redesign of every
+     signed-in app page - not used on the still-dark login/register/forgot pages. */
+  --color-mint: #6bc296;
+  --color-pine: #03572c;
 }
 
 @keyframes panel-in {

@@ -34,6 +34,7 @@ export function SignInForm({ onForgotPassword, onSwitchToRegister }: SignInFormP
         type="email"
         placeholder="you@example.com"
         autoComplete="email"
+        theme="dark"
         required
       />
       <PasswordField
@@ -41,6 +42,7 @@ export function SignInForm({ onForgotPassword, onSwitchToRegister }: SignInFormP
         label="Password"
         placeholder="••••••••••"
         autoComplete="current-password"
+        theme="dark"
         required
       />
 

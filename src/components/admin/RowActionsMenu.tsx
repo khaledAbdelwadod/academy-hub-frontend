@@ -21,7 +21,7 @@ export function RowActionsMenu({ user, onEdit, onToggleActive, onDelete }: RowAc
         type="button"
         aria-label="Row actions"
         onClick={() => setOpen((current) => !current)}
-        className="flex size-8 items-center justify-center rounded-lg text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+        className="flex size-8 items-center justify-center rounded-lg text-black/60 transition-colors hover:bg-mint/15 hover:text-black"
       >
         <svg viewBox="0 0 20 20" fill="currentColor" className="size-4">
           <circle cx="10" cy="4" r="1.6" />
@@ -38,14 +38,14 @@ export function RowActionsMenu({ user, onEdit, onToggleActive, onDelete }: RowAc
             onClick={() => setOpen(false)}
             className="fixed inset-0 z-10 cursor-default"
           />
-          <div className="absolute right-0 top-[calc(100%+6px)] z-20 w-40 overflow-hidden rounded-xl border border-white/15 bg-black/45 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150">
+          <div className="absolute right-0 top-[calc(100%+6px)] z-20 w-40 overflow-hidden rounded-xl border border-mint bg-white shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)]">
             <button
               type="button"
               onClick={() => {
                 onEdit();
                 setOpen(false);
               }}
-              className="block w-full px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wide text-white/85 transition-colors hover:bg-white/10 hover:text-white"
+              className="block w-full px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wide text-black/80 transition-colors hover:bg-mint/15 hover:text-black"
             >
               Edit
             </button>
@@ -55,7 +55,7 @@ export function RowActionsMenu({ user, onEdit, onToggleActive, onDelete }: RowAc
                 onToggleActive();
                 setOpen(false);
               }}
-              className="block w-full px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wide text-white/85 transition-colors hover:bg-white/10 hover:text-white"
+              className="block w-full px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wide text-black/80 transition-colors hover:bg-mint/15 hover:text-black"
             >
               {user.is_active ? "Deactivate" : "Reactivate"}
             </button>
@@ -65,7 +65,7 @@ export function RowActionsMenu({ user, onEdit, onToggleActive, onDelete }: RowAc
                 onDelete();
                 setOpen(false);
               }}
-              className="block w-full px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wide text-red-300 transition-colors hover:bg-red-400/10"
+              className="block w-full px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wide text-red-500 transition-colors hover:bg-red-50"
             >
               Delete
             </button>

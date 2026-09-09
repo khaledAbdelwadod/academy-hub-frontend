@@ -80,14 +80,10 @@ interface WelcomeCardProps {
 function WelcomeCard({ academyName, academyLogo }: WelcomeCardProps): ReactElement {
   return (
     <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-[440px]">
-      <div className="w-full rounded-[22px] border border-white/15 bg-black/20 px-8 py-9 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150">
-        <p className="text-xs font-bold uppercase tracking-wider text-teal [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
-          Welcome back
-        </p>
-        <h2 className="mt-1.5 text-2xl font-extrabold text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
-          {academyName}
-        </h2>
-        <p className="mt-2.5 text-sm leading-relaxed text-white/80 [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
+      <div className="w-full rounded-[22px] border border-mint bg-white px-8 py-9 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)]">
+        <p className="text-xs font-bold uppercase tracking-wider text-teal">Welcome back</p>
+        <h2 className="mt-1.5 text-2xl font-extrabold text-black">{academyName}</h2>
+        <p className="mt-2.5 text-sm leading-relaxed text-black/60">
           Your dashboard is on its way — check back soon.
         </p>
       </div>
@@ -104,16 +100,16 @@ interface NotAMemberCardProps {
 function NotAMemberCard({ academyName, academyLogo, contactPhone }: NotAMemberCardProps): ReactElement {
   return (
     <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-[500px]">
-      <div className="w-full rounded-[22px] border border-white/15 bg-black/20 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
-        <h2 className="text-xl font-extrabold leading-tight text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
+      <div className="w-full rounded-[22px] border border-mint bg-white px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] sm:px-10">
+        <h2 className="text-xl font-extrabold leading-tight text-black">
           Welcome to{" "}
           <span className="bg-gradient-to-r from-sand to-coral bg-clip-text text-transparent">{academyName}</span>{" "}
           Academy
         </h2>
-        <p className="mx-auto mt-3 max-w-[380px] text-[15px] leading-relaxed text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
+        <p className="mx-auto mt-3 max-w-[380px] text-[15px] leading-relaxed text-black/70">
           You&apos;re not a member yet.
         </p>
-        <p className="mx-auto mt-1.5 max-w-[380px] text-[15px] leading-relaxed text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
+        <p className="mx-auto mt-1.5 max-w-[380px] text-[15px] leading-relaxed text-black/70">
           For more details, please contact us.
         </p>
 
@@ -143,7 +139,7 @@ function AcademyHome(): ReactElement {
   if (state.status === "error") {
     return (
       <div className="flex min-h-full items-center justify-center px-4">
-        <p className="text-white/60">Could not load this page.</p>
+        <p className="text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.6)]">Could not load this page.</p>
       </div>
     );
   }
@@ -172,7 +168,7 @@ function AcademyPickerCard({ academy }: { academy: MyAcademy }): ReactElement {
     <button
       type="button"
       onClick={handlePick}
-      className="group relative aspect-video w-full overflow-hidden rounded-[22px] border border-white/15 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] transition-transform hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50"
+      className="group relative aspect-video w-full overflow-hidden rounded-[22px] border border-mint shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pine/40"
     >
       {academy.login_background_video ? (
         <video
@@ -220,7 +216,7 @@ function WwwAccountHome(): ReactElement {
   if (state.status === "error") {
     return (
       <div className="flex min-h-full items-center justify-center px-4">
-        <p className="text-white/60">Could not load your academies.</p>
+        <p className="text-gray-500">Could not load your academies.</p>
       </div>
     );
   }
@@ -228,7 +224,7 @@ function WwwAccountHome(): ReactElement {
   if (state.academies.length === 0) {
     return (
       <div className="flex min-h-full items-center justify-center px-4">
-        <p className="text-white/60">You haven&apos;t joined an academy yet.</p>
+        <p className="text-gray-500">You haven&apos;t joined an academy yet.</p>
       </div>
     );
   }

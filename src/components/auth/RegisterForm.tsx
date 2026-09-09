@@ -66,6 +66,7 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           label="First name"
           placeholder="Amira"
           autoComplete="given-name"
+          theme="dark"
           required
         />
         <FormField
@@ -75,6 +76,7 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           optional
           placeholder="Youssef"
           autoComplete="additional-name"
+          theme="dark"
         />
         <FormField
           id="rg-last"
@@ -82,6 +84,7 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           label="Last name"
           placeholder="Hassan"
           autoComplete="family-name"
+          theme="dark"
           required
         />
       </div>
@@ -94,6 +97,7 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           type="email"
           placeholder="you@example.com"
           autoComplete="email"
+          theme="dark"
           required
         />
         <FormField
@@ -103,6 +107,7 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           type="tel"
           placeholder="+20 100 123 4567"
           autoComplete="tel"
+          theme="dark"
           required
         />
         <FormField
@@ -111,6 +116,7 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           label="Date of birth"
           type="date"
           autoComplete="bday"
+          theme="dark"
           required
         />
       </div>
@@ -121,6 +127,7 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           label="Password"
           placeholder="••••••••••"
           autoComplete="new-password"
+          theme="dark"
           required
         />
         <PasswordField
@@ -128,6 +135,7 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           label="Confirm password"
           placeholder="••••••••••"
           autoComplete="new-password"
+          theme="dark"
           required
         />
         <p className="self-end text-xs leading-relaxed text-white/65">

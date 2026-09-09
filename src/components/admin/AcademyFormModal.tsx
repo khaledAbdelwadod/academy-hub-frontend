@@ -98,7 +98,7 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
           defaultValue={academy?.description}
         />
 
-        <label className="flex items-center gap-2 text-sm text-white/80">
+        <label className="flex items-center gap-2 text-sm text-black/80">
           <input
             type="checkbox"
             name="is_active"

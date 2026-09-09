@@ -53,7 +53,7 @@ export function AccountInfoModal({ onClose }: AccountInfoModalProps): ReactEleme
 
   return (
     <ModalShell title="Account Info" onClose={onClose} maxWidthClassName="max-w-xl">
-      {state.status === "loading" && <p className="py-10 text-center text-white/70">Loading…</p>}
+      {state.status === "loading" && <p className="py-10 text-center text-gray-500">Loading…</p>}
       {state.status === "error" && <p className="py-10 text-center text-red-400">{state.message}</p>}
 
       {state.status === "ready" && (

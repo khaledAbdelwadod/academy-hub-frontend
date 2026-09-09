@@ -53,7 +53,7 @@ export function AvatarUploader({ initialAvatarUrl, initials }: AvatarUploaderPro
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={state.status === "uploading"}
-          className="w-fit rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white/85 transition-colors hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-fit rounded-lg border border-mint bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-black/80 transition-colors hover:bg-mint/15 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {state.status === "uploading" ? "Uploading…" : "Change avatar"}
         </button>

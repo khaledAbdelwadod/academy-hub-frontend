@@ -7,9 +7,9 @@ interface SmallButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANT_CLASSES: Record<NonNullable<SmallButtonProps["variant"]>, string> = {
-  default: "border-white/20 bg-white/10 text-white/85 hover:bg-white/20",
-  primary: "border-coral/40 bg-coral/20 text-white hover:bg-coral/30",
-  danger: "border-red-400/30 bg-red-400/10 text-red-300 hover:bg-red-400/20",
+  default: "border-mint bg-white text-black/80 hover:bg-mint/15",
+  primary: "border-coral bg-coral text-white hover:bg-coral/90",
+  danger: "border-red-300 bg-red-50 text-red-600 hover:bg-red-100",
 };
 
 export function SmallButton({

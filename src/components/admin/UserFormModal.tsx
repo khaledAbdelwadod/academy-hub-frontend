@@ -95,7 +95,7 @@ export function UserFormModal({ user, onClose, onSaved }: UserFormModalProps): R
           <PasswordField name="password" label="Initial password" autoComplete="new-password" required />
         )}
 
-        <div className="flex flex-wrap gap-5 pt-1 text-sm text-white/80">
+        <div className="flex flex-wrap gap-5 pt-1 text-sm text-black/80">
           <label className="flex items-center gap-2">
             <input
               type="checkbox"

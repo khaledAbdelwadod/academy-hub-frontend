@@ -62,8 +62,8 @@ export function AssignManagerModal({ academy, onClose, onAssigned }: AssignManag
     <ModalShell title={`Assign manager — ${academy.name}`} onClose={onClose} maxWidthClassName="max-w-lg">
       <div className="flex flex-col gap-4">
         {academy.manager_email && (
-          <p className="text-sm text-white/70">
-            Current manager: <span className="font-semibold text-white">{academy.manager_email}</span>
+          <p className="text-sm text-black/70">
+            Current manager: <span className="font-semibold text-black">{academy.manager_email}</span>
           </p>
         )}
 
@@ -77,13 +77,13 @@ export function AssignManagerModal({ academy, onClose, onAssigned }: AssignManag
         />
 
         {term.trim() !== "" && search.status === "loading" && (
-          <p className="text-sm text-white/50">Searching…</p>
+          <p className="text-sm text-gray-500">Searching…</p>
         )}
         {term.trim() !== "" && search.status === "error" && (
           <p className="text-sm text-red-400">{search.message}</p>
         )}
         {term.trim() !== "" && search.status === "ready" && search.results.length === 0 && (
-          <p className="text-sm text-white/50">No users match.</p>
+          <p className="text-sm text-gray-500">No users match.</p>
         )}
         {term.trim() !== "" && search.status === "ready" && search.results.length > 0 && (
           <ul className="flex max-h-64 flex-col gap-1.5 overflow-y-auto">
@@ -93,13 +93,13 @@ export function AssignManagerModal({ academy, onClose, onAssigned }: AssignManag
                   type="button"
                   onClick={() => handlePick(user)}
                   disabled={isAssigning}
-                  className="flex w-full items-center justify-between rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-left text-sm text-white/85 transition-colors hover:bg-white/10 disabled:opacity-60"
+                  className="flex w-full items-center justify-between rounded-lg border border-mint bg-white px-3 py-2 text-left text-sm text-black/80 transition-colors hover:bg-mint/15 disabled:opacity-60"
                 >
                   <span>
-                    <span className="font-semibold text-white">
+                    <span className="font-semibold text-black">
                       {user.first_name} {user.last_name}
                     </span>{" "}
-                    <span className="text-white/60">
+                    <span className="text-black/50">
                       {user.email} · {user.phone}
                     </span>
                   </span>

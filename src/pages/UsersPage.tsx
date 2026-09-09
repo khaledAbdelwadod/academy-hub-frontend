@@ -63,7 +63,7 @@ function Badge({ ok, label }: { ok: boolean; label: string }): ReactElement {
   return (
     <span
       className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold ${
-        ok ? "bg-teal/20 text-teal" : "bg-white/10 text-white/50"
+        ok ? "bg-teal/15 text-teal" : "bg-gray-100 text-gray-500"
       }`}
     >
       {label}
@@ -166,18 +166,18 @@ export function UsersPage(): ReactElement {
       {actionError && <p className="mb-4 shrink-0 text-sm text-red-400">{actionError}</p>}
       {state.status === "error" && <p className="mb-4 shrink-0 text-sm text-red-400">{state.message}</p>}
 
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-white/15 bg-black/45 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-mint bg-white shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)]">
         <div className="min-h-0 flex-1 overflow-auto">
           <table className="w-full min-w-[1150px] border-collapse text-sm">
             <thead>
-              <tr className="sticky top-0 z-10 border-b border-white/10 bg-black/45 text-left text-xs font-bold uppercase tracking-wider text-white/50 backdrop-blur-2xl">
+              <tr className="sticky top-0 z-10 border-b border-mint bg-white text-left text-xs font-bold uppercase tracking-wider text-gray-500">
                 {COLUMNS.map((column) => (
                   <th key={column.label} className="px-3 py-3">
                     {column.sortKey ? (
                       <button
                         type="button"
                         onClick={() => handleSort(column.sortKey!)}
-                        className="transition-colors hover:text-white"
+                        className="transition-colors hover:text-mint"
                       >
                         {column.label}
                         {sortIndicator(column.sortKey)}
@@ -189,7 +189,7 @@ export function UsersPage(): ReactElement {
                 ))}
                 <th className="px-3 py-3" />
               </tr>
-              <tr className="sticky top-[37px] z-10 border-b border-white/15 bg-black/45 backdrop-blur-2xl">
+              <tr className="sticky top-[37px] z-10 border-b border-mint bg-white">
                 {COLUMNS.map((column) => (
                   <th key={column.label} className="px-3 pb-3">
                     {column.filterKey && column.filterType === "text" && (
@@ -200,7 +200,7 @@ export function UsersPage(): ReactElement {
                           handleFilterChange(column.filterKey!, event.target.value)
                         }
                         placeholder="Search…"
-                        className="w-full rounded-md border border-white/15 bg-white/10 px-2 py-1 text-xs font-normal normal-case tracking-normal text-white placeholder:text-white/35 focus:border-coral focus:outline-none"
+                        className="w-full rounded-md border border-mint bg-white px-2 py-1 text-xs font-normal normal-case tracking-normal text-black placeholder:text-gray-400 focus:border-pine focus:outline-none"
                       />
                     )}
                     {column.filterKey && column.filterType === "date" && (
@@ -210,7 +210,7 @@ export function UsersPage(): ReactElement {
                         onChange={(event: ChangeEvent<HTMLInputElement>) =>
                           handleFilterChange(column.filterKey!, event.target.value)
                         }
-                        className="w-full rounded-md border border-white/15 bg-white/10 px-2 py-1 text-xs font-normal normal-case tracking-normal text-white focus:border-coral focus:outline-none"
+                        className="w-full rounded-md border border-mint bg-white px-2 py-1 text-xs font-normal normal-case tracking-normal text-black focus:border-pine focus:outline-none"
                       />
                     )}
                     {column.filterKey && column.filterType === "boolean" && (
@@ -219,17 +219,11 @@ export function UsersPage(): ReactElement {
                         onChange={(event: ChangeEvent<HTMLSelectElement>) =>
                           handleFilterChange(column.filterKey!, event.target.value)
                         }
-                        className="w-full rounded-md border border-white/15 bg-white/10 px-2 py-1 text-xs font-normal normal-case tracking-normal text-white focus:border-coral focus:outline-none"
+                        className="w-full rounded-md border border-mint bg-white px-2 py-1 text-xs font-normal normal-case tracking-normal text-black focus:border-pine focus:outline-none"
                       >
-                        <option className="bg-ink" value="">
-                          All
-                        </option>
-                        <option className="bg-ink" value="true">
-                          Yes
-                        </option>
-                        <option className="bg-ink" value="false">
-                          No
-                        </option>
+                        <option value="">All</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
                       </select>
                     )}
                   </th>
@@ -240,8 +234,8 @@ export function UsersPage(): ReactElement {
             <tbody>
               {state.status === "ready" &&
                 state.page.results.map((row) => (
-                  <tr key={row.id} className="border-b border-white/8 text-white/85 hover:bg-white/5">
-                    <td className="whitespace-nowrap px-3 py-3 font-semibold text-white">
+                  <tr key={row.id} className="border-b border-gray-100 text-black/80 hover:bg-mint/10">
+                    <td className="whitespace-nowrap px-3 py-3 font-semibold text-black">
                       {row.first_name} {row.middle_name} {row.last_name}
                     </td>
                     <td className="whitespace-nowrap px-3 py-3">{row.email}</td>
@@ -272,13 +266,13 @@ export function UsersPage(): ReactElement {
                 ))}
             </tbody>
           </table>
-          {state.status === "loading" && <p className="py-10 text-center text-white/70">Loading users…</p>}
+          {state.status === "loading" && <p className="py-10 text-center text-gray-500">Loading users…</p>}
           {state.status === "ready" && state.page.results.length === 0 && (
-            <p className="py-10 text-center text-white/50">No users match these filters.</p>
+            <p className="py-10 text-center text-gray-400">No users match these filters.</p>
           )}
         </div>
 
-        <div className="flex shrink-0 items-center justify-between border-t border-white/15 px-4 py-3 text-sm text-white/60">
+        <div className="flex shrink-0 items-center justify-between border-t border-mint px-4 py-3 text-sm text-gray-500">
           <span>{state.status === "ready" ? state.page.count : "…"} total</span>
           <div className="flex gap-2">
             <SmallButton
