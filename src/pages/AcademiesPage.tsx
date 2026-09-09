@@ -67,7 +67,7 @@ function FileLink({ url }: { url: string | null }): ReactElement {
     return <span className="text-gray-300">—</span>;
   }
   return (
-    <a href={url} target="_blank" rel="noreferrer" className="text-mint underline">
+    <a href={url} target="_blank" rel="noreferrer" className="text-mint-dark underline">
       View
     </a>
   );
@@ -178,7 +178,7 @@ export function AcademiesPage(): ReactElement {
         <div className="min-h-0 flex-1 overflow-auto">
           <table className="w-full min-w-[1250px] border-collapse text-sm">
             <thead>
-              <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-xs font-bold uppercase tracking-wider text-mint">
+              <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-xs font-bold uppercase tracking-wider text-mint-dark">
                 {COLUMNS.map((column) => (
                   <th key={column.label} className="whitespace-nowrap px-3 py-3">
                     {column.sortKey ? (

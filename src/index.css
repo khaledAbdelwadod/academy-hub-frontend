@@ -15,6 +15,7 @@
      and form field borders), added for the light-mode redesign of every
      signed-in app page - not used on the still-dark login/register/forgot pages. */
   --color-mint: #6bc296;
+  --color-mint-dark: #45a173;
   --color-pine: #03572c;
 }
 
