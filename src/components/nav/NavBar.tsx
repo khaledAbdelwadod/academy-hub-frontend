@@ -27,7 +27,7 @@ function capitalize(value: string): string {
 
 function tabClassName(active: boolean): string {
   return `rounded-lg px-3 py-1.5 text-sm font-bold transition-colors ${
-    active ? "bg-mint-dark text-white" : "text-black hover:bg-mint-dark hover:text-white"
+    active ? "bg-mint text-white" : "text-black hover:bg-mint hover:text-white"
   }`;
 }
 
@@ -114,7 +114,7 @@ export function NavBar({
                 onClick={() => setMenuOpen(false)}
                 className="fixed inset-0 z-10 cursor-default"
               />
-              <div className="absolute right-0 top-[calc(100%+10px)] z-20 w-52 overflow-hidden rounded-xl border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl backdrop-saturate-150">
+              <div className="absolute right-0 top-[calc(100%+10px)] z-20 w-52 overflow-hidden rounded-xl border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)]">
                 <button
                   type="button"
                   onClick={() => {
