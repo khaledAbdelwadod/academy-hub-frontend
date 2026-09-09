@@ -84,3 +84,59 @@ export async function updateMyAcademyProfile(
   }
   return (await response.json()) as ManagerAcademyProfile;
 }
+
+async function uploadAcademyFile(
+  subdomain: string,
+  path: string,
+  fieldName: string,
+  file: File,
+): Promise<ManagerAcademyProfile> {
+  const csrfToken = await fetchCsrfToken();
+  const formData = new FormData();
+  formData.append(fieldName, file);
+
+  const response = await fetch(`${API_BASE_URL}/api/academies/${subdomain}/${path}/`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "X-CSRFToken": csrfToken },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    if (response.status === 400) {
+      throw new ManagerAcademyError("Could not upload that file. Check its type and size.");
+    }
+    throw new ManagerAcademyError("Upload failed due to a server issue. Try again shortly.");
+  }
+  return (await response.json()) as ManagerAcademyProfile;
+}
+
+/**
+ * Upload or replace the academy's logo.
+ *
+ * @param subdomain - The academy's subdomain.
+ * @param file - The image file (max 5MB).
+ */
+export function uploadMyAcademyLogo(subdomain: string, file: File): Promise<ManagerAcademyProfile> {
+  return uploadAcademyFile(subdomain, "logo", "logo", file);
+}
+
+/**
+ * Upload or replace the academy's legal/registration document.
+ *
+ * @param subdomain - The academy's subdomain.
+ * @param file - A PDF or image file (max 10MB).
+ */
+export function uploadMyAcademyLegalDocument(subdomain: string, file: File): Promise<ManagerAcademyProfile> {
+  return uploadAcademyFile(subdomain, "legal-document", "legal_document", file);
+}
+
+/**
+ * Upload or replace the academy's login-page background video.
+ *
+ * @param subdomain - The academy's subdomain.
+ * @param file - An mp4/webm/mov file (max 100MB).
+ */
+export function uploadMyAcademyLoginVideo(subdomain: string, file: File): Promise<ManagerAcademyProfile> {
+  return uploadAcademyFile(subdomain, "login-video", "login_background_video", file);
+}
