@@ -12,6 +12,7 @@ export interface MyMembership {
   roles: string[];
   academy_name: string;
   academy_logo: string | null;
+  academy_login_background_video: string | null;
   academy_contact_phone: string;
 }
 

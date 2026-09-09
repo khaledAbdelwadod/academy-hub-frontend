@@ -50,10 +50,21 @@ function LogOutLink(): ReactElement {
   );
 }
 
-function CenteredCard({ children }: { children: ReactNode }): ReactElement {
+interface AcademyHomeShellProps {
+  logo: string | null;
+  academyName: string;
+  maxWidthClassName: string;
+  children: ReactNode;
+}
+
+/** Shared chrome for the academy-subdomain home screens: logo above the card,
+ * same layout as the login/register page. The academy's own login video goes
+ * behind this (rendered by AppShell, which already knows the route/academy). */
+function AcademyHomeShell({ logo, academyName, maxWidthClassName, children }: AcademyHomeShellProps): ReactElement {
   return (
     <div className="flex min-h-full flex-col items-center justify-center px-5 py-10">
-      <div className="animate-rise w-full max-w-[440px] rounded-[22px] border border-white/15 bg-black/20 px-8 py-9 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150">
+      <div className={`animate-rise flex w-full flex-col items-center ${maxWidthClassName}`}>
+        {logo && <img src={logo} alt={academyName} className="mb-7 max-h-24 max-w-[280px] object-contain" />}
         {children}
       </div>
       <LogOutLink />
@@ -61,26 +72,26 @@ function CenteredCard({ children }: { children: ReactNode }): ReactElement {
   );
 }
 
-function WelcomeCard({ academyName, academyLogo }: { academyName: string; academyLogo: string | null }): ReactElement {
+interface WelcomeCardProps {
+  academyName: string;
+  academyLogo: string | null;
+}
+
+function WelcomeCard({ academyName, academyLogo }: WelcomeCardProps): ReactElement {
   return (
-    <CenteredCard>
-      {academyLogo && (
-        <img
-          src={academyLogo}
-          alt={academyName}
-          className="mx-auto mb-7 max-h-24 max-w-[280px] object-contain"
-        />
-      )}
-      <p className="text-xs font-bold uppercase tracking-wider text-teal [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
-        Welcome back
-      </p>
-      <h2 className="mt-1.5 text-2xl font-extrabold text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
-        {academyName}
-      </h2>
-      <p className="mt-2.5 text-sm leading-relaxed text-white/80 [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
-        Your dashboard is on its way — check back soon.
-      </p>
-    </CenteredCard>
+    <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-[440px]">
+      <div className="w-full rounded-[22px] border border-white/15 bg-black/20 px-8 py-9 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150">
+        <p className="text-xs font-bold uppercase tracking-wider text-teal [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
+          Welcome back
+        </p>
+        <h2 className="mt-1.5 text-2xl font-extrabold text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
+          {academyName}
+        </h2>
+        <p className="mt-2.5 text-sm leading-relaxed text-white/80 [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
+          Your dashboard is on its way — check back soon.
+        </p>
+      </div>
+    </AcademyHomeShell>
   );
 }
 
@@ -92,15 +103,8 @@ interface NotAMemberCardProps {
 
 function NotAMemberCard({ academyName, academyLogo, contactPhone }: NotAMemberCardProps): ReactElement {
   return (
-    <div className="flex min-h-full flex-col items-center justify-center px-5 py-10">
-      <div className="animate-rise relative w-full max-w-[500px] rounded-[22px] border border-white/15 bg-black/20 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
-        {academyLogo && (
-          <img
-            src={academyLogo}
-            alt={academyName}
-            className="mx-auto mb-7 max-h-24 max-w-[280px] object-contain"
-          />
-        )}
+    <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-[500px]">
+      <div className="w-full rounded-[22px] border border-white/15 bg-black/20 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
         <h2 className="text-xl font-extrabold leading-tight text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
           Welcome to{" "}
           <span className="bg-gradient-to-r from-sand to-coral bg-clip-text text-transparent">{academyName}</span>{" "}
@@ -125,8 +129,7 @@ function NotAMemberCard({ academyName, academyLogo, contactPhone }: NotAMemberCa
           </a>
         )}
       </div>
-      <LogOutLink />
-    </div>
+    </AcademyHomeShell>
   );
 }
 

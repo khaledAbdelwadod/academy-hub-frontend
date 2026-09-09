@@ -5,6 +5,7 @@ import type { ReactElement } from "react";
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { logout } from "../api/authApi";
+import { VideoBackdrop } from "../components/auth/VideoBackdrop";
 import { NavBar } from "../components/nav/NavBar";
 import { AccountInfoModal } from "../components/profile/AccountInfoModal";
 import { ChangePasswordModal } from "../components/profile/ChangePasswordModal";
@@ -56,8 +57,20 @@ export function AppShell(): ReactElement {
 
   const academyRoles = membership.status === "ready" ? membership.membership.roles : [];
 
+  // The academy's own home screen (welcome/not-a-member) is still part of that
+  // academy's "arrival" experience, branded like its login page - its own
+  // video behind everything. Every other signed-in page (Users, Academies,
+  // Academy Profile, ...) uses the flat backdrop instead.
+  const isAcademyHomeRoute = location.pathname === "/myaccount/home" && membership.status !== "not-applicable";
+  const academyVideo = membership.status === "ready" ? membership.membership.academy_login_background_video : null;
+
   return (
-    <div className="relative flex h-screen flex-col overflow-hidden bg-[#00000059]">
+    <div className="relative flex h-screen flex-col overflow-hidden">
+      {isAcademyHomeRoute ? (
+        <VideoBackdrop sources={academyVideo ? [academyVideo] : undefined} />
+      ) : (
+        <div className="fixed inset-0 -z-10 bg-[#00000059]" />
+      )}
       {showNavBar && (
         <NavBar
           user={user}
