@@ -48,7 +48,7 @@ export function LoginPage(): ReactElement {
     <div className="flex min-h-screen items-center justify-center px-5 py-10">
       <VideoBackdrop sources={academy?.login_background_video ? [academy.login_background_video] : undefined} />
 
-      <div className="animate-rise flex w-full max-w-[760px] flex-col items-center">
+      <div className="flex w-full max-w-[760px] flex-col items-center">
         {academy ? (
           academy.logo ? (
             <img src={academy.logo} alt={academy.name} className="mb-7 max-h-24 max-w-[280px] object-contain" />

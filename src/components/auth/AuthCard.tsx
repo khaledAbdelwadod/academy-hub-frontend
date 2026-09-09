@@ -33,7 +33,7 @@ export function AuthCard(): ReactElement {
     <div
       className={`relative w-full rounded-[22px] border border-mint bg-white/40 px-8 py-8 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl backdrop-saturate-150 transition-[max-width] duration-300 ${cardWidthClass}`}
     >
-      <div key={mode} className="animate-panel-in">
+      <div key={mode}>
         {mode === "signin" && (
           <SignInForm
             onForgotPassword={() => setMode("forgot")}
