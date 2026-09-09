@@ -145,7 +145,7 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
 
       {state.status === "error" && <p className="text-sm text-red-400">{state.message}</p>}
 
-      <AuthButton type="submit" disabled={isLoading}>
+      <AuthButton type="submit" theme="dark" disabled={isLoading}>
         {isLoading ? "Creating account…" : "Create account"}
       </AuthButton>
 

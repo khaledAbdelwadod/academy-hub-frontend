@@ -42,7 +42,9 @@ export function ForgotPasswordForm({
           theme="dark"
           required
         />
-        <AuthButton type="submit">Send reset code</AuthButton>
+        <AuthButton type="submit" theme="dark">
+          Send reset code
+        </AuthButton>
       </form>
     </div>
   );

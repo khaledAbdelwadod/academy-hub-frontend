@@ -62,7 +62,7 @@ export function SignInForm({ onForgotPassword, onSwitchToRegister }: SignInFormP
         </button>
       </div>
 
-      <AuthButton type="submit" fullWidth={false} disabled={isLoading}>
+      <AuthButton type="submit" fullWidth={false} theme="dark" disabled={isLoading}>
         {isLoading ? "Signing in…" : "Sign in"}
       </AuthButton>
 

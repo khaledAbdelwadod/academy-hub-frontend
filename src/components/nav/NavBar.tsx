@@ -26,7 +26,7 @@ function capitalize(value: string): string {
 }
 
 function tabClassName(active: boolean): string {
-  return `text-sm font-bold transition-colors ${active ? "text-mint" : "text-gray-500 hover:text-mint"}`;
+  return `rounded-lg px-3 py-1.5 text-sm font-bold text-black transition-colors ${active ? "bg-mint" : "hover:bg-mint/60"}`;
 }
 
 export function NavBar({
@@ -48,8 +48,8 @@ export function NavBar({
   const isAcademyManager = academyRoles.includes("manager");
 
   return (
-    <nav className="sticky top-0 z-20 flex items-center justify-between border-b border-mint bg-white px-4 py-3.5 sm:px-6">
-      <div className="flex items-center gap-4 sm:gap-6">
+    <nav className="sticky top-4 z-20 mx-4 mt-4 flex items-center justify-between rounded-2xl border border-mint bg-white px-4 py-3 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.3)] sm:mx-6 sm:px-6">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         <button type="button" onClick={onNavigateHome} className={tabClassName(activeView === "home")}>
           Home
         </button>

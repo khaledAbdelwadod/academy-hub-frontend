@@ -57,20 +57,14 @@ export function AppShell(): ReactElement {
 
   const academyRoles = membership.status === "ready" ? membership.membership.roles : [];
 
-  // The academy's own home screen (welcome/not-a-member) is still part of that
-  // academy's "arrival" experience, branded like its login page - its own
-  // video behind everything. Every other signed-in page (Users, Academies,
-  // Academy Profile, ...) uses the flat backdrop instead.
-  const isAcademyHomeRoute = location.pathname === "/myaccount/home" && membership.status !== "not-applicable";
+  // Every signed-in page keeps the login video behind it - the academy's own
+  // video on its subdomain, the generic pool on www - with the white nav/cards
+  // floating on top. Login/register/forgot already do the same thing.
   const academyVideo = membership.status === "ready" ? membership.membership.academy_login_background_video : null;
 
   return (
     <div className="relative flex h-screen flex-col overflow-hidden">
-      {isAcademyHomeRoute ? (
-        <VideoBackdrop sources={academyVideo ? [academyVideo] : undefined} />
-      ) : (
-        <div className="fixed inset-0 -z-10 bg-white" />
-      )}
+      <VideoBackdrop sources={academyVideo ? [academyVideo] : undefined} />
       {showNavBar && (
         <NavBar
           user={user}

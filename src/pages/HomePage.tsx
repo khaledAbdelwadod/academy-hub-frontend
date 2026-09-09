@@ -216,7 +216,7 @@ function WwwAccountHome(): ReactElement {
   if (state.status === "error") {
     return (
       <div className="flex min-h-full items-center justify-center px-4">
-        <p className="text-gray-500">Could not load your academies.</p>
+        <p className="text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.6)]">Could not load your academies.</p>
       </div>
     );
   }
@@ -224,7 +224,9 @@ function WwwAccountHome(): ReactElement {
   if (state.academies.length === 0) {
     return (
       <div className="flex min-h-full items-center justify-center px-4">
-        <p className="text-gray-500">You haven&apos;t joined an academy yet.</p>
+        <p className="text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.6)]">
+          You haven&apos;t joined an academy yet.
+        </p>
       </div>
     );
   }

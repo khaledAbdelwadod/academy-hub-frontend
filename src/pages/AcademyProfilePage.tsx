@@ -130,7 +130,7 @@ export function AcademyProfilePage(): ReactElement {
   if (state.status === "error") {
     return (
       <div className="flex min-h-full items-center justify-center px-4">
-        <p className="text-gray-500">{state.message}</p>
+        <p className="text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.6)]">{state.message}</p>
       </div>
     );
   }

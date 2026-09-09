@@ -92,7 +92,7 @@ export function OtpForm({ email, onBack }: OtpFormProps): ReactElement {
 
         {verifyState.status === "error" && <p className="text-sm text-red-400">{verifyState.message}</p>}
 
-        <AuthButton type="submit" disabled={isVerifying}>
+        <AuthButton type="submit" theme="dark" disabled={isVerifying}>
           {isVerifying ? "Verifying…" : "Verify account"}
         </AuthButton>
 
