@@ -68,7 +68,7 @@ function WelcomeCard({ academyName, academyLogo }: { academyName: string; academ
         <img
           src={academyLogo}
           alt={academyName}
-          className="mx-auto mb-5 max-h-16 max-w-[60%] object-contain drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+          className="mx-auto mb-7 max-h-24 max-w-[280px] object-contain"
         />
       )}
       <p className="text-xs font-bold uppercase tracking-wider text-teal [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
@@ -98,7 +98,7 @@ function NotAMemberCard({ academyName, academyLogo, contactPhone }: NotAMemberCa
           <img
             src={academyLogo}
             alt={academyName}
-            className="mx-auto mb-5 max-h-16 max-w-[60%] object-contain drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+            className="mx-auto mb-7 max-h-24 max-w-[280px] object-contain"
           />
         )}
         <h2 className="text-xl font-extrabold leading-tight text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
