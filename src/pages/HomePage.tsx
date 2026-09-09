@@ -63,7 +63,7 @@ interface AcademyHomeShellProps {
 function AcademyHomeShell({ logo, academyName, maxWidthClassName, children }: AcademyHomeShellProps): ReactElement {
   return (
     <div className="flex min-h-full flex-col items-center justify-center px-5 py-10">
-      <div className={`animate-rise flex w-full flex-col items-center ${maxWidthClassName}`}>
+      <div className={`flex w-full flex-col items-center ${maxWidthClassName}`}>
         {logo && <img src={logo} alt={academyName} className="mb-7 max-h-24 max-w-[280px] object-contain" />}
         {children}
       </div>
