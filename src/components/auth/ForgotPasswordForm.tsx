@@ -19,14 +19,14 @@ export function ForgotPasswordForm({
       <button
         type="button"
         onClick={onBackToSignIn}
-        className="flex items-center gap-1.5 self-start text-sm text-white/75 hover:text-white"
+        className="flex items-center gap-1.5 self-start text-sm text-black/60 hover:text-black"
       >
         &larr; Back to sign in
       </button>
 
       <div>
-        <h2 className="mb-1.5 text-xl font-extrabold text-white">Reset your password</h2>
-        <p className="text-sm leading-relaxed text-white/75">
+        <h2 className="mb-1.5 text-xl font-extrabold text-black">Reset your password</h2>
+        <p className="text-sm leading-relaxed text-black/60">
           Enter the email on your account and we&apos;ll send a 6-digit code to reset your
           password.
         </p>
@@ -39,12 +39,9 @@ export function ForgotPasswordForm({
           type="email"
           placeholder="you@example.com"
           autoComplete="email"
-          theme="dark"
           required
         />
-        <AuthButton type="submit" theme="dark">
-          Send reset code
-        </AuthButton>
+        <AuthButton type="submit">Send reset code</AuthButton>
       </form>
     </div>
   );

@@ -59,21 +59,21 @@ export function OtpForm({ email, onBack }: OtpFormProps): ReactElement {
       <button
         type="button"
         onClick={onBack}
-        className="flex items-center gap-1.5 self-start text-sm text-white/75 hover:text-white"
+        className="flex items-center gap-1.5 self-start text-sm text-black/60 hover:text-black"
       >
         &larr; Back
       </button>
 
       <div>
-        <h2 className="mb-1.5 text-xl font-extrabold text-white">Verify your email</h2>
-        <p className="text-sm leading-relaxed text-white/75">
-          Enter the 6-digit code we sent to <span className="font-semibold text-white">{email}</span>.
+        <h2 className="mb-1.5 text-xl font-extrabold text-black">Verify your email</h2>
+        <p className="text-sm leading-relaxed text-black/60">
+          Enter the 6-digit code we sent to <span className="font-semibold text-black">{email}</span>.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="otp-code" className="text-xs font-bold uppercase tracking-wider text-white/90">
+          <label htmlFor="otp-code" className="text-xs font-bold uppercase tracking-wider text-black/80">
             Verification code
           </label>
           <input
@@ -86,17 +86,17 @@ export function OtpForm({ email, onBack }: OtpFormProps): ReactElement {
             autoComplete="one-time-code"
             placeholder="000000"
             required
-            className="w-full rounded-xl border border-white/30 bg-white/20 px-3.5 py-3 text-center text-2xl font-bold tracking-[0.5em] text-white placeholder:text-white/40 transition-colors focus:border-coral focus:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-coral/40"
+            className="w-full rounded-xl border border-mint bg-white px-3.5 py-3 text-center text-2xl font-bold tracking-[0.5em] text-black placeholder:text-gray-300 transition-colors focus:border-pine focus:outline-none focus-visible:ring-2 focus-visible:ring-pine/30"
           />
         </div>
 
         {verifyState.status === "error" && <p className="text-sm text-red-400">{verifyState.message}</p>}
 
-        <AuthButton type="submit" theme="dark" disabled={isVerifying}>
+        <AuthButton type="submit" disabled={isVerifying}>
           {isVerifying ? "Verifying…" : "Verify account"}
         </AuthButton>
 
-        <p className="text-center text-sm text-white/75">
+        <p className="text-center text-sm text-black/60">
           {resendState.status === "sent" ? (
             "A new code is on its way."
           ) : (
@@ -106,7 +106,7 @@ export function OtpForm({ email, onBack }: OtpFormProps): ReactElement {
                 type="button"
                 onClick={handleResend}
                 disabled={isResending}
-                className="font-bold text-white underline decoration-transparent underline-offset-2 transition-colors hover:decoration-current disabled:opacity-60"
+                className="font-bold text-black underline decoration-transparent underline-offset-2 transition-colors hover:decoration-current disabled:opacity-60"
               >
                 {isResending ? "Sending…" : "Resend"}
               </button>

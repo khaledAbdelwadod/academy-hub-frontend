@@ -31,7 +31,7 @@ export function AuthCard(): ReactElement {
 
   return (
     <div
-      className={`relative w-full rounded-[22px] border border-white/15 bg-black/45 px-8 py-8 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-150 transition-[max-width] duration-300 ${cardWidthClass}`}
+      className={`relative w-full rounded-[22px] border border-mint bg-white px-8 py-8 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] transition-[max-width] duration-300 ${cardWidthClass}`}
     >
       <div key={mode} className="animate-panel-in">
         {mode === "signin" && (

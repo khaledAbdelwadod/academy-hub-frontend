@@ -25,7 +25,7 @@ export function SignInForm({ onForgotPassword, onSwitchToRegister }: SignInFormP
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="mb-0.5 text-xl font-extrabold text-white">Sign in</h2>
+      <h2 className="mb-0.5 text-xl font-extrabold text-black">Sign in</h2>
 
       <FormField
         id="si-email"
@@ -34,7 +34,6 @@ export function SignInForm({ onForgotPassword, onSwitchToRegister }: SignInFormP
         type="email"
         placeholder="you@example.com"
         autoComplete="email"
-        theme="dark"
         required
       />
       <PasswordField
@@ -42,36 +41,35 @@ export function SignInForm({ onForgotPassword, onSwitchToRegister }: SignInFormP
         label="Password"
         placeholder="••••••••••"
         autoComplete="current-password"
-        theme="dark"
         required
       />
 
       {state.status === "error" && <p className="text-sm text-red-400">{state.message}</p>}
 
       <div className="flex items-center justify-between text-sm">
-        <label className="flex items-center gap-2 text-white/75">
-          <input type="checkbox" className="size-3.5 accent-coral" />
+        <label className="flex items-center gap-2 text-black/60">
+          <input type="checkbox" className="size-3.5 accent-mint" />
           Keep me signed in
         </label>
         <button
           type="button"
           onClick={onForgotPassword}
-          className="text-white/75 underline decoration-transparent underline-offset-2 transition-colors hover:text-white hover:decoration-current"
+          className="text-black/60 underline decoration-transparent underline-offset-2 transition-colors hover:text-black hover:decoration-current"
         >
           Forgot password?
         </button>
       </div>
 
-      <AuthButton type="submit" fullWidth={false} theme="dark" disabled={isLoading}>
+      <AuthButton type="submit" fullWidth={false} disabled={isLoading}>
         {isLoading ? "Signing in…" : "Sign in"}
       </AuthButton>
 
-      <p className="mt-1 text-center text-sm text-white/75">
+      <p className="mt-1 text-center text-sm text-black/60">
         New to Academy Hub?{" "}
         <button
           type="button"
           onClick={onSwitchToRegister}
-          className="font-bold text-white underline decoration-transparent underline-offset-2 transition-colors hover:decoration-current"
+          className="font-bold text-black underline decoration-transparent underline-offset-2 transition-colors hover:decoration-current"
         >
           Create an account
         </button>

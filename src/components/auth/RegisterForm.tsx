@@ -57,7 +57,7 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="mb-0.5 text-xl font-extrabold text-white">Create your account</h2>
+      <h2 className="mb-0.5 text-xl font-extrabold text-black">Create your account</h2>
 
       <div className="grid grid-cols-3 gap-3">
         <FormField
@@ -66,7 +66,6 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           label="First name"
           placeholder="Amira"
           autoComplete="given-name"
-          theme="dark"
           required
         />
         <FormField
@@ -76,7 +75,6 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           optional
           placeholder="Youssef"
           autoComplete="additional-name"
-          theme="dark"
         />
         <FormField
           id="rg-last"
@@ -84,7 +82,6 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           label="Last name"
           placeholder="Hassan"
           autoComplete="family-name"
-          theme="dark"
           required
         />
       </div>
@@ -97,7 +94,6 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           type="email"
           placeholder="you@example.com"
           autoComplete="email"
-          theme="dark"
           required
         />
         <FormField
@@ -107,7 +103,6 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           type="tel"
           placeholder="+20 100 123 4567"
           autoComplete="tel"
-          theme="dark"
           required
         />
         <FormField
@@ -116,7 +111,6 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           label="Date of birth"
           type="date"
           autoComplete="bday"
-          theme="dark"
           required
         />
       </div>
@@ -127,7 +121,6 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           label="Password"
           placeholder="••••••••••"
           autoComplete="new-password"
-          theme="dark"
           required
         />
         <PasswordField
@@ -135,26 +128,25 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           label="Confirm password"
           placeholder="••••••••••"
           autoComplete="new-password"
-          theme="dark"
           required
         />
-        <p className="self-end text-xs leading-relaxed text-white/65">
+        <p className="self-end text-xs leading-relaxed text-black/50">
           By continuing you agree to Academy Hub&apos;s Terms and Privacy Policy.
         </p>
       </div>
 
       {state.status === "error" && <p className="text-sm text-red-400">{state.message}</p>}
 
-      <AuthButton type="submit" theme="dark" disabled={isLoading}>
+      <AuthButton type="submit" disabled={isLoading}>
         {isLoading ? "Creating account…" : "Create account"}
       </AuthButton>
 
-      <p className="text-center text-sm text-white/75">
+      <p className="text-center text-sm text-black/60">
         Already have an account?{" "}
         <button
           type="button"
           onClick={onSwitchToSignIn}
-          className="font-bold text-white underline decoration-transparent underline-offset-2 transition-colors hover:decoration-current"
+          className="font-bold text-black underline decoration-transparent underline-offset-2 transition-colors hover:decoration-current"
         >
           Sign in
         </button>
