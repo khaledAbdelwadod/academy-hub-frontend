@@ -5,7 +5,6 @@ import type { ReactElement } from "react";
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { logout } from "../api/authApi";
-import { VideoBackdrop } from "../components/auth/VideoBackdrop";
 import { NavBar } from "../components/nav/NavBar";
 import { AccountInfoModal } from "../components/profile/AccountInfoModal";
 import { ChangePasswordModal } from "../components/profile/ChangePasswordModal";
@@ -58,8 +57,7 @@ export function AppShell(): ReactElement {
   const academyRoles = membership.status === "ready" ? membership.membership.roles : [];
 
   return (
-    <div className="relative flex h-screen flex-col overflow-hidden">
-      <VideoBackdrop />
+    <div className="relative flex h-screen flex-col overflow-hidden bg-ink">
       {showNavBar && (
         <NavBar
           user={user}
