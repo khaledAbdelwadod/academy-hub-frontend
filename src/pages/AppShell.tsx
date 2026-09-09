@@ -57,7 +57,7 @@ export function AppShell(): ReactElement {
   const academyRoles = membership.status === "ready" ? membership.membership.roles : [];
 
   return (
-    <div className="relative flex h-screen flex-col overflow-hidden bg-ink">
+    <div className="relative flex h-screen flex-col overflow-hidden bg-[#00000059]">
       {showNavBar && (
         <NavBar
           user={user}
