@@ -176,7 +176,7 @@ export function UsersPage(): ReactElement {
         <div className="min-h-0 flex-1 overflow-auto">
           <table className="w-full min-w-[1150px] border-collapse text-sm">
             <thead>
-              <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-xs font-bold uppercase tracking-wider text-mint backdrop-blur-2xl backdrop-saturate-150">
+              <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-xs font-bold uppercase tracking-wider text-mint">
                 {COLUMNS.map((column) => (
                   <th key={column.label} className="whitespace-nowrap px-3 py-3">
                     {column.sortKey ? (
@@ -195,7 +195,7 @@ export function UsersPage(): ReactElement {
                 ))}
                 <th className="px-3 py-3" />
               </tr>
-              <tr className="sticky top-[37px] z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 backdrop-blur-2xl backdrop-saturate-150">
+              <tr className="sticky top-[37px] z-10 divide-x divide-gray-300 border-b border-mint bg-white/40">
                 {COLUMNS.map((column) => (
                   <th key={column.label} className="px-3 pb-3 align-middle">
                     {column.filterKey && column.filterType === "text" && (
