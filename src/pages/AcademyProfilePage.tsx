@@ -141,7 +141,7 @@ export function AcademyProfilePage(): ReactElement {
   const { profile } = state;
 
   return (
-    <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 px-4 py-8 sm:px-8 lg:grid-cols-2">
+    <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-6 px-4 py-8 sm:px-8 lg:grid-cols-3">
       <div className="rounded-[22px] border border-mint bg-white/40 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -223,19 +223,15 @@ export function AcademyProfilePage(): ReactElement {
       )}
 
       {subdomain && (
-        <div className="rounded-[22px] border border-mint bg-white/40 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8 lg:col-span-2">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h2 className="text-2xl font-extrabold text-black">Join Request Form</h2>
-              <p className="mt-1 text-sm text-black/60">
-                Define the questions someone must answer to request joining your academy. Leave it empty
-                to show the default &quot;contact us&quot; message instead.
-              </p>
-            </div>
-            <SmallButton variant="primary" onClick={() => setShowFormBuilder(true)}>
-              Edit form
-            </SmallButton>
-          </div>
+        <div className="rounded-[22px] border border-mint bg-white/40 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
+          <h2 className="text-2xl font-extrabold text-black">Join Request Form</h2>
+          <p className="mt-1 text-sm text-black/60">
+            Define the questions someone must answer to request joining your academy. Leave it empty to
+            show the default &quot;contact us&quot; message instead.
+          </p>
+          <SmallButton variant="primary" onClick={() => setShowFormBuilder(true)} className="mt-4">
+            Edit form
+          </SmallButton>
         </div>
       )}
 
