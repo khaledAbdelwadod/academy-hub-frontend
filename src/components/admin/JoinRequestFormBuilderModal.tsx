@@ -119,6 +119,10 @@ export function JoinRequestFormBuilderModal({ subdomain, onClose }: JoinRequestF
           Anyone who isn&apos;t a member yet and visits your academy will see this form instead of the default
           &quot;contact us&quot; message - as soon as it has at least one field.
         </p>
+        <p className="rounded-lg border border-mint bg-white px-3 py-2 text-xs text-black/50">
+          Name, email, phone, and date of birth are pulled automatically from the applicant&apos;s account -
+          no need to add fields for those, they&apos;ll already show up in Membership Requests.
+        </p>
 
         {state.status === "loading" && <p className="text-sm text-gray-500">Loading…</p>}
         {state.status === "error" && <p className="text-sm text-red-400">{state.message}</p>}
