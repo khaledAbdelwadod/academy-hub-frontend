@@ -83,8 +83,16 @@ export function MembershipRequestsPage(): ReactElement {
       .finally(() => setBusyId(null));
   }
 
+  // Every pending request is answered against the academy's current set of join-request
+  // fields (see ManagerMembershipRequestListView), so any row's answers give the full,
+  // consistently-ordered column list - no separate fields fetch needed.
+  const answerColumns =
+    state.status === "ready" && state.page.results.length > 0
+      ? state.page.results[0]!.answers.map((entry) => ({ fieldId: entry.field_id, label: entry.label }))
+      : [];
+
   return (
-    <div className="mx-auto flex h-full w-full max-w-[1100px] flex-col px-4 py-6 sm:px-8">
+    <div className="mx-auto flex h-full w-full max-w-[1600px] flex-col px-4 py-6 sm:px-8">
       <div className="mb-4 flex shrink-0 items-center">
         <input
           type="text"
@@ -104,72 +112,89 @@ export function MembershipRequestsPage(): ReactElement {
         </p>
       )}
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
-        {state.status === "loading" && <p className="py-10 text-center text-gray-500">Loading requests…</p>}
-        {state.status === "ready" && state.page.results.length === 0 && (
-          <p className="py-10 text-center text-gray-400">No pending requests.</p>
-        )}
-
-        {state.status === "ready" && state.page.results.length > 0 && (
-          <div className="flex flex-col gap-4">
-            {state.page.results.map((request) => (
-              <div
-                key={request.id}
-                className="rounded-[22px] border border-mint bg-white/40 p-5 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-6"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="font-semibold text-black">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150">
+        <div className="min-h-0 flex-1 overflow-auto">
+          <table className="w-full min-w-[900px] border-collapse text-sm">
+            <thead>
+              <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-xs font-bold uppercase tracking-wider text-mint">
+                <th className="whitespace-nowrap px-3 py-3">Name</th>
+                <th className="whitespace-nowrap px-3 py-3">Email</th>
+                <th className="whitespace-nowrap px-3 py-3">Phone</th>
+                <th className="whitespace-nowrap px-3 py-3">Date of birth</th>
+                {answerColumns.map((column) => (
+                  <th key={column.fieldId} className="whitespace-nowrap px-3 py-3">
+                    {column.label}
+                  </th>
+                ))}
+                <th className="whitespace-nowrap px-3 py-3">Requested</th>
+                <th className="px-3 py-3" />
+              </tr>
+            </thead>
+            <tbody>
+              {state.status === "ready" &&
+                state.page.results.map((request) => (
+                  <tr
+                    key={request.id}
+                    className="divide-x divide-gray-300 border-b border-gray-300 text-black/80 hover:bg-mint/10"
+                  >
+                    <td className="whitespace-nowrap px-3 py-3 font-semibold text-black">
                       {request.first_name} {request.last_name}
-                    </p>
-                    <p className="text-sm text-black/60">
-                      {request.email} · {request.phone} · {formatDate(request.date_of_birth)}
-                    </p>
-                    <p className="mt-0.5 text-xs text-black/40">Requested {formatDate(request.joined_at)}</p>
-                  </div>
-                  <div className="flex shrink-0 gap-2">
-                    <SmallButton
-                      variant="primary"
-                      disabled={busyId === request.id}
-                      onClick={() => handleApprove(request)}
-                    >
-                      Approve
-                    </SmallButton>
-                    <SmallButton variant="danger" disabled={busyId === request.id} onClick={() => handleReject(request)}>
-                      Reject
-                    </SmallButton>
-                  </div>
-                </div>
-
-                {request.answers.length > 0 && (
-                  <dl className="mt-4 flex flex-col gap-2.5 border-t border-mint pt-4">
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3">{request.email}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{request.phone}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{formatDate(request.date_of_birth)}</td>
                     {request.answers.map((entry) => (
-                      <div key={entry.field_id}>
-                        <dt className="text-xs font-bold uppercase tracking-wide text-mint">{entry.label}</dt>
-                        <dd className="mt-0.5 text-sm text-black/80">{entry.answer || <span className="text-black/30">—</span>}</dd>
-                      </div>
+                      <td key={entry.field_id} className="px-3 py-3">
+                        {entry.answer || <span className="text-gray-300">—</span>}
+                      </td>
                     ))}
-                  </dl>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+                    <td className="whitespace-nowrap px-3 py-3">{formatDate(request.joined_at)}</td>
+                    <td className="whitespace-nowrap px-3 py-3 text-right">
+                      <div className="flex justify-end gap-2">
+                        <SmallButton
+                          variant="primary"
+                          disabled={busyId === request.id}
+                          onClick={() => handleApprove(request)}
+                        >
+                          Approve
+                        </SmallButton>
+                        <SmallButton
+                          variant="danger"
+                          disabled={busyId === request.id}
+                          onClick={() => handleReject(request)}
+                        >
+                          Reject
+                        </SmallButton>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+          {state.status === "loading" && <p className="py-10 text-center text-gray-500">Loading requests…</p>}
+          {state.status === "ready" && state.page.results.length === 0 && (
+            <p className="py-10 text-center text-gray-400">No pending requests.</p>
+          )}
+        </div>
 
-      {state.status === "ready" && (
-        <div className="mt-4 flex shrink-0 items-center justify-between text-sm text-gray-500">
-          <span>{state.page.count} total</span>
+        <div className="flex shrink-0 items-center justify-between border-t border-mint px-4 py-3 text-sm text-gray-500">
+          <span>{state.status === "ready" ? state.page.count : "…"} total</span>
           <div className="flex gap-2">
-            <SmallButton disabled={!state.page.previous} onClick={() => state.page.previous && load(state.page.previous)}>
+            <SmallButton
+              disabled={state.status !== "ready" || !state.page.previous}
+              onClick={() => state.status === "ready" && state.page.previous && load(state.page.previous)}
+            >
               Previous
             </SmallButton>
-            <SmallButton disabled={!state.page.next} onClick={() => state.page.next && load(state.page.next)}>
+            <SmallButton
+              disabled={state.status !== "ready" || !state.page.next}
+              onClick={() => state.status === "ready" && state.page.next && load(state.page.next)}
+            >
               Next
             </SmallButton>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
