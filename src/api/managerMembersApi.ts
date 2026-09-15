@@ -33,6 +33,9 @@ export interface ManagerMemberList {
 /** Per-column search values and sort order for the members list; empty/undefined values are omitted. */
 export interface ManagerMemberListQuery {
   name?: string;
+  email?: string;
+  phone?: string;
+  date_of_birth?: string;
   role?: string;
   status?: string;
   ordering?: string;

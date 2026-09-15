@@ -18,7 +18,14 @@ type LoadState =
 
 type FilterValues = Omit<ManagerMemberListQuery, "ordering">;
 
-const EMPTY_FILTERS: FilterValues = { name: "", role: "", status: "" };
+const EMPTY_FILTERS: FilterValues = {
+  name: "",
+  email: "",
+  phone: "",
+  date_of_birth: "",
+  role: "",
+  status: "",
+};
 
 const ROLE_OPTIONS: { value: MemberRole; label: string }[] = [
   { value: "admin", label: "Admin" },
@@ -170,9 +177,34 @@ export function AcademyMembersPage(): ReactElement {
                     className="w-full rounded-md border border-mint bg-white px-2 py-1 text-xs font-normal normal-case tracking-normal text-black placeholder:text-gray-400 focus:border-pine focus:outline-none"
                   />
                 </th>
-                <th className="px-3 pb-3 align-middle" />
-                <th className="px-3 pb-3 align-middle" />
-                <th className="px-3 pb-3 align-middle" />
+                <th className="px-3 pb-3 align-middle">
+                  <input
+                    type="text"
+                    value={filters.email}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => handleFilterChange("email", event.target.value)}
+                    placeholder="Search…"
+                    className="w-full rounded-md border border-mint bg-white px-2 py-1 text-xs font-normal normal-case tracking-normal text-black placeholder:text-gray-400 focus:border-pine focus:outline-none"
+                  />
+                </th>
+                <th className="px-3 pb-3 align-middle">
+                  <input
+                    type="text"
+                    value={filters.phone}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => handleFilterChange("phone", event.target.value)}
+                    placeholder="Search…"
+                    className="w-full rounded-md border border-mint bg-white px-2 py-1 text-xs font-normal normal-case tracking-normal text-black placeholder:text-gray-400 focus:border-pine focus:outline-none"
+                  />
+                </th>
+                <th className="px-3 pb-3 align-middle">
+                  <input
+                    type="date"
+                    value={filters.date_of_birth}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                      handleFilterChange("date_of_birth", event.target.value)
+                    }
+                    className="w-full rounded-md border border-mint bg-white px-2 py-1 text-xs font-normal normal-case tracking-normal text-black focus:border-pine focus:outline-none"
+                  />
+                </th>
                 <th className="px-3 pb-3 align-middle">
                   <select
                     value={filters.role}
