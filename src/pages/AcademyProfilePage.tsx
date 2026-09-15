@@ -11,9 +11,11 @@ import {
   uploadMyAcademyLoginVideo,
   uploadMyAcademyLogo,
 } from "../api/managerAcademyApi";
+import { JoinRequestFormBuilderModal } from "../components/admin/JoinRequestFormBuilderModal";
 import { AuthButton } from "../components/ui/AuthButton";
 import { FormField } from "../components/ui/FormField";
 import { ReadOnlyField } from "../components/ui/ReadOnlyField";
+import { SmallButton } from "../components/ui/SmallButton";
 import { logger } from "../utils/logger";
 import { getAcademySubdomain } from "../utils/subdomain";
 
@@ -83,6 +85,7 @@ export function AcademyProfilePage(): ReactElement {
   const subdomain = getAcademySubdomain();
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [saveState, setSaveState] = useState<SaveState>({ status: "idle" });
+  const [showFormBuilder, setShowFormBuilder] = useState(false);
 
   useEffect(() => {
     if (!subdomain) {
@@ -217,6 +220,27 @@ export function AcademyProfilePage(): ReactElement {
             />
           </div>
         </div>
+      )}
+
+      {subdomain && (
+        <div className="rounded-[22px] border border-mint bg-white/40 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8 lg:col-span-2">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-2xl font-extrabold text-black">Join Request Form</h2>
+              <p className="mt-1 text-sm text-black/60">
+                Define the questions someone must answer to request joining your academy. Leave it empty
+                to show the default &quot;contact us&quot; message instead.
+              </p>
+            </div>
+            <SmallButton variant="primary" onClick={() => setShowFormBuilder(true)}>
+              Edit form
+            </SmallButton>
+          </div>
+        </div>
+      )}
+
+      {showFormBuilder && subdomain && (
+        <JoinRequestFormBuilderModal subdomain={subdomain} onClose={() => setShowFormBuilder(false)} />
       )}
     </div>
   );

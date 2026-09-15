@@ -5,19 +5,22 @@
  * picker, per the multi-tenancy decision) - on an academy subdomain this same
  * route instead shows that academy's status for the current user: a "coming
  * soon" placeholder for an active member (the real per-role dashboard isn't
- * built yet), or a "you're not a member here" card otherwise. The
- * manager-configurable join-request form described for that second case is
- * still a separate, not-yet-built feature - this only shows the fallback
- * "contact the academy" version.
+ * built yet), or - for a non-member - the academy's own join-request form if
+ * its manager has configured one, otherwise the fallback "contact the
+ * academy" card.
  */
 
 import { useEffect, useState } from "react";
-import type { ReactElement, ReactNode } from "react";
+import type { ChangeEvent, FormEvent, ReactElement, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { logout } from "../api/authApi";
+import type { JoinRequestField } from "../api/joinRequestApi";
+import { listJoinRequestFields, submitJoinRequest } from "../api/joinRequestApi";
 import type { MyAcademy } from "../api/membershipApi";
 import { fetchMyAcademies } from "../api/membershipApi";
+import { AuthButton } from "../components/ui/AuthButton";
+import { FormField } from "../components/ui/FormField";
 import { useAcademyMembership } from "../hooks/useAcademyMembership";
 import { useAuth } from "../state/AuthContext";
 import { logger } from "../utils/logger";
@@ -129,7 +132,125 @@ function NotAMemberCard({ academyName, academyLogo, contactPhone }: NotAMemberCa
   );
 }
 
+interface JoinRequestFormCardProps {
+  subdomain: string;
+  academyName: string;
+  academyLogo: string | null;
+  fields: JoinRequestField[];
+}
+
+type JoinRequestSubmitState =
+  | { status: "idle" }
+  | { status: "submitting" }
+  | { status: "error"; message: string }
+  | { status: "submitted" };
+
+/** The academy's own join-request form, shown instead of NotAMemberCard once a manager has configured it. */
+function JoinRequestFormCard({ subdomain, academyName, academyLogo, fields }: JoinRequestFormCardProps): ReactElement {
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [state, setState] = useState<JoinRequestSubmitState>({ status: "idle" });
+
+  function handleChange(fieldId: number, value: string): void {
+    setAnswers((current) => ({ ...current, [String(fieldId)]: value }));
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
+    setState({ status: "submitting" });
+    submitJoinRequest(subdomain, answers)
+      .then(() => setState({ status: "submitted" }))
+      .catch((error: unknown) => {
+        const message = error instanceof Error ? error.message : "Could not submit your request.";
+        setState({ status: "error", message });
+      });
+  }
+
+  if (state.status === "submitted") {
+    return (
+      <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-[500px]">
+        <div className="w-full rounded-[22px] border border-mint bg-white/40 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
+          <h2 className="text-xl font-extrabold text-black">Request sent!</h2>
+          <p className="mx-auto mt-3 max-w-[380px] text-[15px] leading-relaxed text-black/70">
+            We&apos;ve let {academyName} know you&apos;d like to join. They&apos;ll be in touch.
+          </p>
+        </div>
+      </AcademyHomeShell>
+    );
+  }
+
+  return (
+    <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-[500px]">
+      <div className="w-full rounded-[22px] border border-mint bg-white/40 px-8 py-9 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
+        <h2 className="text-center text-xl font-extrabold leading-tight text-black">
+          Join{" "}
+          <span className="bg-gradient-to-r from-sand to-coral bg-clip-text text-transparent">{academyName}</span>
+        </h2>
+        <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-4">
+          {fields.map((field) => (
+            <FormField
+              key={field.id}
+              id={`jr-${field.id}`}
+              label={field.label}
+              optional={!field.required}
+              required={field.required}
+              value={answers[String(field.id)] ?? ""}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => handleChange(field.id, event.target.value)}
+            />
+          ))}
+
+          {state.status === "error" && <p className="text-sm text-red-400">{state.message}</p>}
+
+          <AuthButton type="submit" fullWidth={false} disabled={state.status === "submitting"}>
+            {state.status === "submitting" ? "Sending…" : "Send request"}
+          </AuthButton>
+        </form>
+      </div>
+    </AcademyHomeShell>
+  );
+}
+
+interface NotAMemberGateProps {
+  subdomain: string | null;
+  academyName: string;
+  academyLogo: string | null;
+  contactPhone: string;
+}
+
+type JoinFieldsState = { status: "loading" } | { status: "error" } | { status: "ready"; fields: JoinRequestField[] };
+
+/** Shows the academy's join-request form if its manager configured one, otherwise the "contact us" fallback. */
+function NotAMemberGate({ subdomain, academyName, academyLogo, contactPhone }: NotAMemberGateProps): ReactElement {
+  const [state, setState] = useState<JoinFieldsState>(() => (subdomain ? { status: "loading" } : { status: "error" }));
+
+  useEffect(() => {
+    if (!subdomain) {
+      return;
+    }
+    listJoinRequestFields(subdomain)
+      .then((fields) => setState({ status: "ready", fields }))
+      .catch(() => setState({ status: "error" }));
+  }, [subdomain]);
+
+  if (state.status === "loading") {
+    return <div className="min-h-full" />;
+  }
+
+  if (subdomain && state.status === "ready" && state.fields.length > 0) {
+    return (
+      <JoinRequestFormCard
+        subdomain={subdomain}
+        academyName={academyName}
+        academyLogo={academyLogo}
+        fields={state.fields}
+      />
+    );
+  }
+
+  return <NotAMemberCard academyName={academyName} academyLogo={academyLogo} contactPhone={contactPhone} />;
+}
+
 function AcademyHome(): ReactElement {
+  const subdomain = getAcademySubdomain();
   const state = useAcademyMembership();
 
   if (state.status === "not-applicable" || state.status === "loading") {
@@ -151,7 +272,8 @@ function AcademyHome(): ReactElement {
   }
 
   return (
-    <NotAMemberCard
+    <NotAMemberGate
+      subdomain={subdomain}
       academyName={membership.academy_name}
       academyLogo={membership.academy_logo}
       contactPhone={membership.academy_contact_phone}

@@ -7,6 +7,7 @@ import { AcademyProfileRoute } from "./pages/AcademyProfileRoute";
 import { AppShell } from "./pages/AppShell";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
+import { MembershipRequestsRoute } from "./pages/MembershipRequestsRoute";
 import { MembershipsRoute } from "./pages/MembershipsRoute";
 import { UsersRoute } from "./pages/UsersRoute";
 import { AuthProvider, useAuth } from "./state/AuthContext";
@@ -37,6 +38,7 @@ function AppRoutes(): ReactElement {
         <Route path="/memberships" element={<MembershipsRoute />} />
         <Route path="/academy-profile" element={<AcademyProfileRoute />} />
         <Route path="/academy-members" element={<AcademyMembersRoute />} />
+        <Route path="/membership-requests" element={<MembershipRequestsRoute />} />
       </Route>
       <Route path="*" element={<Navigate to={user ? "/myaccount/home" : "/login"} replace />} />
     </Routes>

@@ -7,7 +7,14 @@ import type { AuthUser } from "../../api/authApi";
 
 interface NavBarProps {
   user: AuthUser;
-  activeView: "home" | "users" | "academies" | "memberships" | "academy-profile" | "academy-members";
+  activeView:
+    | "home"
+    | "users"
+    | "academies"
+    | "memberships"
+    | "academy-profile"
+    | "academy-members"
+    | "membership-requests";
   /** Every active role the user holds at the current academy subdomain; empty/omitted on www. */
   academyRoles?: string[];
   onNavigateHome: () => void;
@@ -16,6 +23,7 @@ interface NavBarProps {
   onNavigateMemberships: () => void;
   onNavigateAcademyProfile: () => void;
   onNavigateAcademyMembers: () => void;
+  onNavigateMembershipRequests: () => void;
   onOpenProfile: () => void;
   onOpenAccountInfo: () => void;
   onOpenChangePassword: () => void;
@@ -42,6 +50,7 @@ export function NavBar({
   onNavigateMemberships,
   onNavigateAcademyProfile,
   onNavigateAcademyMembers,
+  onNavigateMembershipRequests,
   onOpenProfile,
   onOpenAccountInfo,
   onOpenChangePassword,
@@ -73,6 +82,15 @@ export function NavBar({
             className={tabClassName(activeView === "academy-members")}
           >
             Academy Members
+          </button>
+        )}
+        {isAcademyManager && (
+          <button
+            type="button"
+            onClick={onNavigateMembershipRequests}
+            className={tabClassName(activeView === "membership-requests")}
+          >
+            Membership Requests
           </button>
         )}
         {user.is_superuser && (
