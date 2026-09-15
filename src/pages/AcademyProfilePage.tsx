@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent, ReactElement } from "react";
 
+import { listJoinRequestFields } from "../api/joinRequestApi";
 import type { ManagerAcademyProfile } from "../api/managerAcademyApi";
 import {
   fetchMyAcademyProfile,
@@ -86,6 +87,7 @@ export function AcademyProfilePage(): ReactElement {
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [saveState, setSaveState] = useState<SaveState>({ status: "idle" });
   const [showFormBuilder, setShowFormBuilder] = useState(false);
+  const [fieldCount, setFieldCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (!subdomain) {
@@ -98,6 +100,22 @@ export function AcademyProfilePage(): ReactElement {
         logger.error("Failed to load academy profile", { error: message });
         setState({ status: "error", message });
       });
+  }, [subdomain]);
+
+  function reloadFieldCount(): void {
+    if (!subdomain) return;
+    listJoinRequestFields(subdomain)
+      .then((fields) => setFieldCount(fields.length))
+      .catch((error: unknown) => {
+        logger.error("Failed to load join-request field count", {
+          error: error instanceof Error ? error.message : error,
+        });
+      });
+  }
+
+  useEffect(() => {
+    reloadFieldCount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once on mount for this subdomain
   }, [subdomain]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>): void {
@@ -224,10 +242,22 @@ export function AcademyProfilePage(): ReactElement {
 
       {subdomain && (
         <div className="rounded-[22px] border border-mint bg-white/40 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
-          <h2 className="text-2xl font-extrabold text-black">Join Request Form</h2>
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-2xl font-extrabold text-black">Join Request Form</h2>
+            {fieldCount !== null && (
+              <span
+                className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide ${
+                  fieldCount > 0 ? "bg-teal/15 text-teal" : "bg-gray-100 text-gray-500"
+                }`}
+              >
+                {fieldCount > 0 ? `${fieldCount} field${fieldCount === 1 ? "" : "s"}` : "Off"}
+              </span>
+            )}
+          </div>
           <p className="mt-1 text-sm text-black/60">
-            Define the questions someone must answer to request joining your academy. Leave it empty to
-            show the default &quot;contact us&quot; message instead.
+            {fieldCount !== null && fieldCount > 0
+              ? "Your form is live - anyone who isn't a member yet sees this instead of the default contact message."
+              : "Define the questions someone must answer to request joining your academy. Leave it empty to show the default “contact us” message instead."}
           </p>
           <SmallButton variant="primary" onClick={() => setShowFormBuilder(true)} className="mt-4">
             Edit form
@@ -236,7 +266,13 @@ export function AcademyProfilePage(): ReactElement {
       )}
 
       {showFormBuilder && subdomain && (
-        <JoinRequestFormBuilderModal subdomain={subdomain} onClose={() => setShowFormBuilder(false)} />
+        <JoinRequestFormBuilderModal
+          subdomain={subdomain}
+          onClose={() => {
+            setShowFormBuilder(false);
+            reloadFieldCount();
+          }}
+        />
       )}
     </div>
   );
