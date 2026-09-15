@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent, ReactElement } from "react";
 
+import type { JoinRequestField } from "../api/joinRequestApi";
 import { listJoinRequestFields } from "../api/joinRequestApi";
 import type { ManagerAcademyProfile } from "../api/managerAcademyApi";
 import {
@@ -87,7 +88,7 @@ export function AcademyProfilePage(): ReactElement {
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [saveState, setSaveState] = useState<SaveState>({ status: "idle" });
   const [showFormBuilder, setShowFormBuilder] = useState(false);
-  const [fieldCount, setFieldCount] = useState<number | null>(null);
+  const [joinFields, setJoinFields] = useState<JoinRequestField[] | null>(null);
 
   useEffect(() => {
     if (!subdomain) {
@@ -102,19 +103,19 @@ export function AcademyProfilePage(): ReactElement {
       });
   }, [subdomain]);
 
-  function reloadFieldCount(): void {
+  function reloadJoinFields(): void {
     if (!subdomain) return;
     listJoinRequestFields(subdomain)
-      .then((fields) => setFieldCount(fields.length))
+      .then((fields) => setJoinFields(fields))
       .catch((error: unknown) => {
-        logger.error("Failed to load join-request field count", {
+        logger.error("Failed to load join-request fields", {
           error: error instanceof Error ? error.message : error,
         });
       });
   }
 
   useEffect(() => {
-    reloadFieldCount();
+    reloadJoinFields();
     // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once on mount for this subdomain
   }, [subdomain]);
 
@@ -244,21 +245,42 @@ export function AcademyProfilePage(): ReactElement {
         <div className="rounded-[22px] border border-mint bg-white/40 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-2xl font-extrabold text-black">Join Request Form</h2>
-            {fieldCount !== null && (
+            {joinFields !== null && (
               <span
                 className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide ${
-                  fieldCount > 0 ? "bg-teal/15 text-teal" : "bg-gray-100 text-gray-500"
+                  joinFields.length > 0 ? "bg-teal/15 text-teal" : "bg-gray-100 text-gray-500"
                 }`}
               >
-                {fieldCount > 0 ? `${fieldCount} field${fieldCount === 1 ? "" : "s"}` : "Off"}
+                {joinFields.length > 0 ? `${joinFields.length} field${joinFields.length === 1 ? "" : "s"}` : "Off"}
               </span>
             )}
           </div>
-          <p className="mt-1 text-sm text-black/60">
-            {fieldCount !== null && fieldCount > 0
-              ? "Your form is live - anyone who isn't a member yet sees this instead of the default contact message."
-              : "Define the questions someone must answer to request joining your academy. Leave it empty to show the default “contact us” message instead."}
-          </p>
+
+          {joinFields === null && <p className="mt-1 text-sm text-black/60">Loading…</p>}
+
+          {joinFields !== null && joinFields.length === 0 && (
+            <p className="mt-1 text-sm text-black/60">
+              Define the questions someone must answer to request joining your academy. Leave it empty to
+              show the default &quot;contact us&quot; message instead.
+            </p>
+          )}
+
+          {joinFields !== null && joinFields.length > 0 && (
+            <ul className="mt-3 flex flex-col gap-1.5">
+              {[...joinFields]
+                .sort((a, b) => a.order - b.order)
+                .map((field) => (
+                  <li key={field.id} className="flex items-start gap-2 text-sm text-black/80">
+                    <span className="mt-0.5 text-mint">•</span>
+                    <span>
+                      {field.label}
+                      {!field.required && <span className="ml-1.5 text-xs text-black/40">(optional)</span>}
+                    </span>
+                  </li>
+                ))}
+            </ul>
+          )}
+
           <SmallButton variant="primary" onClick={() => setShowFormBuilder(true)} className="mt-4">
             Edit form
           </SmallButton>
@@ -270,7 +292,7 @@ export function AcademyProfilePage(): ReactElement {
           subdomain={subdomain}
           onClose={() => {
             setShowFormBuilder(false);
-            reloadFieldCount();
+            reloadJoinFields();
           }}
         />
       )}
