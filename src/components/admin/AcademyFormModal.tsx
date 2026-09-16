@@ -48,11 +48,12 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
 
   function handleSubmit(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
+    if (isPostCreate) {
+      return;
+    }
     const data = new FormData(event.currentTarget);
     const fields = {
       name: String(data.get("name") ?? ""),
-      address: String(data.get("address") ?? ""),
-      google_maps_url: String(data.get("google_maps_url") ?? ""),
       description: String(data.get("description") ?? ""),
       contact_email: String(data.get("contact_email") ?? ""),
       contact_phone: String(data.get("contact_phone") ?? ""),
@@ -91,12 +92,19 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
     <ModalShell
       title={isCreate ? "Create Academy" : "Edit Academy"}
       onClose={onClose}
-      maxWidthClassName="max-w-2xl"
+      maxWidthClassName="max-w-4xl"
     >
-      {!isPostCreate && (
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <FormField id="ac-name" name="name" label="Academy name" defaultValue={academy?.name} required />
+            <FormField
+              id="ac-name"
+              name="name"
+              label="Academy name"
+              defaultValue={academy?.name}
+              required
+              disabled={isPostCreate}
+            />
             {isCreate ? (
               <FormField
                 id="ac-subdomain"
@@ -104,6 +112,7 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
                 label="Subdomain"
                 placeholder="football-heros"
                 required
+                disabled={isPostCreate}
               />
             ) : (
               <ReadOnlyField label="Subdomain" value={`${academy?.subdomain}.academy-hub.net`} />
@@ -111,25 +120,30 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <FormField id="ac-email" name="contact_email" label="Contact email" type="email" defaultValue={academy?.contact_email} />
-            <FormField id="ac-phone" name="contact_phone" label="Contact phone" defaultValue={academy?.contact_phone} />
+            <FormField
+              id="ac-email"
+              name="contact_email"
+              label="Contact email"
+              type="email"
+              defaultValue={academy?.contact_email}
+              disabled={isPostCreate}
+            />
+            <FormField
+              id="ac-phone"
+              name="contact_phone"
+              label="Contact phone"
+              defaultValue={academy?.contact_phone}
+              disabled={isPostCreate}
+            />
           </div>
 
-          <FormField id="ac-address" name="address" label="Address" optional defaultValue={academy?.address} />
-          <FormField
-            id="ac-maps"
-            name="google_maps_url"
-            label="Google Maps link"
-            optional
-            type="url"
-            defaultValue={academy?.google_maps_url}
-          />
           <FormField
             id="ac-description"
             name="description"
             label="Description"
             optional
             defaultValue={academy?.description}
+            disabled={isPostCreate}
           />
 
           <label className="flex items-center gap-2 text-sm text-black/80">
@@ -137,6 +151,7 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
               type="checkbox"
               name="is_active"
               defaultChecked={academy?.is_active ?? true}
+              disabled={isPostCreate}
               className="size-3.5 accent-coral"
             />
             Active
@@ -144,19 +159,33 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
 
           {state.status === "error" && <p className="text-sm text-red-400">{state.message}</p>}
 
-          <AuthButton type="submit" fullWidth={false} disabled={state.status === "saving"}>
-            {state.status === "saving" ? "Saving…" : isCreate ? "Create academy" : "Save changes"}
-          </AuthButton>
-        </form>
-      )}
-
-      {currentAcademy && (
-        <div className={isPostCreate ? "flex flex-col gap-4" : "mt-6 flex flex-col gap-4 border-t border-mint pt-6"}>
-          {isPostCreate && <p className="text-sm text-teal">Academy created. Add its locations below.</p>}
-          <h2 className="text-lg font-extrabold text-black">Branches</h2>
-          {branches === null ? (
-            <p className="text-sm text-gray-500">Loading…</p>
+          {isPostCreate ? (
+            <AuthButton
+              type="button"
+              fullWidth={false}
+              onClick={() => createdAcademy && onSaved(createdAcademy)}
+            >
+              Done
+            </AuthButton>
           ) : (
+            <AuthButton type="submit" fullWidth={false} disabled={state.status === "saving"}>
+              {state.status === "saving" ? "Saving…" : isCreate ? "Create academy" : "Save changes"}
+            </AuthButton>
+          )}
+        </form>
+
+        <div className="flex flex-col gap-4">
+          <h2 className="text-lg font-extrabold text-black">Locations</h2>
+
+          {!currentAcademy && (
+            <p className="rounded-lg border border-mint bg-white px-3 py-2 text-sm text-black/60">
+              Create the academy first, then add its locations here.
+            </p>
+          )}
+
+          {currentAcademy && branches === null && <p className="text-sm text-gray-500">Loading…</p>}
+
+          {currentAcademy && branches !== null && (
             <BranchManager
               branches={branches}
               onAdd={(data) => createAdminBranch(currentAcademy.id, data)}
@@ -165,13 +194,8 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
               onChanged={() => reloadBranches(currentAcademy.id)}
             />
           )}
-          {isPostCreate && (
-            <AuthButton type="button" fullWidth={false} onClick={() => onSaved(currentAcademy)}>
-              Done
-            </AuthButton>
-          )}
         </div>
-      )}
+      </div>
     </ModalShell>
   );
 }
