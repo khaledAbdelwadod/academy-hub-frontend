@@ -1,4 +1,4 @@
-/** An academy manager's own "Academy Profile" tab: view details, edit contact/description fields, upload media. */
+/** An academy manager's own "Academy Profile" tab: edit contact/description fields, upload media, manage locations. */
 
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent, ReactElement } from "react";
@@ -149,8 +149,6 @@ export function AcademyProfilePage(): ReactElement {
     updateMyAcademyProfile(subdomain, {
       contact_email: String(data.get("contact_email") ?? ""),
       contact_phone: String(data.get("contact_phone") ?? ""),
-      address: String(data.get("address") ?? ""),
-      google_maps_url: String(data.get("google_maps_url") ?? ""),
       description: String(data.get("description") ?? ""),
     })
       .then((profile) => {
@@ -198,15 +196,6 @@ export function AcademyProfilePage(): ReactElement {
             <FormField id="ap-phone" name="contact_phone" label="Contact phone" defaultValue={profile.contact_phone} />
           </div>
 
-          <FormField id="ap-address" name="address" label="Address" optional defaultValue={profile.address} />
-          <FormField
-            id="ap-maps"
-            name="google_maps_url"
-            label="Google Maps link"
-            optional
-            type="url"
-            defaultValue={profile.google_maps_url}
-          />
           <FormField
             id="ap-description"
             name="description"
@@ -222,12 +211,9 @@ export function AcademyProfilePage(): ReactElement {
             {saveState.status === "saving" ? "Saving…" : "Save changes"}
           </AuthButton>
         </form>
-      </div>
 
-      {subdomain && (
-        <div className="rounded-[22px] border border-mint bg-white/40 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
-          <h2 className="mb-6 text-2xl font-extrabold text-black">Media</h2>
-          <div className="flex flex-col gap-4">
+        {subdomain && (
+          <div className="mt-6 flex flex-col gap-4 border-t border-mint pt-6">
             <AcademyFileField
               label="Logo"
               currentUrl={profile.logo}
@@ -257,6 +243,47 @@ export function AcademyProfilePage(): ReactElement {
               }
             />
           </div>
+        )}
+      </div>
+
+      {subdomain && (
+        <div className="rounded-[22px] border border-mint bg-white/40 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-2xl font-extrabold text-black">Locations</h2>
+            {branches !== null && (
+              <span
+                className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide ${
+                  branches.length > 0 ? "bg-teal/15 text-teal" : "bg-gray-100 text-gray-500"
+                }`}
+              >
+                {branches.length > 0 ? `${branches.length} location${branches.length === 1 ? "" : "s"}` : "None"}
+              </span>
+            )}
+          </div>
+
+          {branches === null && <p className="mt-1 text-sm text-black/60">Loading…</p>}
+
+          {branches !== null && branches.length === 0 && (
+            <p className="mt-1 text-sm text-black/60">Add every location your academy trains at.</p>
+          )}
+
+          {branches !== null && branches.length > 0 && (
+            <ul className="mt-3 flex flex-col gap-1.5">
+              {branches.map((branch) => (
+                <li key={branch.id} className="flex items-start gap-2 text-sm text-black/80">
+                  <span className="mt-0.5 text-mint">•</span>
+                  <span>
+                    {branch.name}
+                    {branch.address && <span className="ml-1.5 text-xs text-black/40">{branch.address}</span>}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <SmallButton variant="primary" onClick={() => setShowBranchBuilder(true)} className="mt-4">
+            Add location
+          </SmallButton>
         </div>
       )}
 
@@ -302,47 +329,6 @@ export function AcademyProfilePage(): ReactElement {
 
           <SmallButton variant="primary" onClick={() => setShowFormBuilder(true)} className="mt-4">
             Edit form
-          </SmallButton>
-        </div>
-      )}
-
-      {subdomain && (
-        <div className="rounded-[22px] border border-mint bg-white/40 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-2xl font-extrabold text-black">Branches</h2>
-            {branches !== null && (
-              <span
-                className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide ${
-                  branches.length > 0 ? "bg-teal/15 text-teal" : "bg-gray-100 text-gray-500"
-                }`}
-              >
-                {branches.length > 0 ? `${branches.length} branch${branches.length === 1 ? "" : "es"}` : "None"}
-              </span>
-            )}
-          </div>
-
-          {branches === null && <p className="mt-1 text-sm text-black/60">Loading…</p>}
-
-          {branches !== null && branches.length === 0 && (
-            <p className="mt-1 text-sm text-black/60">Add every location your academy trains at.</p>
-          )}
-
-          {branches !== null && branches.length > 0 && (
-            <ul className="mt-3 flex flex-col gap-1.5">
-              {branches.map((branch) => (
-                <li key={branch.id} className="flex items-start gap-2 text-sm text-black/80">
-                  <span className="mt-0.5 text-mint">•</span>
-                  <span>
-                    {branch.name}
-                    {branch.address && <span className="ml-1.5 text-xs text-black/40">{branch.address}</span>}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <SmallButton variant="primary" onClick={() => setShowBranchBuilder(true)} className="mt-4">
-            Edit branches
           </SmallButton>
         </div>
       )}
