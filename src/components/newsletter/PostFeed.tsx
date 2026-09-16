@@ -1,6 +1,6 @@
 /** A newsletter feed: an optional "new post" composer (manager/admin) plus the post list. */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent, ReactElement } from "react";
 
 import type { Post, PostList } from "../../api/newsletterApi";
@@ -25,6 +25,11 @@ export function PostFeed({ subdomain, currentUserId, isManager, canPost }: PostF
   const [composerFiles, setComposerFiles] = useState<File[]>([]);
   const [posting, setPosting] = useState(false);
   const [composerError, setComposerError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function removeSelectedFile(index: number): void {
+    setComposerFiles((current) => current.filter((_, i) => i !== index));
+  }
 
   function load(url?: string): void {
     listPosts(subdomain, url)
@@ -54,6 +59,7 @@ export function PostFeed({ subdomain, currentUserId, isManager, canPost }: PostF
         }
         setComposerBody("");
         setComposerFiles([]);
+        if (fileInputRef.current) fileInputRef.current.value = "";
         load();
       })
       .catch((error: unknown) => {
@@ -94,18 +100,51 @@ export function PostFeed({ subdomain, currentUserId, isManager, canPost }: PostF
               rows={3}
               className="w-full rounded-lg border border-mint bg-white px-3 py-2 text-sm text-black placeholder:text-gray-400 focus:border-pine focus:outline-none"
             />
-            <input
-              type="file"
-              accept="image/*,video/*"
-              multiple
-              onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                setComposerFiles(Array.from(event.target.files ?? []))
-              }
-              className="text-sm text-black/60"
-            />
-            {composerFiles.length > 0 && (
-              <p className="text-xs text-black/50">{composerFiles.length} file(s) selected</p>
-            )}
+            <div className="flex flex-col gap-2">
+              <div>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-mint bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-black/80 transition-colors hover:bg-mint/15"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="size-3.5">
+                    <path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1Z" />
+                  </svg>
+                  Add photos/video
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*,video/*"
+                  multiple
+                  onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                    setComposerFiles(Array.from(event.target.files ?? []))
+                  }
+                  className="hidden"
+                />
+              </div>
+
+              {composerFiles.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {composerFiles.map((file, index) => (
+                    <span
+                      key={`${file.name}-${index}`}
+                      className="flex items-center gap-1.5 rounded-full border border-mint bg-white px-2.5 py-1 text-xs text-black/70"
+                    >
+                      {file.name}
+                      <button
+                        type="button"
+                        onClick={() => removeSelectedFile(index)}
+                        className="text-black/40 hover:text-red-500"
+                        aria-label={`Remove ${file.name}`}
+                      >
+                        &times;
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
             {composerError && <p className="text-sm text-red-400">{composerError}</p>}
             <SmallButton type="submit" variant="primary" disabled={posting || !composerBody.trim()}>
               {posting ? "Posting…" : "Post"}
