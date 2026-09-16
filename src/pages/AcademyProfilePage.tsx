@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent, ReactElement } from "react";
 
+import type { Branch } from "../api/branchApi";
+import { listBranches } from "../api/branchApi";
 import type { JoinRequestField } from "../api/joinRequestApi";
 import { listJoinRequestFields } from "../api/joinRequestApi";
 import type { ManagerAcademyProfile } from "../api/managerAcademyApi";
@@ -13,6 +15,7 @@ import {
   uploadMyAcademyLoginVideo,
   uploadMyAcademyLogo,
 } from "../api/managerAcademyApi";
+import { BranchBuilderModal } from "../components/admin/BranchBuilderModal";
 import { JoinRequestFormBuilderModal } from "../components/admin/JoinRequestFormBuilderModal";
 import { AuthButton } from "../components/ui/AuthButton";
 import { FormField } from "../components/ui/FormField";
@@ -89,6 +92,8 @@ export function AcademyProfilePage(): ReactElement {
   const [saveState, setSaveState] = useState<SaveState>({ status: "idle" });
   const [showFormBuilder, setShowFormBuilder] = useState(false);
   const [joinFields, setJoinFields] = useState<JoinRequestField[] | null>(null);
+  const [showBranchBuilder, setShowBranchBuilder] = useState(false);
+  const [branches, setBranches] = useState<Branch[] | null>(null);
 
   useEffect(() => {
     if (!subdomain) {
@@ -116,6 +121,20 @@ export function AcademyProfilePage(): ReactElement {
 
   useEffect(() => {
     reloadJoinFields();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once on mount for this subdomain
+  }, [subdomain]);
+
+  function reloadBranches(): void {
+    if (!subdomain) return;
+    listBranches(subdomain)
+      .then((result) => setBranches(result))
+      .catch((error: unknown) => {
+        logger.error("Failed to load branches", { error: error instanceof Error ? error.message : error });
+      });
+  }
+
+  useEffect(() => {
+    reloadBranches();
     // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once on mount for this subdomain
   }, [subdomain]);
 
@@ -287,12 +306,63 @@ export function AcademyProfilePage(): ReactElement {
         </div>
       )}
 
+      {subdomain && (
+        <div className="rounded-[22px] border border-mint bg-white/40 p-6 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-8">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-2xl font-extrabold text-black">Branches</h2>
+            {branches !== null && (
+              <span
+                className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide ${
+                  branches.length > 0 ? "bg-teal/15 text-teal" : "bg-gray-100 text-gray-500"
+                }`}
+              >
+                {branches.length > 0 ? `${branches.length} branch${branches.length === 1 ? "" : "es"}` : "None"}
+              </span>
+            )}
+          </div>
+
+          {branches === null && <p className="mt-1 text-sm text-black/60">Loading…</p>}
+
+          {branches !== null && branches.length === 0 && (
+            <p className="mt-1 text-sm text-black/60">Add every location your academy trains at.</p>
+          )}
+
+          {branches !== null && branches.length > 0 && (
+            <ul className="mt-3 flex flex-col gap-1.5">
+              {branches.map((branch) => (
+                <li key={branch.id} className="flex items-start gap-2 text-sm text-black/80">
+                  <span className="mt-0.5 text-mint">•</span>
+                  <span>
+                    {branch.name}
+                    {branch.address && <span className="ml-1.5 text-xs text-black/40">{branch.address}</span>}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <SmallButton variant="primary" onClick={() => setShowBranchBuilder(true)} className="mt-4">
+            Edit branches
+          </SmallButton>
+        </div>
+      )}
+
       {showFormBuilder && subdomain && (
         <JoinRequestFormBuilderModal
           subdomain={subdomain}
           onClose={() => {
             setShowFormBuilder(false);
             reloadJoinFields();
+          }}
+        />
+      )}
+
+      {showBranchBuilder && subdomain && (
+        <BranchBuilderModal
+          subdomain={subdomain}
+          onClose={() => {
+            setShowBranchBuilder(false);
+            reloadBranches();
           }}
         />
       )}
