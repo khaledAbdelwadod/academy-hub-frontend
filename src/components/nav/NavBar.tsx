@@ -14,7 +14,8 @@ interface NavBarProps {
     | "memberships"
     | "academy-profile"
     | "academy-members"
-    | "membership-requests";
+    | "membership-requests"
+    | "newsletters";
   /** Every active role the user holds at the current academy subdomain; empty/omitted on www. */
   academyRoles?: string[];
   onNavigateHome: () => void;
@@ -24,6 +25,7 @@ interface NavBarProps {
   onNavigateAcademyProfile: () => void;
   onNavigateAcademyMembers: () => void;
   onNavigateMembershipRequests: () => void;
+  onNavigateNewsletters: () => void;
   onOpenProfile: () => void;
   onOpenAccountInfo: () => void;
   onOpenChangePassword: () => void;
@@ -51,6 +53,7 @@ export function NavBar({
   onNavigateAcademyProfile,
   onNavigateAcademyMembers,
   onNavigateMembershipRequests,
+  onNavigateNewsletters,
   onOpenProfile,
   onOpenAccountInfo,
   onOpenChangePassword,
@@ -59,6 +62,7 @@ export function NavBar({
   const [menuOpen, setMenuOpen] = useState(false);
   const initials = `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
   const isAcademyManager = academyRoles.includes("manager");
+  const isAcademyManagerOrAdmin = isAcademyManager || academyRoles.includes("admin");
 
   return (
     <nav className="relative z-20 mx-4 mt-4 flex items-center justify-between rounded-2xl border border-mint bg-white/40 px-4 py-3 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.3)] backdrop-blur-2xl backdrop-saturate-150 sm:mx-6 sm:px-6">
@@ -91,6 +95,15 @@ export function NavBar({
             className={tabClassName(activeView === "membership-requests")}
           >
             Membership Requests
+          </button>
+        )}
+        {isAcademyManagerOrAdmin && (
+          <button
+            type="button"
+            onClick={onNavigateNewsletters}
+            className={tabClassName(activeView === "newsletters")}
+          >
+            Newsletters
           </button>
         )}
         {user.is_superuser && (

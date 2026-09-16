@@ -3,11 +3,11 @@
  *
  * Account home is a www-only concept (cross-academy aggregation + academy
  * picker, per the multi-tenancy decision) - on an academy subdomain this same
- * route instead shows that academy's status for the current user: a "coming
- * soon" placeholder for an active member (the real per-role dashboard isn't
- * built yet), or - for a non-member - the academy's own join-request form if
- * its manager has configured one, otherwise the fallback "contact the
- * academy" card.
+ * route instead shows that academy's status for the current user: the
+ * newsletter feed (view/react/comment, no composer - that's the dedicated
+ * Newsletters tab) for an active member, or - for a non-member - the
+ * academy's own join-request form if its manager has configured one,
+ * otherwise the fallback "contact the academy" card.
  */
 
 import { useEffect, useState } from "react";
@@ -19,6 +19,7 @@ import type { JoinRequestField } from "../api/joinRequestApi";
 import { listJoinRequestFields, submitJoinRequest } from "../api/joinRequestApi";
 import type { MyAcademy } from "../api/membershipApi";
 import { fetchMyAcademies } from "../api/membershipApi";
+import { PostFeed } from "../components/newsletter/PostFeed";
 import { AuthButton } from "../components/ui/AuthButton";
 import { FormField } from "../components/ui/FormField";
 import { useAcademyMembership } from "../hooks/useAcademyMembership";
@@ -76,19 +77,31 @@ function AcademyHomeShell({ logo, academyName, maxWidthClassName, children }: Ac
 }
 
 interface WelcomeCardProps {
+  subdomain: string;
   academyName: string;
   academyLogo: string | null;
+  currentUserId: number;
+  academyRoles: string[];
 }
 
-function WelcomeCard({ academyName, academyLogo }: WelcomeCardProps): ReactElement {
+function WelcomeCard({ subdomain, academyName, academyLogo, currentUserId, academyRoles }: WelcomeCardProps): ReactElement {
   return (
-    <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-[440px]">
-      <div className="w-full rounded-[22px] border border-mint bg-white/40 px-8 py-9 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl backdrop-saturate-150">
-        <p className="text-xs font-bold uppercase tracking-wider text-teal">Welcome back</p>
-        <h2 className="mt-1.5 text-2xl font-extrabold text-black">{academyName}</h2>
-        <p className="mt-2.5 text-sm leading-relaxed text-black/60">
-          Your dashboard is on its way — check back soon.
+    <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-2xl">
+      <div className="mb-5 w-full text-center">
+        <p className="text-xs font-bold uppercase tracking-wider text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.6)]">
+          Welcome back
         </p>
+        <h2 className="mt-1 text-2xl font-extrabold text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
+          {academyName}
+        </h2>
+      </div>
+      <div className="w-full">
+        <PostFeed
+          subdomain={subdomain}
+          currentUserId={currentUserId}
+          isManager={academyRoles.includes("manager")}
+          canPost={false}
+        />
       </div>
     </AcademyHomeShell>
   );
@@ -251,6 +264,7 @@ function NotAMemberGate({ subdomain, academyName, academyLogo, contactPhone }: N
 
 function AcademyHome(): ReactElement {
   const subdomain = getAcademySubdomain();
+  const { user } = useAuth();
   const state = useAcademyMembership();
 
   if (state.status === "not-applicable" || state.status === "loading") {
@@ -268,7 +282,18 @@ function AcademyHome(): ReactElement {
   const { membership } = state;
 
   if (membership.is_member) {
-    return <WelcomeCard academyName={membership.academy_name} academyLogo={membership.academy_logo} />;
+    if (!subdomain || !user) {
+      return <div className="min-h-full" />;
+    }
+    return (
+      <WelcomeCard
+        subdomain={subdomain}
+        academyName={membership.academy_name}
+        academyLogo={membership.academy_logo}
+        currentUserId={user.id}
+        academyRoles={membership.roles}
+      />
+    );
   }
 
   return (
