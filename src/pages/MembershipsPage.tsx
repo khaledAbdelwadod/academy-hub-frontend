@@ -90,7 +90,7 @@ export function MembershipsPage(): ReactElement {
   }
 
   return (
-    <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col px-4 py-6 sm:px-8">
+    <div className="mx-auto flex h-full w-full max-w-[1600px] flex-col px-4 py-6 sm:px-8">
       {state.status === "error" && (
         <p className="mb-4 shrink-0 text-sm text-red-400 [text-shadow:0_1px_6px_rgba(0,0,0,0.6)]">
           {state.message}
@@ -99,9 +99,9 @@ export function MembershipsPage(): ReactElement {
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl">
         <div className="min-h-0 flex-1 overflow-auto">
-          <table className="w-full min-w-[800px] border-collapse text-sm">
+          <table className="min-w-[800px] border-collapse text-base">
             <thead>
-              <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-xs font-bold uppercase tracking-wider text-mint">
+              <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-sm font-bold uppercase tracking-wider text-mint">
                 {COLUMNS.map((column) => (
                   <th key={column.label} className="whitespace-nowrap px-3 py-3">
                     {column.sortKey ? (
