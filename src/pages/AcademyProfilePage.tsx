@@ -253,22 +253,51 @@ export function AcademyProfilePage(): ReactElement {
             {branches !== null && (
               <span
                 className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide ${
-                  branches.length > 0 ? "bg-teal/15 text-teal" : "bg-gray-100 text-gray-500"
+                  branches.length > 0 || profile.address ? "bg-teal/15 text-teal" : "bg-gray-100 text-gray-500"
                 }`}
               >
-                {branches.length > 0 ? `${branches.length} location${branches.length === 1 ? "" : "s"}` : "None"}
+                {(() => {
+                  const total = branches ? branches.length + (profile.address ? 1 : 0) : profile.address ? 1 : 0;
+                  return total > 0 ? `${total} location${total === 1 ? "" : "s"}` : "None";
+                })()}
               </span>
             )}
           </div>
 
+          <p className="mt-3 text-xs font-bold uppercase tracking-wider text-black/50">Main location</p>
+          {profile.address ? (
+            <div className="mt-1 flex items-start gap-2 text-sm text-black/80">
+              <span className="mt-0.5 text-mint">•</span>
+              <span>
+                {profile.address}
+                {profile.google_maps_url && (
+                  <>
+                    {" "}
+                    <a
+                      href={profile.google_maps_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs text-mint underline"
+                    >
+                      View on map
+                    </a>
+                  </>
+                )}
+              </span>
+            </div>
+          ) : (
+            <p className="mt-1 text-sm text-black/60">Not set yet - a superadmin sets this when creating the academy.</p>
+          )}
+
+          <p className="mt-4 text-xs font-bold uppercase tracking-wider text-black/50">Additional locations</p>
           {branches === null && <p className="mt-1 text-sm text-black/60">Loading…</p>}
 
           {branches !== null && branches.length === 0 && (
-            <p className="mt-1 text-sm text-black/60">Add every location your academy trains at.</p>
+            <p className="mt-1 text-sm text-black/60">None yet - add another training location below.</p>
           )}
 
           {branches !== null && branches.length > 0 && (
-            <ul className="mt-3 flex flex-col gap-1.5">
+            <ul className="mt-1 flex flex-col gap-1.5">
               {branches.map((branch) => (
                 <li key={branch.id} className="flex items-start gap-2 text-sm text-black/80">
                   <span className="mt-0.5 text-mint">•</span>
