@@ -19,7 +19,7 @@ export function NewslettersPage({ isManager }: NewslettersPageProps): ReactEleme
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8 sm:px-8">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 sm:px-8">
       <PostFeed subdomain={subdomain} currentUserId={user.id} isManager={isManager} canPost />
     </div>
   );

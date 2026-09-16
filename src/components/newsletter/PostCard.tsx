@@ -18,6 +18,7 @@ import {
 } from "../../api/newsletterApi";
 import { formatPostBody } from "../../utils/postFormatting";
 import { SmallButton } from "../ui/SmallButton";
+import { PostActionsMenu } from "./PostActionsMenu";
 
 const REACTION_EMOJI: Record<ReactionType, string> = {
   like: "👍",
@@ -134,7 +135,7 @@ export function PostCard({ subdomain, post, currentUserId, isManager, onChanged,
   }
 
   return (
-    <div className="rounded-[22px] border border-mint bg-white/40 p-5 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-6">
+    <div className="rounded-[22px] border border-mint bg-white/40 p-5 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl sm:p-6">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <span className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-sand to-coral text-xs font-bold text-white">
@@ -153,27 +154,13 @@ export function PostCard({ subdomain, post, currentUserId, isManager, onChanged,
         </div>
 
         {canModeratePost && !editing && (
-          <div className="flex shrink-0 gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                setEditDraft(post.body);
-                setEditing(true);
-              }}
-              className="text-xs font-bold uppercase tracking-wide text-black/50 hover:text-black"
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={handleDeletePost}
-              className="text-red-500 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-              aria-label="Delete post"
-            >
-              &times;
-            </button>
-          </div>
+          <PostActionsMenu
+            onEdit={() => {
+              setEditDraft(post.body);
+              setEditing(true);
+            }}
+            onDelete={handleDeletePost}
+          />
         )}
       </div>
 
@@ -201,7 +188,17 @@ export function PostCard({ subdomain, post, currentUserId, isManager, onChanged,
         />
       )}
 
-      {images.length > 0 && (
+      {images.length === 1 && (
+        <a href={images[0]!.file} target="_blank" rel="noreferrer" className="mt-3 block">
+          <img
+            src={images[0]!.file}
+            alt=""
+            className="max-h-[480px] w-full rounded-xl border border-mint/50 object-cover"
+          />
+        </a>
+      )}
+
+      {images.length > 1 && (
         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
           {images.map((item) => (
             <a key={item.id} href={item.file} target="_blank" rel="noreferrer" className="block">
@@ -217,19 +214,24 @@ export function PostCard({ subdomain, post, currentUserId, isManager, onChanged,
 
       {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
 
-      <div className="mt-4 flex items-center gap-4 border-t border-mint pt-3">
-        <div className="flex flex-wrap gap-1.5">
+      <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-mint pt-3">
+        <div className="flex flex-wrap gap-2">
           {REACTION_TYPES.map((type) => (
             <button
               key={type}
               type="button"
               onClick={() => handleReact(type)}
-              className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-bold transition-colors ${
-                post.my_reaction === type ? "bg-mint text-white" : "bg-white text-black/60 hover:bg-mint/15"
+              title={type.charAt(0).toUpperCase() + type.slice(1)}
+              className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-sm font-bold transition-colors ${
+                post.my_reaction === type
+                  ? "border-mint bg-mint text-white"
+                  : "border-mint/40 bg-white text-black/60 hover:border-mint hover:bg-mint/15"
               }`}
             >
               <span>{REACTION_EMOJI[type]}</span>
-              {post.reaction_counts[type] > 0 && <span>{post.reaction_counts[type]}</span>}
+              {post.reaction_counts[type] > 0 && (
+                <span className="text-xs">{post.reaction_counts[type]}</span>
+              )}
             </button>
           ))}
         </div>
@@ -237,8 +239,11 @@ export function PostCard({ subdomain, post, currentUserId, isManager, onChanged,
         <button
           type="button"
           onClick={toggleComments}
-          className="ml-auto text-xs font-bold uppercase tracking-wide text-black/50 hover:text-black"
+          className="ml-auto flex items-center gap-1.5 rounded-full border border-mint/40 bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-black/60 transition-colors hover:border-mint hover:bg-mint/15 hover:text-black"
         >
+          <svg viewBox="0 0 24 24" fill="currentColor" className="size-3.5">
+            <path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H9l-4.4 3.3A1 1 0 0 1 3 19.5V5a1 1 0 0 1 1-1Z" />
+          </svg>
           {post.comment_count} comment{post.comment_count === 1 ? "" : "s"}
         </button>
       </div>

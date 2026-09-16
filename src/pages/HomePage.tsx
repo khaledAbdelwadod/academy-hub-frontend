@@ -88,8 +88,8 @@ interface WelcomeCardProps {
  * treatment - NavBar is already visible here, with its own logout) above the news feed. */
 function WelcomeCard({ subdomain, academyName, academyLogo, currentUserId, academyRoles }: WelcomeCardProps): ReactElement {
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-5 py-8 sm:px-8">
-      <div className="flex items-center gap-3.5 rounded-2xl border border-mint bg-white/40 px-5 py-4 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.25)] backdrop-blur-2xl backdrop-saturate-150">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-5 py-8 sm:px-8">
+      <div className="flex items-center gap-3.5 rounded-2xl border border-mint bg-white/40 px-5 py-4 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.25)] backdrop-blur-2xl">
         {academyLogo ? (
           <img
             src={academyLogo}
@@ -126,7 +126,7 @@ interface NotAMemberCardProps {
 function NotAMemberCard({ academyName, academyLogo, contactPhone }: NotAMemberCardProps): ReactElement {
   return (
     <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-[500px]">
-      <div className="w-full rounded-[22px] border border-mint bg-white/40 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
+      <div className="w-full rounded-[22px] border border-mint bg-white/40 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl sm:px-10">
         <h2 className="text-xl font-extrabold leading-tight text-black">
           Welcome to{" "}
           <span className="bg-gradient-to-r from-sand to-coral bg-clip-text text-transparent">{academyName}</span>{" "}
@@ -191,7 +191,7 @@ function JoinRequestFormCard({ subdomain, academyName, academyLogo, fields }: Jo
   if (state.status === "submitted") {
     return (
       <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-[500px]">
-        <div className="w-full rounded-[22px] border border-mint bg-white/40 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
+        <div className="w-full rounded-[22px] border border-mint bg-white/40 px-8 py-10 text-center shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl sm:px-10">
           <h2 className="text-xl font-extrabold text-black">Request sent!</h2>
           <p className="mx-auto mt-3 max-w-[380px] text-[15px] leading-relaxed text-black/70">
             We&apos;ve let {academyName} know you&apos;d like to join. They&apos;ll be in touch.
@@ -203,7 +203,7 @@ function JoinRequestFormCard({ subdomain, academyName, academyLogo, fields }: Jo
 
   return (
     <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-[500px]">
-      <div className="w-full rounded-[22px] border border-mint bg-white/40 px-8 py-9 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl backdrop-saturate-150 sm:px-10">
+      <div className="w-full rounded-[22px] border border-mint bg-white/40 px-8 py-9 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)] backdrop-blur-2xl sm:px-10">
         <h2 className="text-center text-xl font-extrabold leading-tight text-black">
           Join{" "}
           <span className="bg-gradient-to-r from-sand to-coral bg-clip-text text-transparent">{academyName}</span>

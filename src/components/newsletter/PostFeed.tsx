@@ -129,7 +129,7 @@ export function PostFeed({ subdomain, currentUserId, isManager, canPost }: PostF
   return (
     <div className="flex flex-col gap-4">
       {canPost && (
-        <div className="rounded-[22px] border border-mint bg-white/40 p-5 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-6">
+        <div className="rounded-[22px] border border-mint bg-white/40 p-5 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl sm:p-6">
           <form onSubmit={handlePost} className="flex flex-col gap-3">
             <textarea
               ref={textareaRef}
