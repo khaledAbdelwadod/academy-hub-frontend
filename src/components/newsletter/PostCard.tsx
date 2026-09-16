@@ -16,6 +16,7 @@ import {
   setReaction,
   updatePost,
 } from "../../api/newsletterApi";
+import { formatPostBody } from "../../utils/postFormatting";
 import { SmallButton } from "../ui/SmallButton";
 
 const REACTION_EMOJI: Record<ReactionType, string> = {
@@ -194,11 +195,14 @@ export function PostCard({ subdomain, post, currentUserId, isManager, onChanged,
           </div>
         </form>
       ) : (
-        <p className="mt-3 whitespace-pre-wrap text-sm text-black/80">{post.body}</p>
+        <p
+          className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-black/80"
+          dangerouslySetInnerHTML={{ __html: formatPostBody(post.body) }}
+        />
       )}
 
       {images.length > 0 && (
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
           {images.map((item) => (
             <a key={item.id} href={item.file} target="_blank" rel="noreferrer" className="block">
               <img src={item.file} alt="" className="aspect-square w-full rounded-lg object-cover" />

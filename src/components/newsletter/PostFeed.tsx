@@ -11,6 +11,12 @@ import { PostCard } from "./PostCard";
 
 type LoadState = { status: "loading" } | { status: "error"; message: string } | { status: "ready"; page: PostList };
 
+const EMOJI_OPTIONS = [
+  "😊", "😂", "😍", "🤩", "🥳", "😢", "😮", "🙏",
+  "👍", "👏", "🙌", "💪", "❤️", "🔥", "✨", "💯",
+  "⚽", "🏆", "🥇", "🏅", "🎯", "📣", "📅", "✅",
+];
+
 interface PostFeedProps {
   subdomain: string;
   currentUserId: number;
@@ -25,10 +31,42 @@ export function PostFeed({ subdomain, currentUserId, isManager, canPost }: PostF
   const [composerFiles, setComposerFiles] = useState<File[]>([]);
   const [posting, setPosting] = useState(false);
   const [composerError, setComposerError] = useState<string | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   function removeSelectedFile(index: number): void {
     setComposerFiles((current) => current.filter((_, i) => i !== index));
+  }
+
+  /** Wrap the textarea's current selection (or insert placeholder markers at the cursor). */
+  function wrapSelection(marker: string): void {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selected = composerBody.slice(start, end) || "text";
+    const next = `${composerBody.slice(0, start)}${marker}${selected}${marker}${composerBody.slice(end)}`;
+    setComposerBody(next);
+    requestAnimationFrame(() => {
+      textarea.focus();
+      const cursor = start + marker.length + selected.length + marker.length;
+      textarea.setSelectionRange(cursor, cursor);
+    });
+  }
+
+  function insertEmoji(emoji: string): void {
+    const textarea = textareaRef.current;
+    const start = textarea?.selectionStart ?? composerBody.length;
+    const end = textarea?.selectionEnd ?? composerBody.length;
+    const next = `${composerBody.slice(0, start)}${emoji}${composerBody.slice(end)}`;
+    setComposerBody(next);
+    setShowEmojiPicker(false);
+    requestAnimationFrame(() => {
+      textarea?.focus();
+      const cursor = start + emoji.length;
+      textarea?.setSelectionRange(cursor, cursor);
+    });
   }
 
   function load(url?: string): void {
@@ -94,12 +132,68 @@ export function PostFeed({ subdomain, currentUserId, isManager, canPost }: PostF
         <div className="rounded-[22px] border border-mint bg-white/40 p-5 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl backdrop-saturate-150 sm:p-6">
           <form onSubmit={handlePost} className="flex flex-col gap-3">
             <textarea
+              ref={textareaRef}
               value={composerBody}
               onChange={(event: ChangeEvent<HTMLTextAreaElement>) => setComposerBody(event.target.value)}
               placeholder="Share news with your academy…"
               rows={3}
               className="w-full rounded-lg border border-mint bg-white px-3 py-2 text-sm text-black placeholder:text-gray-400 focus:border-pine focus:outline-none"
             />
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => wrapSelection("**")}
+                aria-label="Bold"
+                title="Bold"
+                className="rounded-lg border border-mint bg-white px-2.5 py-1.5 text-xs font-extrabold text-black/70 transition-colors hover:bg-mint/15"
+              >
+                B
+              </button>
+              <button
+                type="button"
+                onClick={() => wrapSelection("*")}
+                aria-label="Italic"
+                title="Italic"
+                className="rounded-lg border border-mint bg-white px-2.5 py-1.5 text-xs italic text-black/70 transition-colors hover:bg-mint/15"
+              >
+                I
+              </button>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowEmojiPicker((current) => !current)}
+                  aria-label="Add emoji"
+                  title="Add emoji"
+                  className="rounded-lg border border-mint bg-white px-2.5 py-1.5 text-sm transition-colors hover:bg-mint/15"
+                >
+                  🙂
+                </button>
+                {showEmojiPicker && (
+                  <>
+                    <button
+                      type="button"
+                      aria-label="Close emoji picker"
+                      onClick={() => setShowEmojiPicker(false)}
+                      className="fixed inset-0 z-10 cursor-default"
+                    />
+                    <div className="absolute left-0 top-[calc(100%+6px)] z-20 grid w-64 grid-cols-8 gap-1 rounded-xl border border-mint bg-white p-2 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)]">
+                      {EMOJI_OPTIONS.map((emoji) => (
+                        <button
+                          key={emoji}
+                          type="button"
+                          onClick={() => insertEmoji(emoji)}
+                          className="rounded-md p-1 text-base transition-colors hover:bg-mint/15"
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
             <div className="flex flex-col gap-2">
               <div>
                 <button

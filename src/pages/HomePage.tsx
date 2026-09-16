@@ -84,26 +84,36 @@ interface WelcomeCardProps {
   academyRoles: string[];
 }
 
+/** The signed-in member's academy home: a compact header (not the login-splash hero logo
+ * treatment - NavBar is already visible here, with its own logout) above the news feed. */
 function WelcomeCard({ subdomain, academyName, academyLogo, currentUserId, academyRoles }: WelcomeCardProps): ReactElement {
   return (
-    <AcademyHomeShell logo={academyLogo} academyName={academyName} maxWidthClassName="max-w-2xl">
-      <div className="mb-5 w-full text-center">
-        <p className="text-xs font-bold uppercase tracking-wider text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.6)]">
-          Welcome back
-        </p>
-        <h2 className="mt-1 text-2xl font-extrabold text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
-          {academyName}
-        </h2>
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-5 py-8 sm:px-8">
+      <div className="flex items-center gap-3.5 rounded-2xl border border-mint bg-white/40 px-5 py-4 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.25)] backdrop-blur-2xl backdrop-saturate-150">
+        {academyLogo ? (
+          <img
+            src={academyLogo}
+            alt=""
+            className="size-12 shrink-0 rounded-xl border border-mint bg-white object-contain p-1"
+          />
+        ) : (
+          <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sand to-coral text-base font-bold text-white">
+            {academyName.charAt(0)}
+          </span>
+        )}
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-mint">Welcome back</p>
+          <h2 className="text-xl font-extrabold text-black">{academyName}</h2>
+        </div>
       </div>
-      <div className="w-full">
-        <PostFeed
-          subdomain={subdomain}
-          currentUserId={currentUserId}
-          isManager={academyRoles.includes("manager")}
-          canPost={false}
-        />
-      </div>
-    </AcademyHomeShell>
+
+      <PostFeed
+        subdomain={subdomain}
+        currentUserId={currentUserId}
+        isManager={academyRoles.includes("manager")}
+        canPost={false}
+      />
+    </div>
   );
 }
 
