@@ -59,7 +59,9 @@ export function AppShell(): ReactElement {
               ? "membership-requests"
               : location.pathname.startsWith("/newsletters")
                 ? "newsletters"
-                : "home";
+                : location.pathname.startsWith("/teams")
+                  ? "teams"
+                  : "home";
 
   const academyRoles = membership.status === "ready" ? membership.membership.roles : [];
 
@@ -84,6 +86,7 @@ export function AppShell(): ReactElement {
           onNavigateAcademyMembers={() => navigate("/academy-members")}
           onNavigateMembershipRequests={() => navigate("/membership-requests")}
           onNavigateNewsletters={() => navigate("/newsletters")}
+          onNavigateTeams={() => navigate("/teams")}
           onOpenProfile={() => setModal("profile")}
           onOpenAccountInfo={() => setModal("account")}
           onOpenChangePassword={() => setModal("password")}

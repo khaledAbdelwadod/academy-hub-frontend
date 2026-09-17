@@ -15,7 +15,8 @@ interface NavBarProps {
     | "academy-profile"
     | "academy-members"
     | "membership-requests"
-    | "newsletters";
+    | "newsletters"
+    | "teams";
   /** Every active role the user holds at the current academy subdomain; empty/omitted on www. */
   academyRoles?: string[];
   onNavigateHome: () => void;
@@ -26,6 +27,7 @@ interface NavBarProps {
   onNavigateAcademyMembers: () => void;
   onNavigateMembershipRequests: () => void;
   onNavigateNewsletters: () => void;
+  onNavigateTeams: () => void;
   onOpenProfile: () => void;
   onOpenAccountInfo: () => void;
   onOpenChangePassword: () => void;
@@ -54,6 +56,7 @@ export function NavBar({
   onNavigateAcademyMembers,
   onNavigateMembershipRequests,
   onNavigateNewsletters,
+  onNavigateTeams,
   onOpenProfile,
   onOpenAccountInfo,
   onOpenChangePassword,
@@ -105,6 +108,11 @@ export function NavBar({
               className={tabClassName(activeView === "newsletters")}
             >
               Newsletters
+            </button>
+          )}
+          {isAcademyManagerOrAdmin && (
+            <button type="button" onClick={onNavigateTeams} className={tabClassName(activeView === "teams")}>
+              Academy Teams
             </button>
           )}
           {user.is_superuser && (
