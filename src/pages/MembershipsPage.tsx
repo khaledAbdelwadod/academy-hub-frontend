@@ -90,7 +90,7 @@ export function MembershipsPage(): ReactElement {
   }
 
   return (
-    <div className="mx-auto flex h-full w-full max-w-[1200px] flex-col px-4 py-6 sm:px-8">
+    <div className="mx-auto flex h-full w-full max-w-[900px] flex-col px-4 py-6 sm:px-8">
       {state.status === "error" && (
         <p className="mb-4 shrink-0 text-sm text-red-400 [text-shadow:0_1px_6px_rgba(0,0,0,0.6)]">
           {state.message}

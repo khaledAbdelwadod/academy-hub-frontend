@@ -63,7 +63,7 @@ export function TeamsPage(): ReactElement {
   }
 
   return (
-    <div className="mx-auto flex h-full w-full max-w-[1200px] flex-col px-4 py-6 sm:px-8">
+    <div className="mx-auto flex h-full w-full max-w-[900px] flex-col px-4 py-6 sm:px-8">
       <div className="mb-4 flex shrink-0 items-center">
         <SmallButton variant="primary" onClick={() => setModalTarget("create")}>
           Add team
