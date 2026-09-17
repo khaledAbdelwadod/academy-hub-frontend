@@ -65,7 +65,7 @@ export function NavBar({
   const isAcademyManagerOrAdmin = isAcademyManager || academyRoles.includes("admin");
 
   return (
-    <div className="relative z-20 mx-auto mt-4 w-full max-w-[1600px] px-4 sm:px-8">
+    <div className="relative z-20 mx-auto mt-4 w-full max-w-[1200px] px-4 sm:px-8">
       <nav className="flex items-center justify-between rounded-2xl border border-mint bg-white/40 px-4 py-3 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.3)] backdrop-blur-2xl">
         <div className="flex items-center gap-1.5 sm:gap-2">
           <button type="button" onClick={onNavigateHome} className={tabClassName(activeView === "home")}>
