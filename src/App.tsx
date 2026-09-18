@@ -5,6 +5,7 @@ import { AcademiesRoute } from "./pages/AcademiesRoute";
 import { AcademyMembersRoute } from "./pages/AcademyMembersRoute";
 import { AcademyProfileRoute } from "./pages/AcademyProfileRoute";
 import { AppShell } from "./pages/AppShell";
+import { EventsRoute } from "./pages/EventsRoute";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { MembershipRequestsRoute } from "./pages/MembershipRequestsRoute";
@@ -43,6 +44,7 @@ function AppRoutes(): ReactElement {
         <Route path="/membership-requests" element={<MembershipRequestsRoute />} />
         <Route path="/newsletters" element={<NewslettersRoute />} />
         <Route path="/teams" element={<TeamsRoute />} />
+        <Route path="/events" element={<EventsRoute />} />
       </Route>
       <Route path="*" element={<Navigate to={user ? "/myaccount/home" : "/login"} replace />} />
     </Routes>

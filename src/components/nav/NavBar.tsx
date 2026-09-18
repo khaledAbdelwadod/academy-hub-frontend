@@ -1,9 +1,11 @@
-/** Top nav for the signed-in app: page tabs on the left, user menu on the right. */
+/** Top nav for the signed-in app: page tabs on the left, notifications + user menu on the right. */
 
 import { useState } from "react";
 import type { ReactElement } from "react";
 
 import type { AuthUser } from "../../api/authApi";
+import type { AppNotification } from "../../api/notificationApi";
+import { NotificationBell } from "./NotificationBell";
 
 interface NavBarProps {
   user: AuthUser;
@@ -16,9 +18,12 @@ interface NavBarProps {
     | "academy-members"
     | "membership-requests"
     | "newsletters"
-    | "teams";
+    | "teams"
+    | "events";
   /** Every active role the user holds at the current academy subdomain; empty/omitted on www. */
   academyRoles?: string[];
+  /** The academy subdomain the app is on, if any - the bell shows that academy's notifications. */
+  academySubdomain?: string | null;
   onNavigateHome: () => void;
   onNavigateUsers: () => void;
   onNavigateAcademies: () => void;
@@ -28,6 +33,8 @@ interface NavBarProps {
   onNavigateMembershipRequests: () => void;
   onNavigateNewsletters: () => void;
   onNavigateTeams: () => void;
+  onNavigateEvents: () => void;
+  onOpenNotification: (notification: AppNotification) => void;
   onOpenProfile: () => void;
   onOpenAccountInfo: () => void;
   onOpenChangePassword: () => void;
@@ -39,7 +46,7 @@ function capitalize(value: string): string {
 }
 
 function tabClassName(active: boolean): string {
-  return `rounded-lg px-3 py-1.5 text-sm font-bold transition-colors ${
+  return `shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm font-bold transition-colors ${
     active ? "bg-mint text-white" : "text-black hover:bg-mint hover:text-white"
   }`;
 }
@@ -48,6 +55,7 @@ export function NavBar({
   user,
   activeView,
   academyRoles = [],
+  academySubdomain = null,
   onNavigateHome,
   onNavigateUsers,
   onNavigateAcademies,
@@ -57,6 +65,8 @@ export function NavBar({
   onNavigateMembershipRequests,
   onNavigateNewsletters,
   onNavigateTeams,
+  onNavigateEvents,
+  onOpenNotification,
   onOpenProfile,
   onOpenAccountInfo,
   onOpenChangePassword,
@@ -64,13 +74,14 @@ export function NavBar({
 }: NavBarProps): ReactElement {
   const [menuOpen, setMenuOpen] = useState(false);
   const initials = `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
+  const isAcademyMember = academyRoles.length > 0;
   const isAcademyManager = academyRoles.includes("manager");
   const isAcademyManagerOrAdmin = isAcademyManager || academyRoles.includes("admin");
 
   return (
     <div className="relative z-20 mx-auto mt-4 w-full max-w-[900px] px-4 sm:px-8">
-      <nav className="flex items-center justify-between rounded-2xl border border-mint bg-white/40 px-4 py-3 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.3)] backdrop-blur-2xl">
-        <div className="flex items-center gap-1.5 sm:gap-2">
+      <nav className="relative flex items-center justify-between gap-3 rounded-2xl border border-mint bg-white/40 px-4 py-3 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.3)] backdrop-blur-2xl">
+        <div className="-my-1 flex min-w-0 items-center gap-1 overflow-x-auto py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <button type="button" onClick={onNavigateHome} className={tabClassName(activeView === "home")}>
             Home
           </button>
@@ -115,6 +126,11 @@ export function NavBar({
               Teams
             </button>
           )}
+          {isAcademyMember && (
+            <button type="button" onClick={onNavigateEvents} className={tabClassName(activeView === "events")}>
+              Events
+            </button>
+          )}
           {user.is_superuser && (
             <button type="button" onClick={onNavigateUsers} className={tabClassName(activeView === "users")}>
               Users
@@ -136,24 +152,21 @@ export function NavBar({
           )}
         </div>
 
-        <div className="flex items-center gap-3">
-          {academyRoles.length > 0 && (
-            <span className="hidden rounded-full bg-mint/15 px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-pine sm:inline-block">
-              {academyRoles.map(capitalize).join(" · ")}
-            </span>
+        <div className="flex shrink-0 items-center gap-2">
+          {isAcademyMember && academySubdomain && (
+            <NotificationBell subdomain={academySubdomain} onOpenNotification={onOpenNotification} />
           )}
 
           <div className="relative">
             <button
               type="button"
+              aria-label="Account menu"
+              title={`${user.first_name} ${user.last_name}`}
               onClick={() => setMenuOpen((open) => !open)}
-              className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-2 transition-colors hover:bg-mint/15"
+              className="flex items-center rounded-full p-0.5 transition-colors hover:bg-mint/15"
             >
               <span className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-sand to-coral text-sm font-bold text-white">
                 {user.avatar ? <img src={user.avatar} alt="" className="size-full object-cover" /> : initials}
-              </span>
-              <span className="hidden text-sm font-semibold text-black sm:inline">
-                {user.first_name} {user.last_name}
               </span>
             </button>
 
@@ -165,7 +178,17 @@ export function NavBar({
                   onClick={() => setMenuOpen(false)}
                   className="fixed inset-0 z-10 cursor-default"
                 />
-                <div className="absolute right-0 top-[calc(100%+10px)] z-20 w-52 overflow-hidden rounded-xl border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)]">
+                <div className="absolute right-0 top-[calc(100%+10px)] z-20 w-60 overflow-hidden rounded-xl border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.35)]">
+                  <div className="flex flex-col items-start gap-1.5 border-b border-mint px-4 py-3">
+                    <span className="text-sm font-bold text-black">
+                      {user.first_name} {user.last_name}
+                    </span>
+                    {isAcademyMember && (
+                      <span className="rounded-full bg-mint/15 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-pine">
+                        {academyRoles.map(capitalize).join(" · ")}
+                      </span>
+                    )}
+                  </div>
                   <button
                     type="button"
                     onClick={() => {

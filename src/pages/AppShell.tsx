@@ -5,6 +5,7 @@ import type { ReactElement } from "react";
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { logout } from "../api/authApi";
+import type { AppNotification } from "../api/notificationApi";
 import { VideoBackdrop } from "../components/auth/VideoBackdrop";
 import { NavBar } from "../components/nav/NavBar";
 import { AccountInfoModal } from "../components/profile/AccountInfoModal";
@@ -12,7 +13,10 @@ import { ChangePasswordModal } from "../components/profile/ChangePasswordModal";
 import { ProfileModal } from "../components/profile/ProfileModal";
 import { useAcademyMembership } from "../hooks/useAcademyMembership";
 import { useAuth } from "../state/AuthContext";
+import { toDateKey } from "../utils/calendarDates";
 import { logger } from "../utils/logger";
+import { getAcademySubdomain } from "../utils/subdomain";
+import type { EventsRouteState } from "./EventsRoute";
 
 type ModalName = "profile" | "account" | "password" | null;
 
@@ -45,6 +49,13 @@ export function AppShell(): ReactElement {
       });
   }
 
+  /** Opening a notification lands on that event's day in the calendar, with the event open. */
+  function handleOpenNotification(notification: AppNotification): void {
+    const target: EventsRouteState = { day: toDateKey(new Date(notification.event_start)) };
+    if (notification.event !== null) target.eventId = notification.event;
+    navigate("/events", { state: target });
+  }
+
   const activeView = location.pathname.startsWith("/users")
     ? "users"
     : location.pathname.startsWith("/academies")
@@ -61,7 +72,9 @@ export function AppShell(): ReactElement {
                 ? "newsletters"
                 : location.pathname.startsWith("/teams")
                   ? "teams"
-                  : "home";
+                  : location.pathname.startsWith("/events")
+                    ? "events"
+                    : "home";
 
   const academyRoles = membership.status === "ready" ? membership.membership.roles : [];
 
@@ -78,6 +91,7 @@ export function AppShell(): ReactElement {
           user={user}
           activeView={activeView}
           academyRoles={academyRoles}
+          academySubdomain={getAcademySubdomain()}
           onNavigateHome={() => navigate("/myaccount/home")}
           onNavigateUsers={() => navigate("/users")}
           onNavigateAcademies={() => navigate("/academies")}
@@ -87,6 +101,8 @@ export function AppShell(): ReactElement {
           onNavigateMembershipRequests={() => navigate("/membership-requests")}
           onNavigateNewsletters={() => navigate("/newsletters")}
           onNavigateTeams={() => navigate("/teams")}
+          onNavigateEvents={() => navigate("/events")}
+          onOpenNotification={handleOpenNotification}
           onOpenProfile={() => setModal("profile")}
           onOpenAccountInfo={() => setModal("account")}
           onOpenChangePassword={() => setModal("password")}
