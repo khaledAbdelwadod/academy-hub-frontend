@@ -53,12 +53,12 @@ export function LoginPage(): ReactElement {
           academy.logo ? (
             <img src={academy.logo} alt={academy.name} className="mb-7 max-h-24 max-w-[280px] object-contain" />
           ) : (
-            <p className="mb-7 text-center font-display text-5xl tracking-wider text-white sm:text-6xl">
+            <p className="mb-7 text-center text-3xl uppercase tracking-wider text-white sm:text-5xl">
               {academy.name}
             </p>
           )
         ) : (
-          <p className="mb-7 font-display text-6xl tracking-wider sm:text-7xl">
+          <p className="mb-7 text-4xl tracking-wider sm:text-6xl">
             <span
               className="text-white"
               style={{ WebkitTextStroke: "2px #2a9d8f", paintOrder: "stroke fill" }}

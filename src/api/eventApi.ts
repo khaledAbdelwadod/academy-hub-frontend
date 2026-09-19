@@ -39,6 +39,10 @@ export interface CalendarEvent {
   id: number;
   title: string;
   description: string;
+  /** Where it takes place, as text; empty when not set. */
+  address: string;
+  /** A Google Maps link to that place; empty when not set. */
+  google_maps_url: string;
   /** ISO datetime (UTC). */
   start: string;
   end: string;
@@ -57,6 +61,8 @@ export interface CalendarEvent {
 export interface EventInput {
   title: string;
   description: string;
+  address: string;
+  google_maps_url: string;
   start: string;
   end: string;
   team_ids: number[];

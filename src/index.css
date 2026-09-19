@@ -1,8 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Bebas Neue", "Arial Narrow", sans-serif;
-  --font-sans: "Plus Jakarta Sans", -apple-system, "Segoe UI", sans-serif;
+  /* One typeface app-wide. Helvetica Neue is a system font on Apple devices; elsewhere the
+     stack falls through to Helvetica/Arial (no web font is loaded). */
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  /* Everything is bold: every font-weight utility resolves to 700, so no class can
+     make text lighter (or heavier) than the rest of the app. */
+  --font-weight-thin: 700;
+  --font-weight-extralight: 700;
+  --font-weight-light: 700;
+  --font-weight-normal: 700;
+  --font-weight-medium: 700;
+  --font-weight-semibold: 700;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 700;
+  --font-weight-black: 700;
 
   --color-ground: #fff8ee;
   --color-ink: #264653;
@@ -16,6 +29,13 @@
      signed-in app page - not used on the still-dark login/register/forgot pages. */
   --color-mint: #45a173;
   --color-pine: #03572c;
+}
+
+/* Text with no weight class at all (plain paragraphs, inputs, table cells) inherits bold too. */
+@layer base {
+  html {
+    font-weight: 700;
+  }
 }
 
 @keyframes panel-in {

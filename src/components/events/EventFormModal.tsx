@@ -46,6 +46,8 @@ export function EventFormModal({ subdomain, event, defaultDay, onClose, onSaved 
 
   const [title, setTitle] = useState(event?.title ?? "");
   const [description, setDescription] = useState(event?.description ?? "");
+  const [address, setAddress] = useState(event?.address ?? "");
+  const [mapsUrl, setMapsUrl] = useState(event?.google_maps_url ?? "");
   const [day, setDay] = useState(existingStart ? toDateKey(existingStart) : defaultDay);
   const [startTime, setStartTime] = useState(existingStart ? toTimeInput(existingStart) : DEFAULT_START_TIME);
   const [endTime, setEndTime] = useState(
@@ -86,6 +88,8 @@ export function EventFormModal({ subdomain, event, defaultDay, onClose, onSaved 
     const data: EventInput = {
       title: title.trim(),
       description: description.trim(),
+      address: address.trim(),
+      google_maps_url: mapsUrl.trim(),
       start: start.toISOString(),
       end: end.toISOString(),
       team_ids: Array.from(teamIds),
@@ -158,6 +162,26 @@ export function EventFormModal({ subdomain, event, defaultDay, onClose, onSaved 
             required
           />
         </div>
+
+        <FormField
+          id="event-address"
+          label="Location address"
+          optional
+          value={address}
+          onChange={(changeEvent: ChangeEvent<HTMLInputElement>) => setAddress(changeEvent.target.value)}
+          placeholder="e.g. 12 Nile St, Cairo"
+          maxLength={500}
+        />
+        <FormField
+          id="event-maps-url"
+          label="Google Maps link"
+          optional
+          type="url"
+          value={mapsUrl}
+          onChange={(changeEvent: ChangeEvent<HTMLInputElement>) => setMapsUrl(changeEvent.target.value)}
+          placeholder="https://maps.google.com/…"
+          maxLength={500}
+        />
 
         {optionsState.status === "loading" && <p className="text-sm text-gray-500">Loading who you can invite…</p>}
         {optionsState.status === "error" && <p className="text-sm text-red-400">{optionsState.message}</p>}

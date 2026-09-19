@@ -30,6 +30,27 @@ function Section({ label, children }: { label: string; children: ReactNode }): R
   );
 }
 
+/** The event's address and/or map link; renders nothing when neither was set. */
+function LocationSection({ event }: { event: CalendarEvent }): ReactElement | null {
+  if (!event.address && !event.google_maps_url) return null;
+
+  return (
+    <Section label="Location">
+      {event.address && <p className="whitespace-pre-line text-sm text-black/80">{event.address}</p>}
+      {event.google_maps_url && (
+        <a
+          href={event.google_maps_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-fit text-sm text-mint underline hover:text-pine"
+        >
+          Open in Google Maps
+        </a>
+      )}
+    </Section>
+  );
+}
+
 function audienceNames(event: CalendarEvent): string {
   const teams = event.teams.map((team) => `${team.name} (team)`);
   const members = event.invitees.map((member) => `${member.first_name} ${member.last_name}`);
@@ -70,6 +91,8 @@ export function EventDetailModal({
         <p className="text-base font-semibold text-black/80">{formatEventWhen(event.start, event.end)}</p>
 
         {event.description && <p className="whitespace-pre-line text-sm text-black/80">{event.description}</p>}
+
+        <LocationSection event={event} />
 
         <Section label="Invited">
           <p className="text-sm text-black/80">{audienceNames(event)}</p>
