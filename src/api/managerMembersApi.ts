@@ -1,5 +1,7 @@
 /** API layer for an academy manager viewing/managing their own academy's (non-manager) members. */
 
+import type { Gender } from "../utils/gender";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 if (!API_BASE_URL) {
@@ -18,6 +20,8 @@ export interface ManagerMemberRow {
   email: string;
   phone: string;
   date_of_birth: string;
+  /** Empty for accounts created before gender was collected. */
+  gender: Gender | "";
   role: MemberRole;
   status: MemberStatus;
   joined_at: string;
@@ -36,6 +40,7 @@ export interface ManagerMemberListQuery {
   email?: string;
   phone?: string;
   date_of_birth?: string;
+  gender?: string;
   role?: string;
   status?: string;
   ordering?: string;

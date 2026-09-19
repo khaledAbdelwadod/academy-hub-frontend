@@ -1,4 +1,4 @@
-/** A modal for a manager/admin to create or edit a team: name, description, coach, and roster. */
+/** A modal for a manager/admin to create or edit a team: name, gender, description, coach, and roster. */
 
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent, ReactElement } from "react";
@@ -7,9 +7,12 @@ import { buildMembersUrl, listMembers } from "../../api/managerMembersApi";
 import type { ManagerMemberRow } from "../../api/managerMembersApi";
 import type { Team } from "../../api/teamApi";
 import { createTeam, updateTeam } from "../../api/teamApi";
+import { TEAM_GENDER_OPTIONS } from "../../utils/gender";
+import type { TeamGender } from "../../utils/gender";
 import { AuthButton } from "../ui/AuthButton";
 import { FormField } from "../ui/FormField";
 import { ModalShell } from "../ui/ModalShell";
+import { SelectField } from "../ui/SelectField";
 
 interface TeamFormModalProps {
   subdomain: string;
@@ -26,6 +29,7 @@ export function TeamFormModal({ subdomain, team, onClose, onSaved }: TeamFormMod
   const isCreate = team === null;
   const [name, setName] = useState(team?.name ?? "");
   const [description, setDescription] = useState(team?.description ?? "");
+  const [gender, setGender] = useState<string>(team?.gender ?? "");
   const [coachId, setCoachId] = useState<string>(team?.coach ? String(team.coach.id) : "");
   const [playerIds, setPlayerIds] = useState<Set<number>>(new Set(team?.players.map((p) => p.id) ?? []));
   const [roster, setRoster] = useState<RosterState>({ status: "loading" });
@@ -52,10 +56,11 @@ export function TeamFormModal({ subdomain, team, onClose, onSaved }: TeamFormMod
   function handleSubmit(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
     const trimmedName = name.trim();
-    if (!trimmedName) return;
+    if (!trimmedName || !gender) return;
 
     const data = {
       name: trimmedName,
+      gender: gender as TeamGender,
       description: description.trim(),
       coach_id: coachId ? Number(coachId) : null,
       player_ids: Array.from(playerIds),
@@ -75,8 +80,17 @@ export function TeamFormModal({ subdomain, team, onClose, onSaved }: TeamFormMod
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <FormField id="team-name" label="Team name" value={name} onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event.target.value)} placeholder="e.g. U12 Reds" required />
 
+        <SelectField
+          id="team-gender"
+          label="Gender"
+          options={TEAM_GENDER_OPTIONS}
+          value={gender}
+          onChange={(event: ChangeEvent<HTMLSelectElement>) => setGender(event.target.value)}
+          required
+        />
+
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="team-description" className="text-xs font-bold uppercase tracking-wider text-black/80">
+          <label htmlFor="team-description"className="text-xs font-bold uppercase tracking-wider text-black/80">
             Description
           </label>
           <textarea
@@ -140,7 +154,7 @@ export function TeamFormModal({ subdomain, team, onClose, onSaved }: TeamFormMod
 
         {saveState.status === "error" && <p className="text-sm text-red-400">{saveState.message}</p>}
 
-        <AuthButton type="submit" fullWidth={false} disabled={saveState.status === "saving" || !name.trim()}>
+        <AuthButton type="submit" fullWidth={false} disabled={saveState.status === "saving" || !name.trim() || !gender}>
           {saveState.status === "saving" ? "Saving…" : isCreate ? "Create team" : "Save changes"}
         </AuthButton>
       </form>

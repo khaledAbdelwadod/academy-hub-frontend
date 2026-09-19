@@ -1,5 +1,7 @@
 /** API layer for an academy manager/admin managing their academy's teams. */
 
+import type { TeamGender } from "../utils/gender";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 if (!API_BASE_URL) {
@@ -17,6 +19,8 @@ export interface Team {
   id: number;
   name: string;
   description: string;
+  /** Empty for teams created before gender was collected. */
+  gender: TeamGender | "";
   coach: TeamMemberSummary | null;
   players: TeamMemberSummary[];
   created_at: string;
@@ -24,6 +28,7 @@ export interface Team {
 
 export interface TeamInput {
   name: string;
+  gender: TeamGender;
   description?: string;
   coach_id?: number | null;
   player_ids?: number[];
@@ -48,7 +53,7 @@ async function fetchCsrfToken(): Promise<string> {
 async function readErrorDetail(response: Response, fallback: string): Promise<string> {
   const body: unknown = await response.json().catch(() => null);
   if (body && typeof body === "object") {
-    for (const key of ["detail", "coach_id", "player_ids", "name"]) {
+    for (const key of ["detail", "coach_id", "player_ids", "name", "gender"]) {
       const value = (body as Record<string, unknown>)[key];
       if (typeof value === "string") return value;
       if (Array.isArray(value) && typeof value[0] === "string") return value[0] as string;

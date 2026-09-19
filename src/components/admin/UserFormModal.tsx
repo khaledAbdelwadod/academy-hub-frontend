@@ -5,11 +5,14 @@ import type { FormEvent, ReactElement } from "react";
 
 import type { AdminUser } from "../../api/adminUsersApi";
 import { createUser, updateUser } from "../../api/adminUsersApi";
+import { GENDER_OPTIONS } from "../../utils/gender";
+import type { Gender } from "../../utils/gender";
 import { logger } from "../../utils/logger";
 import { AuthButton } from "../ui/AuthButton";
 import { FormField } from "../ui/FormField";
 import { ModalShell } from "../ui/ModalShell";
 import { PasswordField } from "../ui/PasswordField";
+import { SelectField } from "../ui/SelectField";
 
 interface UserFormModalProps {
   /** The user being edited, or null to create a new one. */
@@ -34,6 +37,7 @@ export function UserFormModal({ user, onClose, onSaved }: UserFormModalProps): R
       email: String(data.get("email") ?? ""),
       phone: String(data.get("phone") ?? ""),
       date_of_birth: String(data.get("date_of_birth") ?? ""),
+      gender: String(data.get("gender") ?? "") as Gender,
       is_active: data.get("is_active") === "on",
       is_staff: data.get("is_staff") === "on",
       is_superuser: data.get("is_superuser") === "on",
@@ -91,9 +95,21 @@ export function UserFormModal({ user, onClose, onSaved }: UserFormModalProps): R
           />
         </div>
 
-        {isCreate && (
-          <PasswordField name="password" label="Initial password" autoComplete="new-password" required />
-        )}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <SelectField
+            id="uf-gender"
+            name="gender"
+            label="Gender"
+            options={GENDER_OPTIONS}
+            defaultValue={user?.gender ?? ""}
+            required
+          />
+          {isCreate && (
+            <div className="sm:col-span-2">
+              <PasswordField name="password" label="Initial password" autoComplete="new-password" required />
+            </div>
+          )}
+        </div>
 
         <div className="flex flex-wrap gap-5 pt-1 text-sm text-black/80">
           <label className="flex items-center gap-2">

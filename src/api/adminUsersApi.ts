@@ -1,5 +1,7 @@
 /** API layer for superadmin user-management endpoints. */
 
+import type { Gender } from "../utils/gender";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 if (!API_BASE_URL) {
@@ -14,6 +16,8 @@ export interface AdminUser {
   middle_name: string;
   last_name: string;
   date_of_birth: string;
+  /** Empty for accounts created before gender was collected. */
+  gender: Gender | "";
   phone: string;
   avatar: string | null;
   email_verified: boolean;
@@ -39,6 +43,7 @@ export interface AdminUserCreate {
   middle_name?: string;
   last_name: string;
   date_of_birth: string;
+  gender: Gender;
   phone: string;
   is_active?: boolean;
   is_staff?: boolean;
@@ -54,6 +59,7 @@ export type AdminUserUpdate = Partial<
     | "email"
     | "phone"
     | "date_of_birth"
+    | "gender"
     | "is_active"
     | "is_staff"
     | "is_superuser"
@@ -68,6 +74,7 @@ export interface AdminUserListQuery {
   /** Matches against email OR phone in one search - for "find a user" pickers. */
   q?: string;
   date_of_birth?: string;
+  gender?: string;
   email_verified?: string;
   phone_verified?: string;
   is_active?: string;

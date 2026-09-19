@@ -1,4 +1,4 @@
-/** A modal for the signed-in user to edit their own name, phone, DOB, and avatar. */
+/** A modal for the signed-in user to edit their own name, phone, DOB, gender, and avatar. */
 
 import { useEffect, useState } from "react";
 import type { FormEvent, ReactElement } from "react";
@@ -6,10 +6,13 @@ import type { FormEvent, ReactElement } from "react";
 import type { AuthUser } from "../../api/authApi";
 import { fetchProfile, updateProfile } from "../../api/authApi";
 import { useAuth } from "../../state/AuthContext";
+import { GENDER_OPTIONS } from "../../utils/gender";
+import type { Gender } from "../../utils/gender";
 import { logger } from "../../utils/logger";
 import { AuthButton } from "../ui/AuthButton";
 import { FormField } from "../ui/FormField";
 import { ModalShell } from "../ui/ModalShell";
+import { SelectField } from "../ui/SelectField";
 import { AvatarUploader } from "./AvatarUploader";
 
 type LoadState =
@@ -61,6 +64,7 @@ export function ProfileModal({ onClose }: ProfileModalProps): ReactElement {
       last_name: String(data.get("last_name") ?? ""),
       phone: String(data.get("phone") ?? ""),
       date_of_birth: String(data.get("date_of_birth") ?? ""),
+      gender: String(data.get("gender") ?? "") as Gender,
     })
       .then((updated) => {
         setLoadState({ status: "ready", profile: updated });
@@ -113,7 +117,7 @@ export function ProfileModal({ onClose }: ProfileModalProps): ReactElement {
               />
             </div>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <FormField
                 id="pf-phone"
                 name="phone"
@@ -127,6 +131,14 @@ export function ProfileModal({ onClose }: ProfileModalProps): ReactElement {
                 label="Date of birth"
                 type="date"
                 defaultValue={loadState.profile.date_of_birth}
+                required
+              />
+              <SelectField
+                id="pf-gender"
+                name="gender"
+                label="Gender"
+                options={GENDER_OPTIONS}
+                defaultValue={loadState.profile.gender}
                 required
               />
             </div>

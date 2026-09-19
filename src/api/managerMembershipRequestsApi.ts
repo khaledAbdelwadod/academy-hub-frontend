@@ -1,5 +1,7 @@
 /** API layer for an academy manager reviewing pending join requests. */
 
+import type { Gender } from "../utils/gender";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 if (!API_BASE_URL) {
@@ -22,6 +24,8 @@ export interface ManagerMembershipRequestRow {
   email: string;
   phone: string;
   date_of_birth: string;
+  /** Empty for accounts created before gender was collected. */
+  gender: Gender | "";
   role: string;
   joined_at: string;
   answers: JoinRequestAnswerEntry[];

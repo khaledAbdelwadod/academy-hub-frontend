@@ -8,6 +8,7 @@ import { deleteTeam, listTeams } from "../api/teamApi";
 import { TeamActionsMenu } from "../components/admin/TeamActionsMenu";
 import { TeamFormModal } from "../components/admin/TeamFormModal";
 import { SmallButton } from "../components/ui/SmallButton";
+import { formatGender } from "../utils/gender";
 import { logger } from "../utils/logger";
 import { getAcademySubdomain } from "../utils/subdomain";
 
@@ -85,6 +86,7 @@ export function TeamsPage(): ReactElement {
             <thead>
               <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-sm font-bold uppercase tracking-wider text-mint">
                 <th className="whitespace-nowrap px-3 py-3">Name</th>
+                <th className="whitespace-nowrap px-3 py-3">Gender</th>
                 <th className="whitespace-nowrap px-3 py-3">Description</th>
                 <th className="whitespace-nowrap px-3 py-3">Coach</th>
                 <th className="px-3 py-3">Players</th>
@@ -100,6 +102,7 @@ export function TeamsPage(): ReactElement {
                     className="divide-x divide-gray-300 border-b border-gray-300 text-black/80 hover:bg-mint/10"
                   >
                     <td className="whitespace-nowrap px-3 py-3 font-semibold text-black">{team.name}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{formatGender(team.gender)}</td>
                     <td className="px-3 py-3">{team.description || <span className="text-gray-300">—</span>}</td>
                     <td className="whitespace-nowrap px-3 py-3">
                       {team.coach ? (

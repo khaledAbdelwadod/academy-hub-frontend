@@ -7,6 +7,7 @@ import type { ManagerMembershipRequestList, ManagerMembershipRequestRow } from "
 import { buildMembershipRequestsUrl, listMembershipRequests } from "../api/managerMembershipRequestsApi";
 import { removeMember, updateMember } from "../api/managerMembersApi";
 import { SmallButton } from "../components/ui/SmallButton";
+import { formatGender } from "../utils/gender";
 import { logger } from "../utils/logger";
 import { getAcademySubdomain } from "../utils/subdomain";
 
@@ -114,13 +115,14 @@ export function MembershipRequestsPage(): ReactElement {
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl">
         <div className="min-h-0 flex-1 overflow-auto">
-          <table className="min-w-[900px] border-collapse text-base">
+          <table className="min-w-[1000px] border-collapse text-base">
             <thead>
               <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-sm font-bold uppercase tracking-wider text-mint">
                 <th className="whitespace-nowrap px-3 py-3">Name</th>
                 <th className="whitespace-nowrap px-3 py-3">Email</th>
                 <th className="whitespace-nowrap px-3 py-3">Phone</th>
                 <th className="whitespace-nowrap px-3 py-3">Date of birth</th>
+                <th className="whitespace-nowrap px-3 py-3">Gender</th>
                 {answerColumns.map((column) => (
                   <th key={column.fieldId} className="whitespace-nowrap px-3 py-3">
                     {column.label}
@@ -143,6 +145,7 @@ export function MembershipRequestsPage(): ReactElement {
                     <td className="whitespace-nowrap px-3 py-3">{request.email}</td>
                     <td className="whitespace-nowrap px-3 py-3">{request.phone}</td>
                     <td className="whitespace-nowrap px-3 py-3">{formatDate(request.date_of_birth)}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{formatGender(request.gender)}</td>
                     {request.answers.map((entry) => (
                       <td key={entry.field_id} className="px-3 py-3">
                         {entry.answer || <span className="text-gray-300">—</span>}

@@ -1,13 +1,16 @@
-/** The registration form, matching the User schema: name, DOB, phone, email, password. */
+/** The registration form, matching the User schema: name, DOB, gender, phone, email, password. */
 
 import { useState } from "react";
 import type { FormEvent, ReactElement } from "react";
 
 import { register } from "../../api/authApi";
+import { GENDER_OPTIONS } from "../../utils/gender";
+import type { Gender } from "../../utils/gender";
 import { logger } from "../../utils/logger";
 import { AuthButton } from "../ui/AuthButton";
 import { FormField } from "../ui/FormField";
 import { PasswordField } from "../ui/PasswordField";
+import { SelectField } from "../ui/SelectField";
 
 interface RegisterFormProps {
   onRegistered: (email: string) => void;
@@ -41,6 +44,7 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
       last_name: String(data.get("last_name") ?? ""),
       phone: String(data.get("phone") ?? ""),
       date_of_birth: String(data.get("date_of_birth") ?? ""),
+      gender: String(data.get("gender") ?? "") as Gender,
     })
       .then((result) => {
         setState({ status: "idle" });
@@ -116,6 +120,7 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
       </div>
 
       <div className="grid grid-cols-3 gap-3">
+        <SelectField id="rg-gender" name="gender" label="Gender" options={GENDER_OPTIONS} defaultValue="" required />
         <PasswordField
           name="password"
           label="Password"
@@ -130,10 +135,11 @@ export function RegisterForm({ onRegistered, onSwitchToSignIn }: RegisterFormPro
           autoComplete="new-password"
           required
         />
-        <p className="self-end text-xs leading-relaxed text-black/50">
-          By continuing you agree to Academy Hub&apos;s Terms and Privacy Policy.
-        </p>
       </div>
+
+      <p className="text-xs leading-relaxed text-black/50">
+        By continuing you agree to Academy Hub&apos;s Terms and Privacy Policy.
+      </p>
 
       {state.status === "error" && <p className="text-sm text-red-400">{state.message}</p>}
 

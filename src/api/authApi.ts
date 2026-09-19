@@ -1,5 +1,7 @@
 /** API layer for authentication endpoints. */
 
+import type { Gender } from "../utils/gender";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 if (!API_BASE_URL) {
@@ -14,6 +16,8 @@ export interface AuthUser {
   middle_name: string;
   last_name: string;
   date_of_birth: string;
+  /** Empty for accounts created before gender was collected. */
+  gender: Gender | "";
   phone: string;
   avatar: string | null;
   email_verified: boolean;
@@ -97,6 +101,7 @@ export interface RegisterPayload {
   last_name: string;
   phone: string;
   date_of_birth: string;
+  gender: Gender;
 }
 
 /**
@@ -197,6 +202,7 @@ export interface ProfileUpdate {
   last_name: string;
   phone: string;
   date_of_birth: string;
+  gender: Gender;
 }
 
 /**

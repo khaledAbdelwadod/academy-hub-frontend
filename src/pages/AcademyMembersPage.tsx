@@ -8,6 +8,7 @@ import { buildMembersUrl, listMembers, removeMember, updateMember } from "../api
 import { AddMemberModal } from "../components/admin/AddMemberModal";
 import { MemberRowActionsMenu } from "../components/admin/MemberRowActionsMenu";
 import { SmallButton } from "../components/ui/SmallButton";
+import { formatGender, GENDER_OPTIONS } from "../utils/gender";
 import { logger } from "../utils/logger";
 import { getAcademySubdomain } from "../utils/subdomain";
 
@@ -23,6 +24,7 @@ const EMPTY_FILTERS: FilterValues = {
   email: "",
   phone: "",
   date_of_birth: "",
+  gender: "",
   role: "",
   status: "",
 };
@@ -155,13 +157,14 @@ export function AcademyMembersPage(): ReactElement {
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl">
         <div className="min-h-0 flex-1 overflow-auto">
-          <table className="min-w-[900px] border-collapse text-base">
+          <table className="min-w-[1000px] border-collapse text-base">
             <thead>
               <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-sm font-bold uppercase tracking-wider text-mint">
                 <th className="whitespace-nowrap px-3 py-3">Name</th>
                 <th className="whitespace-nowrap px-3 py-3">Email</th>
                 <th className="whitespace-nowrap px-3 py-3">Phone</th>
                 <th className="whitespace-nowrap px-3 py-3">Date of birth</th>
+                <th className="whitespace-nowrap px-3 py-3">Gender</th>
                 <th className="whitespace-nowrap px-3 py-3">Role</th>
                 <th className="whitespace-nowrap px-3 py-3">Status</th>
                 <th className="whitespace-nowrap px-3 py-3">Joined</th>
@@ -207,6 +210,20 @@ export function AcademyMembersPage(): ReactElement {
                 </th>
                 <th className="px-3 pb-3 align-middle">
                   <select
+                    value={filters.gender}
+                    onChange={(event: ChangeEvent<HTMLSelectElement>) => handleFilterChange("gender", event.target.value)}
+                    className="w-full rounded-md border border-mint bg-white px-2 py-1 text-xs font-normal normal-case tracking-normal text-black focus:border-pine focus:outline-none"
+                  >
+                    <option value="">All</option>
+                    {GENDER_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </th>
+                <th className="px-3 pb-3 align-middle">
+                  <select
                     value={filters.role}
                     onChange={(event: ChangeEvent<HTMLSelectElement>) => handleFilterChange("role", event.target.value)}
                     className="w-full rounded-md border border-mint bg-white px-2 py-1 text-xs font-normal normal-case tracking-normal text-black focus:border-pine focus:outline-none"
@@ -249,6 +266,7 @@ export function AcademyMembersPage(): ReactElement {
                     <td className="whitespace-nowrap px-3 py-3">{member.email}</td>
                     <td className="whitespace-nowrap px-3 py-3">{member.phone}</td>
                     <td className="whitespace-nowrap px-3 py-3">{formatDate(member.date_of_birth)}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{formatGender(member.gender)}</td>
                     <td className="px-3 py-3">
                       <select
                         value={member.role}

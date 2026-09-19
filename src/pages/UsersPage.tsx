@@ -8,6 +8,7 @@ import { buildUsersUrl, deleteUser, listUsers, updateUser } from "../api/adminUs
 import { RowActionsMenu } from "../components/admin/RowActionsMenu";
 import { UserFormModal } from "../components/admin/UserFormModal";
 import { SmallButton } from "../components/ui/SmallButton";
+import { formatGender, GENDER_OPTIONS } from "../utils/gender";
 import { logger } from "../utils/logger";
 
 type LoadState =
@@ -22,6 +23,7 @@ const EMPTY_FILTERS: FilterValues = {
   email: "",
   phone: "",
   date_of_birth: "",
+  gender: "",
   email_verified: "",
   phone_verified: "",
   is_active: "",
@@ -34,7 +36,9 @@ interface ColumnConfig {
   sortKey?: string;
   label: string;
   filterKey?: keyof FilterValues;
-  filterType?: "text" | "date" | "boolean";
+  filterType?: "text" | "date" | "boolean" | "choice";
+  /** The values a "choice" filter offers (besides "All"). */
+  filterOptions?: ReadonlyArray<{ value: string; label: string }>;
 }
 
 const COLUMNS: ColumnConfig[] = [
@@ -42,6 +46,7 @@ const COLUMNS: ColumnConfig[] = [
   { sortKey: "email", label: "Email", filterKey: "email", filterType: "text" },
   { sortKey: "phone", label: "Phone", filterKey: "phone", filterType: "text" },
   { sortKey: "date_of_birth", label: "Date of birth", filterKey: "date_of_birth", filterType: "date" },
+  { sortKey: "gender", label: "Gender", filterKey: "gender", filterType: "choice", filterOptions: GENDER_OPTIONS },
   { sortKey: "email_verified", label: "Email verified", filterKey: "email_verified", filterType: "boolean" },
   { sortKey: "phone_verified", label: "Phone verified", filterKey: "phone_verified", filterType: "boolean" },
   { sortKey: "is_active", label: "Active", filterKey: "is_active", filterType: "boolean" },
@@ -174,7 +179,7 @@ export function UsersPage(): ReactElement {
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl">
         <div className="min-h-0 flex-1 overflow-auto">
-          <table className="min-w-[1150px] border-collapse text-base">
+          <table className="min-w-[1250px] border-collapse text-base">
             <thead>
               <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-sm font-bold uppercase tracking-wider text-mint">
                 {COLUMNS.map((column) => (
@@ -215,6 +220,22 @@ export function UsersPage(): ReactElement {
                         className="w-full rounded-md border border-mint bg-white px-2 py-1 text-xs font-normal normal-case tracking-normal text-black focus:border-pine focus:outline-none"
                       />
                     )}
+                    {column.filterKey && column.filterType === "choice" && (
+                      <select
+                        value={filters[column.filterKey]}
+                        onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+                          handleFilterChange(column.filterKey!, event.target.value)
+                        }
+                        className="w-full rounded-md border border-mint bg-white px-2 py-1 text-xs font-normal normal-case tracking-normal text-black focus:border-pine focus:outline-none"
+                      >
+                        <option value="">All</option>
+                        {column.filterOptions?.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    )}
                     {column.filterKey && column.filterType === "boolean" && (
                       <select
                         value={filters[column.filterKey]}
@@ -243,6 +264,7 @@ export function UsersPage(): ReactElement {
                     <td className="whitespace-nowrap px-3 py-3">{row.email}</td>
                     <td className="whitespace-nowrap px-3 py-3">{row.phone}</td>
                     <td className="whitespace-nowrap px-3 py-3">{formatDate(row.date_of_birth)}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{formatGender(row.gender)}</td>
                     <td className="px-3 py-3">
                       <Badge ok={row.email_verified} label={row.email_verified ? "Verified" : "Unverified"} />
                     </td>
