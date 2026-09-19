@@ -19,6 +19,15 @@ export interface AdminAcademy {
   logo: string | null;
   legal_document: string | null;
   login_background_video: string | null;
+  /** What each player pays the platform per month/year to use this academy; null when not offered. */
+  platform_fee_monthly: string | null;
+  platform_fee_yearly: string | null;
+  /** 3-letter code such as EGP; required once a fee is set. */
+  platform_fee_currency: string;
+  /** Free days a newly active player gets before an unpaid fee blocks them. */
+  platform_fee_trial_days: number;
+  /** How players pay (bank/wallet details), shown on their subscription screens. */
+  platform_fee_instructions: string;
   is_active: boolean;
   created_at: string;
 }
@@ -38,6 +47,11 @@ export interface AdminAcademyCreate {
   description?: string;
   contact_email?: string;
   contact_phone?: string;
+  platform_fee_monthly?: string | null;
+  platform_fee_yearly?: string | null;
+  platform_fee_currency?: string;
+  platform_fee_trial_days?: number;
+  platform_fee_instructions?: string;
   is_active?: boolean;
 }
 
@@ -50,6 +64,11 @@ export type AdminAcademyUpdate = Partial<
     | "description"
     | "contact_email"
     | "contact_phone"
+    | "platform_fee_monthly"
+    | "platform_fee_yearly"
+    | "platform_fee_currency"
+    | "platform_fee_trial_days"
+    | "platform_fee_instructions"
     | "is_active"
   >
 >;
@@ -80,12 +99,16 @@ async function fetchCsrfToken(): Promise<string> {
   return token;
 }
 
+/** The server's message: its `detail`, else the first message of any field error (e.g. a bad currency). */
 async function readErrorDetail(response: Response, fallback: string): Promise<string> {
   const body: unknown = await response.json().catch(() => null);
-  if (body && typeof body === "object" && "detail" in body) {
-    const detail = (body as { detail: unknown }).detail;
-    if (typeof detail === "string") return detail;
-    if (Array.isArray(detail)) return detail.join(" ");
+  if (!body || typeof body !== "object") return fallback;
+
+  const fields = body as Record<string, unknown>;
+  const ordered = "detail" in fields ? [fields.detail, ...Object.values(fields)] : Object.values(fields);
+  for (const value of ordered) {
+    if (typeof value === "string") return value;
+    if (Array.isArray(value) && typeof value[0] === "string") return value.join(" ");
   }
   return fallback;
 }

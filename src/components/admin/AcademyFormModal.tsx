@@ -13,6 +13,7 @@ import { FormField } from "../ui/FormField";
 import { ModalShell } from "../ui/ModalShell";
 import { ReadOnlyField } from "../ui/ReadOnlyField";
 import { BranchManager } from "./BranchManager";
+import { PlatformFeeFields, readPlatformFee } from "./PlatformFeeFields";
 
 interface AcademyFormModalProps {
   /** The academy being edited, or null to create a new one. */
@@ -57,6 +58,7 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
       description: String(data.get("description") ?? ""),
       contact_email: String(data.get("contact_email") ?? ""),
       contact_phone: String(data.get("contact_phone") ?? ""),
+      ...readPlatformFee(data),
       is_active: data.get("is_active") === "on",
     };
 
@@ -145,6 +147,8 @@ export function AcademyFormModal({ academy, onClose, onSaved }: AcademyFormModal
             defaultValue={academy?.description}
             disabled={isPostCreate}
           />
+
+          <PlatformFeeFields academy={academy} disabled={isPostCreate} />
 
           <label className="flex items-center gap-2 text-sm text-black/80">
             <input
