@@ -11,7 +11,10 @@ import { NavBar } from "../components/nav/NavBar";
 import { AccountInfoModal } from "../components/profile/AccountInfoModal";
 import { ChangePasswordModal } from "../components/profile/ChangePasswordModal";
 import { ProfileModal } from "../components/profile/ProfileModal";
+import { SubscriptionAlertBanner } from "../components/subscriptions/SubscriptionAlertBanner";
+import { SubscriptionBlockedGate } from "../components/subscriptions/SubscriptionBlockedGate";
 import { useAcademyMembership } from "../hooks/useAcademyMembership";
+import { useMySubscriptions } from "../hooks/useMySubscriptions";
 import { useAuth } from "../state/AuthContext";
 import { toDateKey } from "../utils/calendarDates";
 import { logger } from "../utils/logger";
@@ -26,6 +29,11 @@ export function AppShell(): ReactElement {
   const location = useLocation();
   const [modal, setModal] = useState<ModalName>(null);
   const membership = useAcademyMembership();
+  const subdomain = getAcademySubdomain();
+  const isMember = membership.status === "ready" && membership.membership.is_member;
+  // An unpaid platform fee (trial over, nothing paid for today) locks a player out of the academy.
+  const isBlocked = isMember && membership.status === "ready" && membership.membership.subscription_blocked;
+  const { state: subscriptions } = useMySubscriptions(user && isMember && !isBlocked ? subdomain : null);
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -77,6 +85,16 @@ export function AppShell(): ReactElement {
                     : "home";
 
   const academyRoles = membership.status === "ready" ? membership.membership.roles : [];
+  const alerts = subscriptions.status === "ready" ? subscriptions.data.subscriptions.filter((item) => item.is_alert) : [];
+  const blockedGate =
+    isBlocked && subdomain && membership.status === "ready" ? (
+      <SubscriptionBlockedGate
+        subdomain={subdomain}
+        academyName={membership.membership.academy_name}
+        academyLogo={membership.membership.academy_logo}
+        reason={membership.membership.subscription_block_reason}
+      />
+    ) : null;
 
   // Every signed-in page keeps the login video behind it - the academy's own
   // video on its subdomain, the generic pool on www - with the white nav/cards
@@ -90,8 +108,9 @@ export function AppShell(): ReactElement {
         <NavBar
           user={user}
           activeView={activeView}
-          academyRoles={academyRoles}
-          academySubdomain={getAcademySubdomain()}
+          // A blocked player only gets Home and the account menu: no tabs, no bell.
+          academyRoles={isBlocked ? [] : academyRoles}
+          academySubdomain={isBlocked ? null : subdomain}
           onNavigateHome={() => navigate("/myaccount/home")}
           onNavigateUsers={() => navigate("/users")}
           onNavigateAcademies={() => navigate("/academies")}
@@ -109,12 +128,15 @@ export function AppShell(): ReactElement {
           onLogout={handleLogout}
         />
       )}
+      {showNavBar && alerts.length > 0 && (
+        <SubscriptionAlertBanner alerts={alerts} onView={() => navigate("/myaccount/home")} />
+      )}
 
       {/* Pages (Home, Users) get the exact remaining viewport height here, so a
           page like Users can size its table to fill it and scroll internally
           instead of growing the whole document taller. */}
       <div className="min-h-0 flex-1 overflow-y-auto">
-        <Outlet />
+        {blockedGate ?? <Outlet />}
       </div>
 
       {modal === "profile" && <ProfileModal onClose={() => setModal(null)} />}

@@ -10,6 +10,9 @@ export interface MyMembership {
   is_member: boolean;
   /** Every active role the user holds at this academy, e.g. ["manager", "coach"]. */
   roles: string[];
+  /** True when an unpaid platform fee currently blocks this player from the academy. */
+  subscription_blocked: boolean;
+  subscription_block_reason: "unpaid" | "expired" | null;
   academy_name: string;
   academy_logo: string | null;
   academy_login_background_video: string | null;

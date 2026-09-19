@@ -20,6 +20,7 @@ import { listJoinRequestFields, submitJoinRequest } from "../api/joinRequestApi"
 import type { MyAcademy } from "../api/membershipApi";
 import { fetchMyAcademies } from "../api/membershipApi";
 import { PostFeed } from "../components/newsletter/PostFeed";
+import { MySubscriptionsCard } from "../components/subscriptions/MySubscriptionsCard";
 import { AuthButton } from "../components/ui/AuthButton";
 import { FormField } from "../components/ui/FormField";
 import { useAcademyMembership } from "../hooks/useAcademyMembership";
@@ -106,6 +107,8 @@ function WelcomeCard({ subdomain, academyName, academyLogo, currentUserId, acade
           <h2 className="text-xl font-extrabold text-black">{academyName}</h2>
         </div>
       </div>
+
+      <MySubscriptionsCard subdomain={subdomain} />
 
       <PostFeed
         subdomain={subdomain}
