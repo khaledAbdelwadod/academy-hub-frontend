@@ -176,7 +176,7 @@ export function AcademiesPage(): ReactElement {
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl">
         <div className="min-h-0 flex-1 overflow-auto">
-          <table className="min-w-[1250px] border-collapse text-base">
+          <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-sm font-bold uppercase tracking-wider text-mint">
                 {COLUMNS.map((column) => (
@@ -199,6 +199,7 @@ export function AcademiesPage(): ReactElement {
                     {column.filterKey && column.filterType === "text" && (
                       <input
                         type="text"
+                        size={1}
                         value={filters[column.filterKey]}
                         onChange={(event: ChangeEvent<HTMLInputElement>) =>
                           handleFilterChange(column.filterKey!, event.target.value)
@@ -228,10 +229,10 @@ export function AcademiesPage(): ReactElement {
             <tbody>
               {state.status === "ready" &&
                 state.page.results.map((row) => (
-                  <tr key={row.id} className="divide-x divide-gray-300 border-b border-gray-300 text-black/80 hover:bg-mint/10">
-                    <td className="whitespace-nowrap px-3 py-3 font-semibold text-black">{row.name}</td>
-                    <td className="whitespace-nowrap px-3 py-3">{row.subdomain}.academy-hub.net</td>
-                    <td className="whitespace-nowrap px-3 py-3">{row.contact_email}</td>
+                  <tr key={row.id} className="divide-x divide-gray-300 border-b border-gray-300 text-black hover:bg-mint/10">
+                    <td className="px-3 py-3 font-semibold text-black">{row.name}</td>
+                    <td className="px-3 py-3 [overflow-wrap:anywhere]">{row.subdomain}.academy-hub.net</td>
+                    <td className="px-3 py-3 [overflow-wrap:anywhere]">{row.contact_email}</td>
                     <td className="whitespace-nowrap px-3 py-3">{row.contact_phone}</td>
                     <td className="px-3 py-3">
                       <FileLink url={row.logo} />
@@ -245,7 +246,7 @@ export function AcademiesPage(): ReactElement {
                     <td className="px-3 py-3">
                       <Badge ok={row.is_active} label={row.is_active ? "Active" : "Inactive"} />
                     </td>
-                    <td className="whitespace-nowrap px-3 py-3">{formatDateTime(row.created_at)}</td>
+                    <td className="px-3 py-3">{formatDateTime(row.created_at)}</td>
                     <td className="whitespace-nowrap px-3 py-3 text-right">
                       <AcademyRowActionsMenu
                         academy={row}

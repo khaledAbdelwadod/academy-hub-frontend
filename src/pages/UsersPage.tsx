@@ -179,7 +179,7 @@ export function UsersPage(): ReactElement {
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl">
         <div className="min-h-0 flex-1 overflow-auto">
-          <table className="min-w-[1250px] border-collapse text-base">
+          <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-sm font-bold uppercase tracking-wider text-mint">
                 {COLUMNS.map((column) => (
@@ -202,6 +202,7 @@ export function UsersPage(): ReactElement {
                     {column.filterKey && column.filterType === "text" && (
                       <input
                         type="text"
+                        size={1}
                         value={filters[column.filterKey]}
                         onChange={(event: ChangeEvent<HTMLInputElement>) =>
                           handleFilterChange(column.filterKey!, event.target.value)
@@ -257,11 +258,11 @@ export function UsersPage(): ReactElement {
             <tbody>
               {state.status === "ready" &&
                 state.page.results.map((row) => (
-                  <tr key={row.id} className="divide-x divide-gray-300 border-b border-gray-300 text-black/80 hover:bg-mint/10">
-                    <td className="whitespace-nowrap px-3 py-3 font-semibold text-black">
+                  <tr key={row.id} className="divide-x divide-gray-300 border-b border-gray-300 text-black hover:bg-mint/10">
+                    <td className="px-3 py-3 font-semibold text-black">
                       {row.first_name} {row.middle_name} {row.last_name}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-3">{row.email}</td>
+                    <td className="px-3 py-3 [overflow-wrap:anywhere]">{row.email}</td>
                     <td className="whitespace-nowrap px-3 py-3">{row.phone}</td>
                     <td className="whitespace-nowrap px-3 py-3">{formatDate(row.date_of_birth)}</td>
                     <td className="whitespace-nowrap px-3 py-3">{formatGender(row.gender)}</td>
@@ -276,8 +277,8 @@ export function UsersPage(): ReactElement {
                     </td>
                     <td className="px-3 py-3">{row.is_staff ? "Yes" : "No"}</td>
                     <td className="px-3 py-3">{row.is_superuser ? "Yes" : "No"}</td>
-                    <td className="whitespace-nowrap px-3 py-3">{formatDateTime(row.created_at)}</td>
-                    <td className="whitespace-nowrap px-3 py-3">{formatDateTime(row.last_login)}</td>
+                    <td className="px-3 py-3">{formatDateTime(row.created_at)}</td>
+                    <td className="px-3 py-3">{formatDateTime(row.last_login)}</td>
                     <td className="whitespace-nowrap px-3 py-3 text-right">
                       <RowActionsMenu
                         user={row}

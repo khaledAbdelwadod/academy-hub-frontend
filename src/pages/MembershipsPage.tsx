@@ -99,7 +99,7 @@ export function MembershipsPage(): ReactElement {
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl">
         <div className="min-h-0 flex-1 overflow-auto">
-          <table className="min-w-[800px] border-collapse text-base">
+          <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-sm font-bold uppercase tracking-wider text-mint">
                 {COLUMNS.map((column) => (
@@ -122,6 +122,7 @@ export function MembershipsPage(): ReactElement {
                     {column.filterKey && (
                       <input
                         type="text"
+                        size={1}
                         value={filters[column.filterKey]}
                         onChange={(event: ChangeEvent<HTMLInputElement>) =>
                           handleFilterChange(column.filterKey!, event.target.value)
@@ -138,9 +139,9 @@ export function MembershipsPage(): ReactElement {
             <tbody>
               {state.status === "ready" &&
                 state.page.results.map((row) => (
-                  <tr key={row.id} className="divide-x divide-gray-300 border-b border-gray-300 text-black/80 hover:bg-mint/10">
-                    <td className="whitespace-nowrap px-3 py-3 font-semibold text-black">{row.name}</td>
-                    <td className="whitespace-nowrap px-3 py-3">
+                  <tr key={row.id} className="divide-x divide-gray-300 border-b border-gray-300 text-black hover:bg-mint/10">
+                    <td className="px-3 py-3 font-semibold text-black">{row.name}</td>
+                    <td className="px-3 py-3 [overflow-wrap:anywhere]">
                       {row.manager_email ?? <span className="text-gray-400">Not assigned</span>}
                     </td>
                     <td className="px-3 py-3 tabular-nums">{row.admins_count}</td>

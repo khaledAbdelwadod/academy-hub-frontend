@@ -157,7 +157,7 @@ export function AcademyMembersPage(): ReactElement {
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border border-mint bg-white/40 shadow-[0_24px_50px_-22px_rgba(0,0,0,0.15)] backdrop-blur-2xl">
         <div className="min-h-0 flex-1 overflow-auto">
-          <table className="min-w-[1000px] border-collapse text-base">
+          <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="sticky top-0 z-10 divide-x divide-gray-300 border-b border-mint bg-white/40 text-left text-sm font-bold uppercase tracking-wider text-mint">
                 <th className="whitespace-nowrap px-3 py-3">Name</th>
@@ -174,6 +174,7 @@ export function AcademyMembersPage(): ReactElement {
                 <th className="px-3 pb-3 align-middle">
                   <input
                     type="text"
+                    size={1}
                     value={filters.name}
                     onChange={(event: ChangeEvent<HTMLInputElement>) => handleFilterChange("name", event.target.value)}
                     placeholder="Search…"
@@ -183,6 +184,7 @@ export function AcademyMembersPage(): ReactElement {
                 <th className="px-3 pb-3 align-middle">
                   <input
                     type="text"
+                    size={1}
                     value={filters.email}
                     onChange={(event: ChangeEvent<HTMLInputElement>) => handleFilterChange("email", event.target.value)}
                     placeholder="Search…"
@@ -192,6 +194,7 @@ export function AcademyMembersPage(): ReactElement {
                 <th className="px-3 pb-3 align-middle">
                   <input
                     type="text"
+                    size={1}
                     value={filters.phone}
                     onChange={(event: ChangeEvent<HTMLInputElement>) => handleFilterChange("phone", event.target.value)}
                     placeholder="Search…"
@@ -258,12 +261,12 @@ export function AcademyMembersPage(): ReactElement {
                 state.page.results.map((member) => (
                   <tr
                     key={member.id}
-                    className="divide-x divide-gray-300 border-b border-gray-300 text-black/80 hover:bg-mint/10"
+                    className="divide-x divide-gray-300 border-b border-gray-300 text-black hover:bg-mint/10"
                   >
-                    <td className="whitespace-nowrap px-3 py-3 font-semibold text-black">
+                    <td className="px-3 py-3 font-semibold text-black">
                       {member.first_name} {member.last_name}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-3">{member.email}</td>
+                    <td className="px-3 py-3 [overflow-wrap:anywhere]">{member.email}</td>
                     <td className="whitespace-nowrap px-3 py-3">{member.phone}</td>
                     <td className="whitespace-nowrap px-3 py-3">{formatDate(member.date_of_birth)}</td>
                     <td className="whitespace-nowrap px-3 py-3">{formatGender(member.gender)}</td>
