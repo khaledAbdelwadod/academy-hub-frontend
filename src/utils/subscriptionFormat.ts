@@ -1,7 +1,7 @@
 /** Turning a subscription's raw fields into the text people read (money, dates, billing, status). */
 
 import type { PlatformCycle, Subscription, SubscriptionStatus } from "../api/subscriptionApi";
-import { parseDateKey } from "./calendarDates";
+import { addInterval, parseDateKey, toDateKey } from "./calendarDates";
 
 const CYCLE_LABELS: Record<PlatformCycle, string> = { monthly: "Monthly", yearly: "Yearly" };
 const SINGLE_UNIT_LABELS: Record<string, string> = { day: "Daily", week: "Weekly", month: "Monthly", year: "Yearly" };
@@ -36,16 +36,32 @@ export function formatDay(value: string | null): string {
   return parseDateKey(value).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
 }
 
+/** How often something is billed: "One-time", "Monthly", "Every 3 months" (a dash if unknown). */
+export function describeInterval(billingType: string, count: number | null, unit: string): string {
+  if (billingType === "one_time") return "One-time";
+  if (!unit) return NOT_SET;
+  if ((count ?? 1) === 1) return SINGLE_UNIT_LABELS[unit] ?? NOT_SET;
+  return `Every ${count} ${unit}s`;
+}
+
 /** "Monthly", "Yearly", "Every 3 months", "One-time" - or "Not chosen yet" for a platform fee with no cycle. */
 export function describeBilling(subscription: Subscription): string {
   if (subscription.kind === "platform") {
     return subscription.cycle ? CYCLE_LABELS[subscription.cycle] : "Not chosen yet";
   }
-  if (subscription.billing_type === "one_time") return "One-time";
-  const count = subscription.interval_count ?? 1;
-  const unit = subscription.interval_unit;
-  if (count === 1) return SINGLE_UNIT_LABELS[unit] ?? NOT_SET;
-  return `Every ${count} ${unit}s`;
+  return describeInterval(subscription.billing_type, subscription.interval_count, subscription.interval_unit);
+}
+
+/**
+ * The last day a payment covers when its period starts on `start` ("YYYY-MM-DD" in, "YYYY-MM-DD" out).
+ *
+ * @param start - The first covered day.
+ * @param count - Billing units in the period (e.g. 3).
+ * @param unit - "day", "week", "month", or "year".
+ */
+export function coveredUntil(start: string, count: number, unit: string): string {
+  const next = addInterval(parseDateKey(start), count, unit);
+  return toDateKey(new Date(next.getFullYear(), next.getMonth(), next.getDate() - 1));
 }
 
 /** "today", "tomorrow", or "in 4 days (30 Sep 2026)" for a coverage/trial that ends on `endsOn`. */

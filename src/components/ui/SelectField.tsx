@@ -5,8 +5,8 @@ import type { ReactElement, SelectHTMLAttributes } from "react";
 interface SelectFieldProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   options: ReadonlyArray<{ value: string; label: string }>;
-  /** Text of the empty first option (value ""), e.g. "Select…". */
-  placeholder?: string;
+  /** Text of the empty first option (value ""), e.g. "Select…"; pass null for no empty option. */
+  placeholder?: string | null;
   optional?: boolean;
 }
 
@@ -29,7 +29,7 @@ export function SelectField({
         {...selectProps}
         className="w-full rounded-xl border border-mint bg-white px-3.5 py-3 text-sm text-black transition-colors focus:border-pine focus:outline-none focus-visible:ring-2 focus-visible:ring-pine/30"
       >
-        <option value="">{placeholder}</option>
+        {placeholder !== null && <option value="">{placeholder}</option>}
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

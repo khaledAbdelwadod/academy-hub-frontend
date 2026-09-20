@@ -19,6 +19,7 @@ interface NavBarProps {
     | "membership-requests"
     | "newsletters"
     | "teams"
+    | "subscriptions"
     | "events";
   /** Every active role the user holds at the current academy subdomain; empty/omitted on www. */
   academyRoles?: string[];
@@ -33,6 +34,7 @@ interface NavBarProps {
   onNavigateMembershipRequests: () => void;
   onNavigateNewsletters: () => void;
   onNavigateTeams: () => void;
+  onNavigateSubscriptions: () => void;
   onNavigateEvents: () => void;
   onOpenNotification: (notification: AppNotification) => void;
   onOpenProfile: () => void;
@@ -65,6 +67,7 @@ export function NavBar({
   onNavigateMembershipRequests,
   onNavigateNewsletters,
   onNavigateTeams,
+  onNavigateSubscriptions,
   onNavigateEvents,
   onOpenNotification,
   onOpenProfile,
@@ -124,6 +127,15 @@ export function NavBar({
           {isAcademyManagerOrAdmin && (
             <button type="button" onClick={onNavigateTeams} className={tabClassName(activeView === "teams")}>
               Teams
+            </button>
+          )}
+          {isAcademyManagerOrAdmin && (
+            <button
+              type="button"
+              onClick={onNavigateSubscriptions}
+              className={tabClassName(activeView === "subscriptions")}
+            >
+              Subscriptions
             </button>
           )}
           {isAcademyMember && (

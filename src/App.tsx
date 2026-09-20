@@ -11,6 +11,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { MembershipRequestsRoute } from "./pages/MembershipRequestsRoute";
 import { MembershipsRoute } from "./pages/MembershipsRoute";
 import { NewslettersRoute } from "./pages/NewslettersRoute";
+import { SubscriptionsRoute } from "./pages/SubscriptionsRoute";
 import { TeamsRoute } from "./pages/TeamsRoute";
 import { UsersRoute } from "./pages/UsersRoute";
 import { AuthProvider, useAuth } from "./state/AuthContext";
@@ -44,6 +45,7 @@ function AppRoutes(): ReactElement {
         <Route path="/membership-requests" element={<MembershipRequestsRoute />} />
         <Route path="/newsletters" element={<NewslettersRoute />} />
         <Route path="/teams" element={<TeamsRoute />} />
+        <Route path="/subscriptions" element={<SubscriptionsRoute />} />
         <Route path="/events" element={<EventsRoute />} />
       </Route>
       <Route path="*" element={<Navigate to={user ? "/myaccount/home" : "/login"} replace />} />

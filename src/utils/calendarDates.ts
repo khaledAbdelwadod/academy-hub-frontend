@@ -4,6 +4,7 @@
 export const WEEK_START_DAY = 0;
 
 const DAYS_PER_WEEK = 7;
+const MONTHS_PER_YEAR = 12;
 const MINUTES_PER_HOUR = 60;
 const MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR;
 /** A year whose January 1st is a Sunday - a fixed anchor for localised weekday names. */
@@ -60,6 +61,39 @@ export function getGridRange(year: number, month: number): { start: Date; end: D
   const first = grid[0] as Date;
   const last = grid[grid.length - 1] as Date;
   return { start: first, end: new Date(last.getFullYear(), last.getMonth(), last.getDate() + 1) };
+}
+
+/**
+ * A date plus a number of billing units (days, weeks, months, or years).
+ *
+ * Months and years keep the day-of-month, clamping to the last day of a shorter month
+ * (31 Jan + 1 month = 28 Feb) - the same rule the server uses for billing periods.
+ *
+ * @param start - The first day of a period.
+ * @param count - How many units.
+ * @param unit - "day", "week", "month", or "year".
+ * @returns The first day of the next period.
+ */
+export function addInterval(start: Date, count: number, unit: string): Date {
+  const addMonths = (months: number): Date => {
+    const total = start.getFullYear() * MONTHS_PER_YEAR + start.getMonth() + months;
+    const year = Math.floor(total / MONTHS_PER_YEAR);
+    const month = total % MONTHS_PER_YEAR;
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    return new Date(year, month, Math.min(start.getDate(), lastDay));
+  };
+  switch (unit) {
+    case "day":
+      return new Date(start.getFullYear(), start.getMonth(), start.getDate() + count);
+    case "week":
+      return new Date(start.getFullYear(), start.getMonth(), start.getDate() + DAYS_PER_WEEK * count);
+    case "month":
+      return addMonths(count);
+    case "year":
+      return addMonths(MONTHS_PER_YEAR * count);
+    default:
+      return start;
+  }
 }
 
 /** Short weekday names in the order the grid shows them, in the viewer's language. */

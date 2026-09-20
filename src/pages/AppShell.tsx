@@ -80,9 +80,11 @@ export function AppShell(): ReactElement {
                 ? "newsletters"
                 : location.pathname.startsWith("/teams")
                   ? "teams"
-                  : location.pathname.startsWith("/events")
-                    ? "events"
-                    : "home";
+                  : location.pathname.startsWith("/subscriptions")
+                    ? "subscriptions"
+                    : location.pathname.startsWith("/events")
+                      ? "events"
+                      : "home";
 
   const academyRoles = membership.status === "ready" ? membership.membership.roles : [];
   const alerts = subscriptions.status === "ready" ? subscriptions.data.subscriptions.filter((item) => item.is_alert) : [];
@@ -120,6 +122,7 @@ export function AppShell(): ReactElement {
           onNavigateMembershipRequests={() => navigate("/membership-requests")}
           onNavigateNewsletters={() => navigate("/newsletters")}
           onNavigateTeams={() => navigate("/teams")}
+          onNavigateSubscriptions={() => navigate("/subscriptions")}
           onNavigateEvents={() => navigate("/events")}
           onOpenNotification={handleOpenNotification}
           onOpenProfile={() => setModal("profile")}

@@ -44,6 +44,8 @@ export interface ManagerMemberListQuery {
   role?: string;
   status?: string;
   ordering?: string;
+  /** Page size (the server's default is 20). */
+  limit?: string;
 }
 
 /** A minimal, registered-user search result, for picking someone to add as a member. */

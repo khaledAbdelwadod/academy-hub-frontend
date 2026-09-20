@@ -49,6 +49,17 @@ async function readErrorDetail(response: Response, fallback: string): Promise<st
   return fallback;
 }
 
+/**
+ * The path-and-query part of an absolute API URL, such as a paginated response's `next` link.
+ *
+ * Only the path is kept, so the request goes to this app's configured API host even if the
+ * server built the link with a different scheme or host.
+ */
+export function pathFromUrl(url: string): string {
+  const parsed = new URL(url, API_BASE_URL);
+  return `${parsed.pathname}${parsed.search}`;
+}
+
 interface RequestOptions {
   /** JSON-serialisable request body. */
   body?: unknown;
