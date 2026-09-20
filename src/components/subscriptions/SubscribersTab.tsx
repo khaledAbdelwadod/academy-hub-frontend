@@ -4,16 +4,17 @@ import { useEffect, useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";
 
 import type { Plan } from "../../api/academySubscriptionApi";
-import { endSubscription, subscriptionPaymentsPath } from "../../api/academySubscriptionApi";
+import { buildSubscribersPath, endSubscription, subscriptionPaymentsPath } from "../../api/academySubscriptionApi";
 import type { Subscription } from "../../api/subscriptionApi";
-import { useSubscribers } from "../../hooks/useSubscribers";
+import { useSubscriptionList } from "../../hooks/useSubscriptionList";
 import { logger } from "../../utils/logger";
-import { describeInterval, describeStatus, formatMoney } from "../../utils/subscriptionFormat";
+import { describeInterval, formatMoney } from "../../utils/subscriptionFormat";
 import { KebabMenu } from "../ui/KebabMenu";
+import { PagerFooter } from "../ui/PagerFooter";
 import { SmallButton } from "../ui/SmallButton";
 import { AssignMembersModal } from "./AssignMembersModal";
 import { PaymentsModal } from "./PaymentsModal";
-import { SubscriptionStatusBadge } from "./SubscriptionStatusBadge";
+import { SubscriptionStatusCell } from "./SubscriptionStatusCell";
 
 const SEARCH_DEBOUNCE_MS = 300;
 const FILTER_CLASS =
@@ -36,21 +37,6 @@ interface SubscribersTabProps {
   onPlansChanged: () => void;
 }
 
-function StatusCell({ subscription }: { subscription: Subscription }): ReactElement {
-  const dueLabel =
-    subscription.periods_due && (subscription.status === "unpaid" || subscription.status === "expired")
-      ? `${subscription.periods_due} period${subscription.periods_due === 1 ? "" : "s"} due`
-      : null;
-
-  return (
-    <div className="flex flex-col items-start gap-1">
-      <SubscriptionStatusBadge status={subscription.status} />
-      <span className="text-xs text-black/70">{describeStatus(subscription)}</span>
-      {dueLabel && <span className="text-xs font-bold text-red-500">{dueLabel}</span>}
-    </div>
-  );
-}
-
 export function SubscribersTab({ subdomain, plans, onPlansChanged }: SubscribersTabProps): ReactElement {
   const [status, setStatus] = useState("");
   const [planFilter, setPlanFilter] = useState("");
@@ -60,7 +46,9 @@ export function SubscribersTab({ subdomain, plans, onPlansChanged }: Subscribers
   const [paymentsTarget, setPaymentsTarget] = useState<Subscription | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  const { page, isLoading, error, goTo, reload } = useSubscribers(subdomain, { status, plan: planFilter, q: debouncedSearch });
+  const { page, isLoading, error, goTo, reload } = useSubscriptionList(
+    buildSubscribersPath(subdomain, { status, plan: planFilter, q: debouncedSearch }),
+  );
   const activePlans = plans.filter((plan) => plan.is_active);
 
   useEffect(() => {
@@ -175,7 +163,7 @@ export function SubscribersTab({ subdomain, plans, onPlansChanged }: Subscribers
                 </td>
                 <td className="whitespace-nowrap px-3 py-3">{formatMoney(subscription.price, subscription.currency)}</td>
                 <td className="px-3 py-3">
-                  <StatusCell subscription={subscription} />
+                  <SubscriptionStatusCell subscription={subscription} />
                 </td>
                 <td className="whitespace-nowrap px-3 py-3 text-right">
                   <div className="flex items-center justify-end gap-1">
@@ -204,17 +192,7 @@ export function SubscribersTab({ subdomain, plans, onPlansChanged }: Subscribers
         )}
       </div>
 
-      <div className="flex shrink-0 items-center justify-between border-t border-mint px-4 py-3 text-sm text-gray-500">
-        <span>{page ? page.count : "…"} total</span>
-        <div className="flex gap-2">
-          <SmallButton disabled={!page?.previous} onClick={() => goTo(page?.previous ?? null)}>
-            Previous
-          </SmallButton>
-          <SmallButton disabled={!page?.next} onClick={() => goTo(page?.next ?? null)}>
-            Next
-          </SmallButton>
-        </div>
-      </div>
+      <PagerFooter total={page?.count ?? null} previous={page?.previous ?? null} next={page?.next ?? null} onGoTo={goTo} />
 
       {showAssign && (
         <AssignMembersModal

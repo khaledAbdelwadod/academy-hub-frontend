@@ -81,6 +81,8 @@ export interface AdminAcademyListQuery {
   contact_phone?: string;
   is_active?: string;
   ordering?: string;
+  /** Page size (the server's default is 20). */
+  limit?: string;
 }
 
 export class AdminAcademiesError extends Error {}

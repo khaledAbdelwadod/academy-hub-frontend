@@ -1,9 +1,9 @@
-/** Loads one page of the academy's plan subscriptions for the current filters, with paging and reload. */
+/** Loads one page of a paginated subscription list (an academy's plan subscribers, or the super admin's fees). */
 
 import { useEffect, useState } from "react";
 
-import type { SubscriberFilters, SubscriberList } from "../api/academySubscriptionApi";
-import { buildSubscribersPath, listSubscribers } from "../api/academySubscriptionApi";
+import type { SubscriberList } from "../api/academySubscriptionApi";
+import { listSubscribers } from "../api/academySubscriptionApi";
 import { logger } from "../utils/logger";
 
 interface Snapshot {
@@ -13,12 +13,12 @@ interface Snapshot {
 }
 
 interface PageOverride {
-  /** The filters the paged link belongs to; a link is only followed while they're unchanged. */
-  filtersKey: string;
+  /** The first-page path (which encodes the filters) that this paged link belongs to. */
+  firstPath: string;
   url: string;
 }
 
-export interface SubscribersView {
+export interface SubscriptionListView {
   page: SubscriberList | null;
   isLoading: boolean;
   error: string | null;
@@ -28,21 +28,20 @@ export interface SubscribersView {
 }
 
 /**
- * Fetch the plan subscriptions matching `filters` (already debounced by the caller).
+ * Fetch a page of subscriptions.
  *
  * The last loaded page stays visible while the next one loads, so the table doesn't flash empty.
+ * Changing the filters (and so `firstPath`) starts again from page one.
  *
- * @param subdomain - The academy's subdomain.
- * @param filters - Status, plan, and member-search filters.
+ * @param firstPath - The request path for page one with the current filters already applied.
  * @returns The current page, loading/error state, and paging/reload helpers.
  */
-export function useSubscribers(subdomain: string, filters: SubscriberFilters): SubscribersView {
+export function useSubscriptionList(firstPath: string): SubscriptionListView {
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [override, setOverride] = useState<PageOverride | null>(null);
   const [version, setVersion] = useState(0);
 
-  const filtersKey = JSON.stringify(filters);
-  const target = override && override.filtersKey === filtersKey ? override.url : buildSubscribersPath(subdomain, filters);
+  const target = override && override.firstPath === firstPath ? override.url : firstPath;
 
   useEffect(() => {
     let cancelled = false;
@@ -52,8 +51,8 @@ export function useSubscribers(subdomain: string, filters: SubscriberFilters): S
       })
       .catch((error: unknown) => {
         if (cancelled) return;
-        const message = error instanceof Error ? error.message : "Could not load subscribers.";
-        logger.error("Failed to load subscribers", { error: message });
+        const message = error instanceof Error ? error.message : "Could not load subscriptions.";
+        logger.error("Failed to load subscriptions", { error: message });
         setSnapshot({ target, version, result: { error: message } });
       });
     return () => {
@@ -67,7 +66,7 @@ export function useSubscribers(subdomain: string, filters: SubscriberFilters): S
     page: result && "page" in result ? result.page : null,
     isLoading: !isCurrent,
     error: isCurrent && result && "error" in result ? result.error : null,
-    goTo: (url) => url && setOverride({ filtersKey, url }),
+    goTo: (url) => url && setOverride({ firstPath, url }),
     reload: () => setVersion((value) => value + 1),
   };
 }

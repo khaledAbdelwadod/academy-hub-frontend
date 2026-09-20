@@ -141,6 +141,8 @@ export function PaymentsModal({ subscription, paymentsPath, onClose, onChanged }
   }
 
   const memberName = `${current.member.first_name} ${current.member.last_name}`;
+  const title =
+    current.kind === "platform" ? `Platform fee · ${current.academy.name}` : subscriptionTitle(current);
 
   return (
     <ModalShell title="Payments" onClose={onClose} maxWidthClassName="max-w-xl">
@@ -149,7 +151,7 @@ export function PaymentsModal({ subscription, paymentsPath, onClose, onChanged }
           <div className="min-w-0">
             <p className="text-base font-extrabold text-black">{memberName}</p>
             <p className="text-sm text-black/70">
-              {subscriptionTitle(current)} · {describeBilling(current)}
+              {title} · {describeBilling(current)}
               {current.price !== null && ` · ${formatMoney(current.price, current.currency)}`}
             </p>
             <p className="mt-0.5 text-sm text-black">{describeStatus(current)}</p>

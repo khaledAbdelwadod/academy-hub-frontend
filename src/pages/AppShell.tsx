@@ -84,7 +84,9 @@ export function AppShell(): ReactElement {
                     ? "subscriptions"
                     : location.pathname.startsWith("/events")
                       ? "events"
-                      : "home";
+                      : location.pathname.startsWith("/fees")
+                        ? "fees"
+                        : "home";
 
   const academyRoles = membership.status === "ready" ? membership.membership.roles : [];
   const alerts = subscriptions.status === "ready" ? subscriptions.data.subscriptions.filter((item) => item.is_alert) : [];
@@ -117,6 +119,7 @@ export function AppShell(): ReactElement {
           onNavigateUsers={() => navigate("/users")}
           onNavigateAcademies={() => navigate("/academies")}
           onNavigateMemberships={() => navigate("/memberships")}
+          onNavigateFees={() => navigate("/fees")}
           onNavigateAcademyProfile={() => navigate("/academy-profile")}
           onNavigateAcademyMembers={() => navigate("/academy-members")}
           onNavigateMembershipRequests={() => navigate("/membership-requests")}

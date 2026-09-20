@@ -6,6 +6,7 @@ import { AcademyMembersRoute } from "./pages/AcademyMembersRoute";
 import { AcademyProfileRoute } from "./pages/AcademyProfileRoute";
 import { AppShell } from "./pages/AppShell";
 import { EventsRoute } from "./pages/EventsRoute";
+import { FeesRoute } from "./pages/FeesRoute";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { MembershipRequestsRoute } from "./pages/MembershipRequestsRoute";
@@ -40,6 +41,7 @@ function AppRoutes(): ReactElement {
         <Route path="/users" element={<UsersRoute />} />
         <Route path="/academies" element={<AcademiesRoute />} />
         <Route path="/memberships" element={<MembershipsRoute />} />
+        <Route path="/fees" element={<FeesRoute />} />
         <Route path="/academy-profile" element={<AcademyProfileRoute />} />
         <Route path="/academy-members" element={<AcademyMembersRoute />} />
         <Route path="/membership-requests" element={<MembershipRequestsRoute />} />

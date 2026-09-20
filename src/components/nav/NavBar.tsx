@@ -14,6 +14,7 @@ interface NavBarProps {
     | "users"
     | "academies"
     | "memberships"
+    | "fees"
     | "academy-profile"
     | "academy-members"
     | "membership-requests"
@@ -29,6 +30,7 @@ interface NavBarProps {
   onNavigateUsers: () => void;
   onNavigateAcademies: () => void;
   onNavigateMemberships: () => void;
+  onNavigateFees: () => void;
   onNavigateAcademyProfile: () => void;
   onNavigateAcademyMembers: () => void;
   onNavigateMembershipRequests: () => void;
@@ -62,6 +64,7 @@ export function NavBar({
   onNavigateUsers,
   onNavigateAcademies,
   onNavigateMemberships,
+  onNavigateFees,
   onNavigateAcademyProfile,
   onNavigateAcademyMembers,
   onNavigateMembershipRequests,
@@ -160,6 +163,11 @@ export function NavBar({
               className={tabClassName(activeView === "memberships")}
             >
               Memberships
+            </button>
+          )}
+          {user.is_superuser && (
+            <button type="button" onClick={onNavigateFees} className={tabClassName(activeView === "fees")}>
+              Fees
             </button>
           )}
         </div>
