@@ -1,10 +1,12 @@
-/** A modal for the signed-in user to edit their own name, phone, DOB, gender, and avatar. */
+/** A modal for the signed-in user to edit their own name, phone, DOB, gender, language, and avatar. */
 
 import { useEffect, useState } from "react";
 import type { FormEvent, ReactElement } from "react";
 
 import type { AuthUser } from "../../api/authApi";
 import { fetchProfile, updateProfile } from "../../api/authApi";
+import { LANGUAGE_OPTIONS } from "../../i18n/languages";
+import type { AppLanguage } from "../../i18n/languages";
 import { useAuth } from "../../state/AuthContext";
 import { GENDER_OPTIONS } from "../../utils/gender";
 import type { Gender } from "../../utils/gender";
@@ -65,6 +67,7 @@ export function ProfileModal({ onClose }: ProfileModalProps): ReactElement {
       phone: String(data.get("phone") ?? ""),
       date_of_birth: String(data.get("date_of_birth") ?? ""),
       gender: String(data.get("gender") ?? "") as Gender,
+      preferred_language: String(data.get("preferred_language") ?? "") as AppLanguage,
     })
       .then((updated) => {
         setLoadState({ status: "ready", profile: updated });
@@ -139,6 +142,18 @@ export function ProfileModal({ onClose }: ProfileModalProps): ReactElement {
                 label="Gender"
                 options={GENDER_OPTIONS}
                 defaultValue={loadState.profile.gender}
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <SelectField
+                id="pf-language"
+                name="preferred_language"
+                label="Preferred language"
+                options={LANGUAGE_OPTIONS}
+                defaultValue={loadState.profile.preferred_language}
+                placeholder={null}
                 required
               />
             </div>

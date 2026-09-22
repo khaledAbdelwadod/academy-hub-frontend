@@ -1,5 +1,7 @@
 /** API layer for authentication endpoints. */
 
+import { i18next } from "../i18n/config";
+import type { AppLanguage } from "../i18n/languages";
 import type { Gender } from "../utils/gender";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -20,6 +22,7 @@ export interface AuthUser {
   gender: Gender | "";
   phone: string;
   avatar: string | null;
+  preferred_language: AppLanguage;
   email_verified: boolean;
   phone_verified: boolean;
   is_active: boolean;
@@ -41,7 +44,7 @@ async function fetchCsrfToken(): Promise<string> {
   await fetch(`${API_BASE_URL}/api/auth/csrf/`, { credentials: "include" });
   const token = readCookie("csrftoken");
   if (!token) {
-    throw new AuthError("Could not reach Academy Hub. Check your connection and try again.");
+    throw new AuthError(i18next.t("auth:errors.csrfUnreachable"));
   }
   return token;
 }
@@ -83,10 +86,10 @@ export async function login(email: string, password: string): Promise<AuthUser> 
   });
 
   if (response.status === 429) {
-    throw new AuthError("Too many attempts. Try again in a minute.");
+    throw new AuthError(i18next.t("auth:errors.tooManyAttempts"));
   }
   if (!response.ok) {
-    throw new AuthError("Invalid email or password.");
+    throw new AuthError(i18next.t("auth:errors.invalidCredentials"));
   }
 
   return (await response.json()) as AuthUser;
@@ -123,10 +126,10 @@ export async function register(payload: RegisterPayload): Promise<{ email: strin
   });
 
   if (response.status === 429) {
-    throw new AuthError("Too many attempts. Try again in a minute.");
+    throw new AuthError(i18next.t("auth:errors.tooManyAttempts"));
   }
   if (!response.ok) {
-    throw new AuthError(await extractErrorMessage(response, "Could not create your account."));
+    throw new AuthError(await extractErrorMessage(response, i18next.t("auth:errors.registrationFailed")));
   }
   return (await response.json()) as { email: string };
 }
@@ -150,10 +153,10 @@ export async function verifyRegistration(email: string, code: string): Promise<A
   });
 
   if (response.status === 429) {
-    throw new AuthError("Too many attempts. Try again in a minute.");
+    throw new AuthError(i18next.t("auth:errors.tooManyAttempts"));
   }
   if (!response.ok) {
-    throw new AuthError(await extractErrorMessage(response, "Invalid or expired code."));
+    throw new AuthError(await extractErrorMessage(response, i18next.t("auth:errors.invalidOrExpiredCode")));
   }
   return (await response.json()) as AuthUser;
 }
@@ -175,10 +178,10 @@ export async function resendRegistrationCode(email: string): Promise<void> {
   });
 
   if (response.status === 429) {
-    throw new AuthError("Too many attempts. Try again in a minute.");
+    throw new AuthError(i18next.t("auth:errors.tooManyAttempts"));
   }
   if (!response.ok) {
-    throw new AuthError("Could not resend the code. Try again shortly.");
+    throw new AuthError(i18next.t("auth:errors.resendFailed"));
   }
 }
 
@@ -203,6 +206,7 @@ export interface ProfileUpdate {
   phone: string;
   date_of_birth: string;
   gender: Gender;
+  preferred_language: AppLanguage;
 }
 
 /**

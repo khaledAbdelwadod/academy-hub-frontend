@@ -14,6 +14,7 @@ import type { PublicAcademyBranding } from "../api/publicAcademyApi";
 import { fetchAcademyBranding } from "../api/publicAcademyApi";
 import { AuthCard } from "../components/auth/AuthCard";
 import { VideoBackdrop } from "../components/auth/VideoBackdrop";
+import { LanguageSwitcher } from "../components/ui/LanguageSwitcher";
 import { getAcademySubdomain } from "../utils/subdomain";
 
 type BrandingState =
@@ -47,6 +48,10 @@ export function LoginPage(): ReactElement {
   return (
     <div className="flex min-h-screen items-center justify-center px-5 py-10">
       <VideoBackdrop sources={academy?.login_background_video ? [academy.login_background_video] : undefined} />
+
+      <div className="fixed top-4 end-4 z-10">
+        <LanguageSwitcher />
+      </div>
 
       <div className="flex w-full max-w-[760px] flex-col items-center">
         {academy ? (

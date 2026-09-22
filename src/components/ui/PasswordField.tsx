@@ -3,6 +3,7 @@
 
 import { useId, useState } from "react";
 import type { InputHTMLAttributes, ReactElement } from "react";
+import { useTranslation } from "react-i18next";
 
 interface PasswordFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "id"> {
   label: string;
@@ -25,6 +26,7 @@ const THEME_CLASSES: Record<"light" | "dark", { label: string; input: string; to
 };
 
 export function PasswordField({ label, theme = "light", ...inputProps }: PasswordFieldProps): ReactElement {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const id = useId();
   const classes = THEME_CLASSES[theme];
@@ -39,14 +41,14 @@ export function PasswordField({ label, theme = "light", ...inputProps }: Passwor
           id={id}
           type={visible ? "text" : "password"}
           {...inputProps}
-          className={`w-full rounded-xl border py-3 pl-3.5 pr-16 text-sm transition-colors ${classes.input}`}
+          className={`w-full rounded-xl border py-3 ps-3.5 pe-16 text-sm transition-colors ${classes.input}`}
         />
         <button
           type="button"
           onClick={() => setVisible((current) => !current)}
-          className={`absolute inset-y-1.5 right-1.5 rounded-lg px-2.5 text-xs font-bold uppercase tracking-wide ${classes.toggle}`}
+          className={`absolute inset-y-1.5 end-1.5 rounded-lg px-2.5 text-xs font-bold uppercase tracking-wide ${classes.toggle}`}
         >
-          {visible ? "Hide" : "Show"}
+          {visible ? t("common:password.hide") : t("common:password.show")}
         </button>
       </div>
     </div>

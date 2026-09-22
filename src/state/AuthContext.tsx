@@ -5,6 +5,8 @@ import type { ReactElement, ReactNode } from "react";
 
 import type { AuthUser } from "../api/authApi";
 import { fetchProfile } from "../api/authApi";
+import { i18next } from "../i18n/config";
+import { logger } from "../utils/logger";
 
 interface AuthContextValue {
   user: AuthUser | null;
@@ -16,6 +18,13 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+/** Switches the app to a user's saved language, so a returning/signed-in user isn't stuck on the local default. */
+function applyUserLanguage(user: AuthUser): void {
+  i18next.changeLanguage(user.preferred_language).catch((error: unknown) => {
+    logger.error("Failed to apply user's preferred language", { error });
+  });
+}
+
 export function AuthProvider({ children }: { children: ReactNode }): ReactElement {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [sessionChecked, setSessionChecked] = useState(false);
@@ -25,7 +34,10 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
   // the cookie still maps to a valid session before deciding what to render.
   useEffect(() => {
     fetchProfile()
-      .then((profile) => setUser(profile))
+      .then((profile) => {
+        setUser(profile);
+        applyUserLanguage(profile);
+      })
       .catch(() => setUser(null))
       .finally(() => setSessionChecked(true));
   }, []);
@@ -34,7 +46,10 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
     () => ({
       user,
       sessionChecked,
-      signIn: (nextUser: AuthUser) => setUser(nextUser),
+      signIn: (nextUser: AuthUser) => {
+        setUser(nextUser);
+        applyUserLanguage(nextUser);
+      },
       signOut: () => setUser(null),
     }),
     [user, sessionChecked],

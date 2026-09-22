@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { login } from "../api/authApi";
+import { i18next } from "../i18n/config";
 import { useAuth } from "../state/AuthContext";
 import { logger } from "../utils/logger";
 
@@ -29,7 +30,7 @@ export function useLogin(): [LoginState, (email: string, password: string) => vo
         navigate("/myaccount/home", { replace: true });
       })
       .catch((error: unknown) => {
-        const message = error instanceof Error ? error.message : "Something went wrong.";
+        const message = error instanceof Error ? error.message : i18next.t("auth:errors.somethingWentWrong");
         logger.error("Sign-in failed", { error: message });
         setState({ status: "error", message });
       });

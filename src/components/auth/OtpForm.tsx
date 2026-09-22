@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { FormEvent, ReactElement } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { resendRegistrationCode, verifyRegistration } from "../../api/authApi";
@@ -18,6 +19,7 @@ type VerifyState = { status: "idle" } | { status: "loading" } | { status: "error
 type ResendState = { status: "idle" } | { status: "sending" } | { status: "sent" } | { status: "error"; message: string };
 
 export function OtpForm({ email, onBack }: OtpFormProps): ReactElement {
+  const { t } = useTranslation("auth");
   const [verifyState, setVerifyState] = useState<VerifyState>({ status: "idle" });
   const [resendState, setResendState] = useState<ResendState>({ status: "idle" });
   const { signIn } = useAuth();
@@ -35,7 +37,7 @@ export function OtpForm({ email, onBack }: OtpFormProps): ReactElement {
         navigate("/myaccount/home", { replace: true });
       })
       .catch((error: unknown) => {
-        const message = error instanceof Error ? error.message : "Invalid or expired code.";
+        const message = error instanceof Error ? error.message : t("errors.invalidOrExpiredCode");
         logger.error("Registration verification failed", { error: message });
         setVerifyState({ status: "error", message });
       });
@@ -46,7 +48,7 @@ export function OtpForm({ email, onBack }: OtpFormProps): ReactElement {
     resendRegistrationCode(email)
       .then(() => setResendState({ status: "sent" }))
       .catch((error: unknown) => {
-        const message = error instanceof Error ? error.message : "Could not resend the code.";
+        const message = error instanceof Error ? error.message : t("errors.resendFailed");
         setResendState({ status: "error", message });
       });
   }
@@ -61,20 +63,20 @@ export function OtpForm({ email, onBack }: OtpFormProps): ReactElement {
         onClick={onBack}
         className="flex items-center gap-1.5 self-start text-sm text-black/60 hover:text-black"
       >
-        &larr; Back
+        {t("otp.back")}
       </button>
 
       <div>
-        <h2 className="mb-1.5 text-xl font-extrabold text-black">Verify your email</h2>
+        <h2 className="mb-1.5 text-xl font-extrabold text-black">{t("otp.heading")}</h2>
         <p className="text-sm leading-relaxed text-black/60">
-          Enter the 6-digit code we sent to <span className="font-semibold text-black">{email}</span>.
+          {t("otp.description")} <span className="font-semibold text-black">{email}</span>.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="otp-code" className="text-xs font-bold uppercase tracking-wider text-black/80">
-            Verification code
+            {t("otp.codeLabel")}
           </label>
           <input
             id="otp-code"
@@ -93,22 +95,22 @@ export function OtpForm({ email, onBack }: OtpFormProps): ReactElement {
         {verifyState.status === "error" && <p className="text-sm text-red-400">{verifyState.message}</p>}
 
         <AuthButton type="submit" disabled={isVerifying}>
-          {isVerifying ? "Verifying…" : "Verify account"}
+          {isVerifying ? t("otp.submitting") : t("otp.submit")}
         </AuthButton>
 
         <p className="text-center text-sm text-black/60">
           {resendState.status === "sent" ? (
-            "A new code is on its way."
+            t("otp.resent")
           ) : (
             <>
-              Didn&apos;t get a code?{" "}
+              {t("otp.noCode")}{" "}
               <button
                 type="button"
                 onClick={handleResend}
                 disabled={isResending}
                 className="font-bold text-black underline decoration-transparent underline-offset-2 transition-colors hover:decoration-current disabled:opacity-60"
               >
-                {isResending ? "Sending…" : "Resend"}
+                {isResending ? t("otp.resending") : t("otp.resend")}
               </button>
             </>
           )}

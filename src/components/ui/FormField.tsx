@@ -2,6 +2,7 @@
  * still-dark login/register/forgot pages opt into the original dark-glass styling. */
 
 import type { InputHTMLAttributes, ReactElement } from "react";
+import { useTranslation } from "react-i18next";
 
 interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -25,13 +26,18 @@ const THEME_CLASSES: Record<"light" | "dark", { label: string; optional: string;
 };
 
 export function FormField({ label, optional, id, theme = "light", ...inputProps }: FormFieldProps): ReactElement {
+  const { t } = useTranslation();
   const classes = THEME_CLASSES[theme];
 
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className={`text-xs font-bold uppercase tracking-wider ${classes.label}`}>
         {label}
-        {optional && <span className={`ml-1 font-medium normal-case tracking-normal ${classes.optional}`}>(optional)</span>}
+        {optional && (
+          <span className={`ms-1 font-medium normal-case tracking-normal ${classes.optional}`}>
+            {t("common:field.optional")}
+          </span>
+        )}
       </label>
       <input
         id={id}

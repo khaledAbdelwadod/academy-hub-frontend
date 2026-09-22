@@ -1,6 +1,7 @@
 /** The sign-in form: email + password. */
 
 import type { FormEvent, ReactElement } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useLogin } from "../../hooks/useLogin";
 import { AuthButton } from "../ui/AuthButton";
@@ -13,6 +14,7 @@ interface SignInFormProps {
 }
 
 export function SignInForm({ onForgotPassword, onSwitchToRegister }: SignInFormProps): ReactElement {
+  const { t } = useTranslation("auth");
   const [state, submit] = useLogin();
 
   function handleSubmit(event: FormEvent<HTMLFormElement>): void {
@@ -25,20 +27,20 @@ export function SignInForm({ onForgotPassword, onSwitchToRegister }: SignInFormP
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="mb-0.5 text-xl font-extrabold text-black">Sign in</h2>
+      <h2 className="mb-0.5 text-xl font-extrabold text-black">{t("signIn.heading")}</h2>
 
       <FormField
         id="si-email"
         name="email"
-        label="Email address"
+        label={t("signIn.emailLabel")}
         type="email"
-        placeholder="you@example.com"
+        placeholder={t("signIn.emailPlaceholder")}
         autoComplete="email"
         required
       />
       <PasswordField
         name="password"
-        label="Password"
+        label={t("signIn.passwordLabel")}
         placeholder="••••••••••"
         autoComplete="current-password"
         required
@@ -49,29 +51,29 @@ export function SignInForm({ onForgotPassword, onSwitchToRegister }: SignInFormP
       <div className="flex items-center justify-between text-sm">
         <label className="flex items-center gap-2 text-black/60">
           <input type="checkbox" className="size-3.5 accent-mint" />
-          Keep me signed in
+          {t("signIn.keepSignedIn")}
         </label>
         <button
           type="button"
           onClick={onForgotPassword}
           className="text-black/60 underline decoration-transparent underline-offset-2 transition-colors hover:text-black hover:decoration-current"
         >
-          Forgot password?
+          {t("signIn.forgotPassword")}
         </button>
       </div>
 
       <AuthButton type="submit" fullWidth={false} disabled={isLoading}>
-        {isLoading ? "Signing in…" : "Sign in"}
+        {isLoading ? t("signIn.submitting") : t("signIn.submit")}
       </AuthButton>
 
       <p className="mt-1 text-center text-sm text-black/60">
-        New to Academy Hub?{" "}
+        {t("signIn.newToAcademyHub")}{" "}
         <button
           type="button"
           onClick={onSwitchToRegister}
           className="font-bold text-black underline decoration-transparent underline-offset-2 transition-colors hover:decoration-current"
         >
-          Create an account
+          {t("signIn.createAccount")}
         </button>
       </p>
     </form>

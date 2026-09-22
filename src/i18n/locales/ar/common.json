@@ -1,0 +1,24 @@
+{
+  "language": {
+    "label": "اللغة المفضلة"
+  },
+  "actions": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "loading": "جارٍ التحميل…"
+  },
+  "select": {
+    "placeholder": "اختر…"
+  },
+  "field": {
+    "optional": "(اختياري)"
+  },
+  "password": {
+    "show": "إظهار",
+    "hide": "إخفاء"
+  },
+  "gender": {
+    "male": "ذكر",
+    "female": "أنثى"
+  }
+}
